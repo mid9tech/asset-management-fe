@@ -10,6 +10,7 @@ import React, {
 } from "react";
 import { useLoading } from "./loading";
 import LoginPage from '../app/login/page'
+import { ACCESS_TOKEN } from "../constants";
 
 type menuItem = {
   name: string;
@@ -44,12 +45,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { setLoading }: any = useLoading();
 
   useEffect(() => {
-    const token = localStorage.getItem("accessToken");
+    const token = localStorage.getItem(ACCESS_TOKEN);
     if (token !== null) {
       setToken(token);
     } else {
       // refresh();
-      console.log("unauthorized");
+      router.push('/login')
     }
     setLoading(false);
   }, []);
@@ -59,7 +60,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [activeItem, setActiveItem] = useState(currentItem);
 
   const logout = () => {
-    localStorage.removeItem("accessToken");
+    localStorage.removeItem(ACCESS_TOKEN);
     setToken(""); // Clear the token state
     router.push("/login"); // Redirect to login page
   };

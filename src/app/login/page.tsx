@@ -5,7 +5,13 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { Disclosure } from "@headlessui/react";
 import Image from "next/image";
 
+import { ACCESS_TOKEN, REFRESH_TOKEN, USER } from "../../constants";
+import { restApiBase } from "@libs/restApi";
+import { useRouter } from "next/navigation";
+
 export default function Index() {
+  const router = useRouter();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
@@ -14,10 +20,27 @@ export default function Index() {
   const handleLogin = () => {
     console.log("Username:", username);
     console.log("Password:", password);
-    if (password !== "123456") {
-      setErrorMsg("Invalid username or password");
+    if (!password || !username) {
+      setErrorMsg("Username and Password are required");
     } else {
-      localStorage.setItem("accessToken", JSON.stringify("this is token"));
+      handleLoginApi(username, password);
+    }
+  };
+
+  const handleLoginApi = async (username: string, password: string) => {
+    try {
+      const result = await restApiBase(
+        { username, password },
+        "api/auth/login"
+      );
+      console.log("result:", result);
+      localStorage.setItem(ACCESS_TOKEN, result.data.accessToken);
+      localStorage.setItem(REFRESH_TOKEN, result.data.refreshToken);
+      localStorage.setItem(USER, result.data.user);
+      router.push("/home");
+    } catch (error) {
+      console.log(error);
+      setErrorMsg("Username or password is incorrect. Please try again");
     }
   };
 
@@ -61,11 +84,13 @@ export default function Index() {
                     type="text"
                     name="username"
                     value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    onChange={(e) => {
+                      setUsername(e.target.value), setErrorMsg("");
+                    }}
                   />
                 </div>
               </div>
-              <div className="md:flex md:items-center mb-6 relative">
+              <div className="md:flex md:items-center mb-3 relative">
                 <div className="md:w-1/3">
                   <label className="block text-gray-700 font-bold mb-1 md:mb-0 pr-4">
                     Password
@@ -78,7 +103,9 @@ export default function Index() {
                     name="password"
                     type={showPassword ? "text" : "password"}
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => {
+                      setPassword(e.target.value), setErrorMsg("");
+                    }}
                   />
                   <button
                     type="button"
@@ -88,11 +115,13 @@ export default function Index() {
                   </button>
                 </div>
               </div>
-              {errorMsg ?? <span className="text-nashtech">{errorMsg}</span>}
+              <div className="h-5">
+                <span className="text-nashtech text-xs italic">{errorMsg}</span>
+              </div>
 
-              <div className="flex flex-row-reverse">
+              <div className="flex flex-row-reverse mt-2">
                 <button
-                  className={`bg-nashtech text-white py-1 px-2 rounded ${
+                  className={`bg-nashtech text-white py-1 px-3 rounded ${
                     !username || !password
                       ? "opacity-50 cursor-not-allowed"
                       : "hover:opacity-75"
