@@ -16,7 +16,9 @@ const config: Config = {
       colors: {
         'nashtech':'#cf2338',
         'bluegray': '#eff1f5',
-        'cyangray': '#fafcfc'
+        'cyangray': '#fafcfc',
+        'graycustom': '#949494',
+        'graycustom2': '#f5f5f5',
       },
     },
   },
