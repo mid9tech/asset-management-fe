@@ -1,5 +1,7 @@
 import type { Config } from "tailwindcss";
 
+
+
 const config: Config = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -19,6 +21,9 @@ const config: Config = {
         'cyangray': '#fafcfc',
         'graycustom': '#949494',
         'graycustom2': '#f5f5f5',
+        'gray': '#707070',
+        'header-modal': '#EFF1F5',
+        'border-gray': 'rgba(222, 226, 230, 1);'
       },
     },
   },
