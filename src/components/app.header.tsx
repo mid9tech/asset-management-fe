@@ -62,7 +62,7 @@ const AppHeader = () => {
                     <div className="flex mb-2 items-center">
                         <span className="text-sm w-40">Password (*)</span>
                         <div className="relative flex">
-                            <Input type={showPassword ? "text" : "password"} placeholder="Input here to change password" className="bg-transparent border-gray dark:border-gray-200 px-3 py-2 rounded-md w-72"/>
+                            <Input type={showPassword ? "text" : "password"} placeholder="Input here to change password" className="bg-transparent border-gray dark:border-gray-200 px-3 py-2 rounded-md w-[295px]"/>
                             <span
                                 onClick={() => setShowPassword((prev) => !prev)}
                                 className="absolute top-1 right-3 "
