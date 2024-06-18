@@ -2,8 +2,8 @@
 
 exports[`renders homepage unchanged 1`] = `
 <div>
-  <h1>
+  <div>
     Hello babe
-  </h1>
+  </div>
 </div>
 `;
