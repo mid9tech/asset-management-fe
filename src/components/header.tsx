@@ -1,10 +1,10 @@
 'use client'
 import { useState } from "react";
-import DetailModal from "./app.modalDetail"
+import DetailModal from "./modal"
 import { Input } from "./ui/input";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { Button } from "../components/ui/button"
+import { Button } from "./ui/button"
 
 const AppHeader = () => {
     const [showModalChangePassword, setShowModalChangePassword] = useState(false);

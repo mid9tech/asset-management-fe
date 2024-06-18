@@ -1,11 +1,10 @@
 'use client'
 import { useState } from 'react';
 import { Input } from '@components/ui/input';
-import AppModalConfirm from '@components/app.modalConfirm';
-import DetailModal from '@components/app.modalDetail';
+import DetailModal from '@components/modal';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import SearchIcon from '@mui/icons-material/Search';
-import ReusableTable from '@components/app.table';
+import ReusableTable from '@components/table';
 
 type User = {
     staffCode: string;

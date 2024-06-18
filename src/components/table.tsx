@@ -6,7 +6,7 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "../components/ui/table";
+} from "./ui/table";
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import CreateIcon from '@mui/icons-material/Create';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
