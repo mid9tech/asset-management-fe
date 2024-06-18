@@ -1,6 +1,4 @@
 "use client";
-import Navbar from "@components/navbar";
-import Sidebar from "@components/sidebar";
 import { usePathname, useRouter } from "next/navigation";
 import React, {
   createContext,
@@ -11,6 +9,7 @@ import React, {
   SetStateAction,
 } from "react";
 import { useLoading } from "./loading";
+import LoginPage from '../app/login/page'
 
 type menuItem = {
   name: string;
@@ -67,7 +66,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const excludedPaths = ["/login"];
 
   if (excludedPaths.includes(pathname)) {
-    return <>{children}</>;
+    return <><LoginPage/></>;
   }
   return (
     <AuthContext.Provider
@@ -79,19 +78,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setToken,
         logout,
       }}>
-      <Navbar />
-      <div className="grid grid-cols-10 gap-4">
-        <div className="col-start-2 col-span-8">
-          <div className="grid sm:grid-cols-1 md:grid-cols-5 lg:grid-cols-5 gap-10">
-            <div>
-              <Sidebar />
-            </div>
-            <div className="col-span-4 p-5">
-              <div className="mt-20">{children}</div>
-            </div>
-          </div>
-        </div>
-      </div>
+      {children}
     </AuthContext.Provider>
   );
 };
