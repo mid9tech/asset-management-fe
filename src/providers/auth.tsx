@@ -12,6 +12,9 @@ import { useLoading } from "./loading";
 import LoginPage from "../app/login/page";
 import { ACCESS_TOKEN, USER } from "../constants";
 import { restApiBase } from "@libs/restApi";
+import DetailModal from "@components/modal";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 type menuItem = {
   name: string;
@@ -42,18 +45,37 @@ const menuItems = [
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const [token, setToken] = useState("");
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [password, setPassword] = useState("");
+  const [user, setUser] = useState<User | null>(null);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
+  const handleCloseDetailModal = () => {
+    // setIsOpenModal(false);
+  };
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
   const pathname = usePathname();
   const { setLoading }: any = useLoading();
 
   useEffect(() => {
     const token = localStorage.getItem(ACCESS_TOKEN);
+    // if (typeof window !== "undefined") {
+    //   const storedUser = JSON.parse(localStorage.getItem(USER) as string);
+    //   setUser(storedUser);
+    // }
+
     if (token !== null) {
       setToken(token);
+      if (!user?.isActived) {
+        setIsOpenModal(true);
+      }
     } else {
-      // refresh();
       router.push("/login");
     }
+
     setLoading(false);
   }, []);
 
@@ -82,6 +104,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       throw error;
     }
   };
+  const handleSubmit = () => {
+    handleChangePasswordFirstLoginApi(password);
+  };
+  const handleChangePasswordFirstLoginApi = (password: string) => {
+    try {
+      // if (!password) {
+      //   return;
+      // }
+      // localStorage.setItem(USER, JSON.stringify({ ...user, isActived: true }));
+      // setUser({ isActived: true });
+      console.log("password changed: ", password);
+      router.push("/home");
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  };
+
   const handleLogoutApi = async () => {
     try {
       await restApiBase({}, "api/auth/logout");
@@ -93,8 +133,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setLoading(false);
     }
   };
-  const excludedPaths = ["/login"];
 
+  const excludedPaths = ["/login"];
   if (excludedPaths.includes(pathname)) {
     return (
       <AuthContext.Provider
@@ -123,6 +163,65 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         handleLoginApi,
       }}>
       {children}
+      <DetailModal
+        isOpen={isOpenModal}
+        onClose={handleCloseDetailModal}
+        title="Change Password">
+        <div>
+          <div className="italic">This is the first time you logged in.</div>
+          <div className="italic">
+            You have to change your password to continue.
+          </div>
+          <form
+            className="w-full p-5"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit();
+            }}>
+            <div className="md:flex md:items-center mb-3 relative">
+              <div className="md:w-1/3">
+                <label className="block text-gray-700 mb-1 md:mb-0 pr-4">
+                  New Password
+                </label>
+              </div>
+              <div className="md:w-2/3 relative">
+                <input
+                  className="border border-black rounded w-full py-1 px-4"
+                  id="inline-password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value), setErrorMsg("");
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={toggleShowPassword}
+                  className="absolute right-0 top-0 mt-1 mr-2 text-gray-600 focus:outline-none">
+                  <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} />
+                </button>
+              </div>
+            </div>
+            <div className="h-5">
+              <span className="text-nashtech text-xs italic">{errorMsg}</span>
+            </div>
+
+            <div className="flex flex-row-reverse mt-2">
+              <button
+                className={`bg-nashtech text-white py-1 px-3 rounded ${
+                  !password
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:opacity-75"
+                }`}
+                disabled={!password}
+                type="submit">
+                Save
+              </button>
+            </div>
+          </form>
+        </div>
+      </DetailModal>
     </AuthContext.Provider>
   );
 };

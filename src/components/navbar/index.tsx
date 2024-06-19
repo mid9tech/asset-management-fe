@@ -9,11 +9,7 @@ import {
 import { Fragment, useEffect, useState } from "react";
 import { useAuth } from "@providers/auth";
 import { USER } from "../../constants";
-interface User {
-  username: string;
-  id: number;
-  role: string;
-}
+
 const Navbar = () => {
   const { activeItem, logout } = useAuth();
   const [user, setUser] = useState<User | null>(null);

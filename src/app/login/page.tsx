@@ -17,7 +17,7 @@ export default function Index() {
   const [errorMsg, setErrorMsg] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleLogin = async () => {
+  const handleLogin = async() => {
     try {
       setLoading(true);
       await handleLoginApi(username, password);
@@ -56,8 +56,8 @@ export default function Index() {
               }}>
               <div className="md:flex md:items-center mb-6">
                 <div className="md:w-1/3">
-                  <label className="block text-gray-700 font-bold mb-1 md:mb-0 pr-4">
-                    Username
+                  <label className="block text-gray-700 mb-1 md:mb-0 pr-4">
+                    Username <span className="text-red-500">*</span>
                   </label>
                 </div>
                 <div className="md:w-2/3">
@@ -75,8 +75,8 @@ export default function Index() {
               </div>
               <div className="md:flex md:items-center mb-3 relative">
                 <div className="md:w-1/3">
-                  <label className="block text-gray-700 font-bold mb-1 md:mb-0 pr-4">
-                    Password
+                  <label className="block text-gray-700 mb-1 md:mb-0 pr-4">
+                    Password <span className="text-red-500">*</span>
                   </label>
                 </div>
                 <div className="md:w-2/3 relative">
