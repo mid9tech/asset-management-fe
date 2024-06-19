@@ -55,7 +55,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       router.push("/login");
     }
     setLoading(false);
-  }, []);
+  }, [router, setLoading]);
 
   const currentItem =
     menuItems.find((item) => item.path === pathname) ?? menuItems[0];
@@ -108,7 +108,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           setToken,
           logout,
           handleLoginApi,
-        }}>
+        }}
+      >
         <LoginPage />
       </AuthContext.Provider>
     );
@@ -123,7 +124,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setToken,
         logout,
         handleLoginApi,
-      }}>
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
