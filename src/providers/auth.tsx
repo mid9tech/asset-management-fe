@@ -61,8 +61,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     menuItems.find((item) => item.path === pathname) ?? menuItems[0];
   const [activeItem, setActiveItem] = useState(currentItem);
 
-  const logout = () => {
-    handleLogoutApi();
+  const logout = async () => {
+    setLoading(true);
+    await handleLogoutApi();
     setToken(""); // Clear the token state
     router.push("/login"); // Redirect to login page
   };
@@ -79,7 +80,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       router.push("/home");
     } catch (error) {
       console.log(error);
-      // setErrorMsg("Username or password is incorrect. Please try again");
       throw error;
     }
   };
@@ -89,8 +89,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       localStorage.removeItem(ACCESS_TOKEN);
       localStorage.removeItem(REFRESH_TOKEN);
       localStorage.removeItem(USER);
+      setLoading(false);
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
   const excludedPaths = ["/login"];
