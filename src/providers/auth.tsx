@@ -95,8 +95,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         { username, password },
         "api/auth/login"
       );
-      localStorage.setItem(ACCESS_TOKEN, result.data.accessToken);
-      localStorage.setItem(USER, JSON.stringify(result.data.user));
+      localStorage.setItem(ACCESS_TOKEN, result?.data.accessToken);
+      localStorage.setItem(USER, JSON.stringify(result?.data.user));
       setLoading(false);
       router.push("/home");
     } catch (error) {
@@ -107,14 +107,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const handleSubmit = () => {
     handleChangePasswordFirstLoginApi(password);
   };
-  const handleChangePasswordFirstLoginApi = (password: string) => {
+  const handleChangePasswordFirstLoginApi = async(password: string) => {
     try {
       // if (!password) {
       //   return;
       // }
       // localStorage.setItem(USER, JSON.stringify({ ...user, isActived: true }));
       // setUser({ isActived: true });
-      console.log("password changed: ", password);
+      const response = await restApiBase({newPassword: password}, 'api/auth/change-password');
+      console.log("password changed: ", response);
       router.push("/home");
     } catch (error) {
       console.log(error);
