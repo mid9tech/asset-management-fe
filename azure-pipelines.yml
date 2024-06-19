@@ -82,5 +82,8 @@ stages:
                     appType: "webAppLinux"
                     appName: $(webAppName)
                     runtimeStack: "NODE|20-lts"
-                    package: $(Pipeline.Workspace)/drop/$(Build.BuildId).zip
-                    startUpCommand: "npm install -g npm@10.8.1 --force && npm run start"
+                    package: "$(Pipeline.Workspace)/drop/$(Build.BuildId).zip"
+                    startUpCommand: |
+                      npm install -g npm@10.8.1 --force
+                      npm install
+                      npm run start
