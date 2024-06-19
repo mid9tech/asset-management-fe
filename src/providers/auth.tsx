@@ -10,7 +10,8 @@ import React, {
 } from "react";
 import { useLoading } from "./loading";
 import LoginPage from '../app/login/page'
-import { ACCESS_TOKEN } from "../constants";
+import { ACCESS_TOKEN, REFRESH_TOKEN, USER } from "../constants";
+import { restApiBase } from "@libs/restApi";
 
 type menuItem = {
   name: string;
@@ -60,10 +61,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [activeItem, setActiveItem] = useState(currentItem);
 
   const logout = () => {
-    localStorage.removeItem(ACCESS_TOKEN);
+    handleLogoutApi();
     setToken(""); // Clear the token state
     router.push("/login"); // Redirect to login page
   };
+  const handleLogoutApi = async() => {
+    try {
+      await restApiBase({}, 'api/auth/logout');
+      localStorage.removeItem(ACCESS_TOKEN);
+      localStorage.removeItem(REFRESH_TOKEN);
+      localStorage.removeItem(USER);
+    } catch (error) {
+      console.log(error);
+    }
+  }
   const excludedPaths = ["/login"];
 
   if (excludedPaths.includes(pathname)) {

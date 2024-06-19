@@ -18,13 +18,7 @@ export default function Index() {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = () => {
-    console.log("Username:", username);
-    console.log("Password:", password);
-    if (!password || !username) {
-      setErrorMsg("Username and Password are required");
-    } else {
-      handleLoginApi(username, password);
-    }
+    handleLoginApi(username, password);
   };
 
   const handleLoginApi = async (username: string, password: string) => {
@@ -36,7 +30,7 @@ export default function Index() {
       console.log("result:", result);
       localStorage.setItem(ACCESS_TOKEN, result.data.accessToken);
       localStorage.setItem(REFRESH_TOKEN, result.data.refreshToken);
-      localStorage.setItem(USER, result.data.user);
+      localStorage.setItem(USER, JSON.stringify(result.data.user));
       router.push("/home");
     } catch (error) {
       console.log(error);
