@@ -1,3 +1,4 @@
+'use client'
 import axios, { AxiosRequestConfig } from "axios";
 import { ACCESS_TOKEN } from "../../constants";
 

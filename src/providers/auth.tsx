@@ -8,13 +8,14 @@ import React, {
   Dispatch,
   SetStateAction,
 } from "react";
-import { useLoading } from "./loading";
-import LoginPage from "../app/login/page";
-import { ACCESS_TOKEN, IS_ACTIVE_USER, USERNAME } from "../constants";
 import { restApiBase } from "@libs/restApi";
 import DetailModal from "@components/modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+
+import { useLoading } from "./loading";
+import LoginPage from "../app/login/page";
+import { ACCESS_TOKEN, USER } from "../constants";
 
 type menuItem = {
   name: string;
@@ -60,18 +61,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { setLoading }: any = useLoading();
 
   useEffect(() => {
-    const token = localStorage.getItem(ACCESS_TOKEN);
-    console.log("user", user);
-    if (user && token) {
-      setToken(token);
-      if (!user.isActived) {
-        setIsOpenModal(true);
-      }
+    const storedToken = localStorage.getItem(ACCESS_TOKEN);
+    const storedUser = localStorage.getItem(USER);
+    if (storedToken && storedUser) {
+      setToken(storedToken);
+      setUser(JSON.parse(storedUser));
+      setLoading(false);
     } else {
       router.push("/login");
     }
+  }, []);
 
-    setLoading(false);
+  useEffect(() => {
+    if (user && !user.isActived) {
+      setIsOpenModal(true);
+    }
   }, [user]);
 
   const currentItem =
@@ -81,8 +85,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const logout = async () => {
     setLoading(true);
     await handleLogoutApi();
-    setToken(""); // Clear the token state
-    router.push("/login"); // Redirect to login page
+    setToken("");
+    router.push("/login");
   };
   const handleLoginApi = async (username: string, password: string) => {
     try {
@@ -92,7 +96,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       );
       if (result) {
         localStorage.setItem(ACCESS_TOKEN, result?.data.accessToken);
-        setUser(result?.data);
+        localStorage.setItem(USER, JSON.stringify(result.data.user));
+        setToken(result.data.accessToken);
+        setUser(result.data.user);
+        return result;
       }
     } catch (error: any) {
       console.log(error);
@@ -100,8 +107,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const handleSubmit = () => {
-    handleChangePasswordFirstLoginApi(password);
+  const handleSubmit = async () => {
+    setLoading(true);
+    await handleChangePasswordFirstLoginApi(password);
+    setIsOpenModal(false);
+    await handleLogoutApi();
+    router.push("/login");
   };
 
   const handleChangePasswordFirstLoginApi = async (password: string) => {
@@ -110,9 +121,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         { newPassword: password },
         "api/auth/change-password"
       );
-      console.log("password changed: ", response);
-      setUser(response?.data);
-      router.push("/home");
+      if(!response){
+        return;
+      }
+      setToken(response?.data.accessToken);
+      setUser(response?.data.user);
+      localStorage.setItem(ACCESS_TOKEN, response?.data.accessToken);
+      localStorage.setItem(USER, JSON.stringify(response?.data.user));
+      setLoading(false);
     } catch (error) {
       console.log(error);
       throw error;
@@ -123,8 +139,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       await restApiBase({}, "api/auth/logout");
       localStorage.removeItem(ACCESS_TOKEN);
-      localStorage.removeItem(IS_ACTIVE_USER);
-      localStorage.removeItem(USERNAME);
+      localStorage.removeItem(USER);
       setUser(null);
       setLoading(false);
     } catch (error) {

@@ -19,10 +19,11 @@ export default function Index() {
   const [errorMsg, setErrorMsg] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleLogin = async () => {
+  const handleLogin = async() => {
     try {
       setLoading(true);
       const result = await handleLoginApi(username, password);
+      console.log('result: ', result);
       setLoading(false);
       if (!result) {
         setErrorMsg("Username or password is incorrect. Please try again");
