@@ -10,7 +10,7 @@ import React, {
 } from "react";
 import { useLoading } from "./loading";
 import LoginPage from "../app/login/page";
-import { ACCESS_TOKEN, REFRESH_TOKEN, USER } from "../constants";
+import { ACCESS_TOKEN, USER } from "../constants";
 import { restApiBase } from "@libs/restApi";
 
 type menuItem = {
@@ -74,7 +74,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         "api/auth/login"
       );
       localStorage.setItem(ACCESS_TOKEN, result.data.accessToken);
-      localStorage.setItem(REFRESH_TOKEN, result.data.refreshToken);
       localStorage.setItem(USER, JSON.stringify(result.data.user));
       setLoading(false);
       router.push("/home");
@@ -87,7 +86,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       await restApiBase({}, "api/auth/logout");
       localStorage.removeItem(ACCESS_TOKEN);
-      localStorage.removeItem(REFRESH_TOKEN);
       localStorage.removeItem(USER);
       setLoading(false);
     } catch (error) {
