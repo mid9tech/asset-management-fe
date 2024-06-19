@@ -12,7 +12,7 @@ import { useLoading } from "@providers/loading";
 
 export default function Index() {
   const router = useRouter();
-  const {setLoading} = useLoading();
+  const {setLoading}: any = useLoading();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
