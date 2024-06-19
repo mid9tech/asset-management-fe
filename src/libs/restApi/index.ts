@@ -11,7 +11,7 @@ export const restApiBase = async (
   const token = localStorage.getItem(ACCESS_TOKEN);
   const headers = {
     "Content-Type": "application/json",
-    // authorization: token ? `Bearer ${token}` : "",
+    authorization: token ? `Bearer ${token}` : "",
     withCredentials: true
   };
 
