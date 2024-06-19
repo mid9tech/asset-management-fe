@@ -5,19 +5,25 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { Disclosure } from "@headlessui/react";
 import Image from "next/image";
 
+import { useLoading } from "@providers/loading";
+import { useAuth } from "@providers/auth";
+
 export default function Index() {
+  const { setLoading }: any = useLoading();
+  const { handleLoginApi }: any = useAuth();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleLogin = () => {
-    console.log("Username:", username);
-    console.log("Password:", password);
-    if (password !== "123456") {
-      setErrorMsg("Invalid username or password");
-    } else {
-      localStorage.setItem("accessToken", JSON.stringify("this is token"));
+  const handleLogin = async () => {
+    try {
+      setLoading(true);
+      await handleLoginApi(username, password);
+    } catch (error) {
+      setErrorMsg("Username or password is incorrect. Please try again");
+      setLoading(false);
     }
   };
 
@@ -26,7 +32,7 @@ export default function Index() {
   };
 
   return (
-    <>
+    <div>
       <Disclosure as="nav" className="bg-nashtech text-white">
         <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
           <div className="relative flex h-16 items-center flext-start font-bold gap-5">
@@ -61,11 +67,13 @@ export default function Index() {
                     type="text"
                     name="username"
                     value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    onChange={(e) => {
+                      setUsername(e.target.value), setErrorMsg("");
+                    }}
                   />
                 </div>
               </div>
-              <div className="md:flex md:items-center mb-6 relative">
+              <div className="md:flex md:items-center mb-3 relative">
                 <div className="md:w-1/3">
                   <label className="block text-gray-700 font-bold mb-1 md:mb-0 pr-4">
                     Password
@@ -78,7 +86,9 @@ export default function Index() {
                     name="password"
                     type={showPassword ? "text" : "password"}
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => {
+                      setPassword(e.target.value), setErrorMsg("");
+                    }}
                   />
                   <button
                     type="button"
@@ -88,11 +98,13 @@ export default function Index() {
                   </button>
                 </div>
               </div>
-              {errorMsg ?? <span className="text-nashtech">{errorMsg}</span>}
+              <div className="h-5">
+                <span className="text-nashtech text-xs italic">{errorMsg}</span>
+              </div>
 
-              <div className="flex flex-row-reverse">
+              <div className="flex flex-row-reverse mt-2">
                 <button
-                  className={`bg-nashtech text-white py-1 px-2 rounded ${
+                  className={`bg-nashtech text-white py-1 px-3 rounded ${
                     !username || !password
                       ? "opacity-50 cursor-not-allowed"
                       : "hover:opacity-75"
@@ -106,6 +118,6 @@ export default function Index() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
