@@ -73,9 +73,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         { username, password },
         "api/auth/login"
       );
-      localStorage.setItem(ACCESS_TOKEN, result.data.accessToken);
-      localStorage.setItem(REFRESH_TOKEN, result.data.refreshToken);
-      localStorage.setItem(USER, JSON.stringify(result.data.user));
+      // localStorage.setItem(ACCESS_TOKEN, result.data.accessToken);
+      // localStorage.setItem(REFRESH_TOKEN, result.data.refreshToken);
+      // localStorage.setItem(USER, JSON.stringify(result.data.user));
       setLoading(false);
       router.push("/home");
     } catch (error) {
@@ -86,9 +86,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const handleLogoutApi = async () => {
     try {
       await restApiBase({}, "api/auth/logout");
-      localStorage.removeItem(ACCESS_TOKEN);
-      localStorage.removeItem(REFRESH_TOKEN);
-      localStorage.removeItem(USER);
+      // localStorage.removeItem(ACCESS_TOKEN);
+      // localStorage.removeItem(REFRESH_TOKEN);
+      // localStorage.removeItem(USER);
       setLoading(false);
     } catch (error) {
       console.log(error);

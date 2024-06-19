@@ -6,7 +6,7 @@ export const restApiBase = async (data: any, endPoint: string) => {
   const token = localStorage.getItem(ACCESS_TOKEN);
   const headers = {
     "Content-Type": "application/json",
-    authorization: token ? `Bearer ${token}` : "",
+    // authorization: token ? `Bearer ${token}` : "",
   };
 
   const config: AxiosRequestConfig = {
