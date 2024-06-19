@@ -8,9 +8,11 @@ import Image from "next/image";
 import { ACCESS_TOKEN, REFRESH_TOKEN, USER } from "../../constants";
 import { restApiBase } from "@libs/restApi";
 import { useRouter } from "next/navigation";
+import { useLoading } from "@providers/loading";
 
 export default function Index() {
   const router = useRouter();
+  const {setLoading} = useLoading();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -18,6 +20,7 @@ export default function Index() {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = () => {
+    setLoading(true);
     handleLoginApi(username, password);
   };
 
@@ -31,10 +34,12 @@ export default function Index() {
       localStorage.setItem(ACCESS_TOKEN, result.data.accessToken);
       localStorage.setItem(REFRESH_TOKEN, result.data.refreshToken);
       localStorage.setItem(USER, JSON.stringify(result.data.user));
+      setLoading(false);
       router.push("/home");
     } catch (error) {
       console.log(error);
       setErrorMsg("Username or password is incorrect. Please try again");
+      setLoading(false);
     }
   };
 
@@ -43,7 +48,7 @@ export default function Index() {
   };
 
   return (
-    <>
+    <div>
       <Disclosure as="nav" className="bg-nashtech text-white">
         <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
           <div className="relative flex h-16 items-center flext-start font-bold gap-5">
@@ -129,6 +134,6 @@ export default function Index() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

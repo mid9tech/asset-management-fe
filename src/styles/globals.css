@@ -30,9 +30,20 @@
     background: #cf2338;
     transition: all .1s
 }
+.loader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5); /* semi-transparent background */
+    z-index: 9999; /* Ensure it overlays on top of everything else */
+  }
 /* HTML: <div class="loader"></div> */
 .loader {
-    position: absolute;
     width: 50px;
     --b: 8px; 
     aspect-ratio: 1;
