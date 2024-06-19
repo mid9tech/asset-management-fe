@@ -5,39 +5,23 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { Disclosure } from "@headlessui/react";
 import Image from "next/image";
 
-import { ACCESS_TOKEN, REFRESH_TOKEN, USER } from "../../constants";
-import { restApiBase } from "@libs/restApi";
-import { useRouter } from "next/navigation";
 import { useLoading } from "@providers/loading";
+import { useAuth } from "@providers/auth";
 
 export default function Index() {
-  const router = useRouter();
-  const {setLoading}: any = useLoading();
+  const { setLoading }: any = useLoading();
+  const { handleLoginApi }: any = useAuth();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleLogin = () => {
-    setLoading(true);
-    handleLoginApi(username, password);
-  };
-
-  const handleLoginApi = async (username: string, password: string) => {
+  const handleLogin = async () => {
     try {
-      const result = await restApiBase(
-        { username, password },
-        "api/auth/login"
-      );
-      console.log("result:", result);
-      localStorage.setItem(ACCESS_TOKEN, result.data.accessToken);
-      localStorage.setItem(REFRESH_TOKEN, result.data.refreshToken);
-      localStorage.setItem(USER, JSON.stringify(result.data.user));
-      setLoading(false);
-      router.push("/home");
+      setLoading(true);
+      await handleLoginApi(username, password);
     } catch (error) {
-      console.log(error);
       setErrorMsg("Username or password is incorrect. Please try again");
       setLoading(false);
     }
