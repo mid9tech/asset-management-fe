@@ -10,7 +10,7 @@ import React, {
 } from "react";
 import { useLoading } from "./loading";
 import LoginPage from "../app/login/page";
-import { ACCESS_TOKEN, USER } from "../constants";
+import { ACCESS_TOKEN, IS_ACTIVE_USER, USERNAME } from "../constants";
 import { restApiBase } from "@libs/restApi";
 import DetailModal from "@components/modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -29,8 +29,7 @@ export const AuthContext = createContext<{
   menuItems: menuItem[];
   logout: () => void;
   handleLoginApi: (username: string, password: string) => void;
-  // account: Account | null;
-  // setAccount: Dispatch<SetStateAction<Account | null>>;
+  user: User | null;
 } | null>(null);
 
 const menuItems = [
@@ -62,14 +61,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const token = localStorage.getItem(ACCESS_TOKEN);
-    // if (typeof window !== "undefined") {
-    //   const storedUser = JSON.parse(localStorage.getItem(USER) as string);
-    //   setUser(storedUser);
-    // }
-
-    if (token !== null) {
+    console.log("user", user);
+    if (user && token) {
       setToken(token);
-      if (!user?.isActived) {
+      if (!user.isActived) {
         setIsOpenModal(true);
       }
     } else {
@@ -77,7 +72,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     setLoading(false);
-  }, []);
+  }, [user]);
 
   const currentItem =
     menuItems.find((item) => item.path === pathname) ?? menuItems[0];
@@ -95,27 +90,28 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         { username, password },
         "api/auth/login"
       );
-      localStorage.setItem(ACCESS_TOKEN, result?.data.accessToken);
-      localStorage.setItem(USER, JSON.stringify(result?.data.user));
-      setLoading(false);
-      router.push("/home");
-    } catch (error) {
+      if (result) {
+        localStorage.setItem(ACCESS_TOKEN, result?.data.accessToken);
+        setUser(result?.data);
+      }
+    } catch (error: any) {
       console.log(error);
-      throw error;
+      throw new Error(error);
     }
   };
+
   const handleSubmit = () => {
     handleChangePasswordFirstLoginApi(password);
   };
-  const handleChangePasswordFirstLoginApi = async(password: string) => {
+
+  const handleChangePasswordFirstLoginApi = async (password: string) => {
     try {
-      // if (!password) {
-      //   return;
-      // }
-      // localStorage.setItem(USER, JSON.stringify({ ...user, isActived: true }));
-      // setUser({ isActived: true });
-      const response = await restApiBase({newPassword: password}, 'api/auth/change-password');
+      const response = await restApiBase(
+        { newPassword: password },
+        "api/auth/change-password"
+      );
       console.log("password changed: ", response);
+      setUser(response?.data);
       router.push("/home");
     } catch (error) {
       console.log(error);
@@ -127,7 +123,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       await restApiBase({}, "api/auth/logout");
       localStorage.removeItem(ACCESS_TOKEN);
-      localStorage.removeItem(USER);
+      localStorage.removeItem(IS_ACTIVE_USER);
+      localStorage.removeItem(USERNAME);
+      setUser(null);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -147,6 +145,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           setToken,
           logout,
           handleLoginApi,
+          user,
         }}>
         <LoginPage />
       </AuthContext.Provider>
@@ -162,6 +161,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setToken,
         logout,
         handleLoginApi,
+        user,
       }}>
       {children}
       <DetailModal

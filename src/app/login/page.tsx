@@ -7,8 +7,10 @@ import Image from "next/image";
 
 import { useLoading } from "@providers/loading";
 import { useAuth } from "@providers/auth";
+import { useRouter } from "next/navigation";
 
 export default function Index() {
+  const router = useRouter();
   const { setLoading }: any = useLoading();
   const { handleLoginApi }: any = useAuth();
 
@@ -17,11 +19,18 @@ export default function Index() {
   const [errorMsg, setErrorMsg] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleLogin = async() => {
+  const handleLogin = async () => {
     try {
       setLoading(true);
-      await handleLoginApi(username, password);
+      const result = await handleLoginApi(username, password);
+      setLoading(false);
+      if (!result) {
+        setErrorMsg("Username or password is incorrect. Please try again");
+        return;
+      }
+      router.push("/home");
     } catch (error) {
+      console.log("go here");
       setErrorMsg("Username or password is incorrect. Please try again");
       setLoading(false);
     }

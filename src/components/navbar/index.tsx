@@ -6,22 +6,12 @@ import {
   MenuItems,
   Transition,
 } from "@headlessui/react";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment } from "react";
 import { useAuth } from "@providers/auth";
-import { USER } from "../../constants";
-import DetailModal from "@components/modal";
 
+// Define the User type based on your application's user structure
 const Navbar = () => {
-  const { activeItem, logout } = useAuth();
-  const [user, setUser] = useState<User | null>(null);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedUser = JSON.parse(localStorage.getItem(USER) as string);
-      setUser(storedUser);
-    }
-  }, []);
-
+  const { activeItem, logout, user } = useAuth();
   return (
     <>
       <Disclosure as="nav" className="bg-nashtech text-white">
@@ -45,14 +35,14 @@ const Navbar = () => {
                   leaveTo="transform opacity-0 scale-95">
                   <MenuItems className="absolute right-0 mt-2 w-40 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                     <div className="p-3">
-                      <MenuItems className="hover:bg-nashtech hover:text-white text-black text-sm rounded px-2 mb-2">
+                      <div className="hover:bg-nashtech hover:text-white text-black text-sm rounded px-2 mb-2">
                         <a href="#">Change Password</a>
-                      </MenuItems>
-                      <MenuItems className="hover:bg-nashtech hover:text-white text-black text-sm rounded px-2">
+                      </div>
+                      <div className="hover:bg-nashtech hover:text-white text-black text-sm rounded px-2">
                         <a href="#" onClick={logout}>
                           Logout
                         </a>
-                      </MenuItems>
+                      </div>
                     </div>
                   </MenuItems>
                 </Transition>

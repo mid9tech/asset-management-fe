@@ -10,7 +10,8 @@ export const restApiBase = async (
   const token = localStorage.getItem(ACCESS_TOKEN);
   const headers = {
     "Content-Type": "application/json",
-    authorization: token ? `Bearer ${token}` : "",
+    // authorization: token ? `Bearer ${token}` : "",
+    withCredentials: true
   };
 
   const config: AxiosRequestConfig = {
@@ -35,6 +36,7 @@ export const restApiBase = async (
           "Content-Type": "application/json",
         },
         method: "POST",
+        withCredentials: true
       })
         .then(async (rs) => {
           const data = rs.data.accessToken;
