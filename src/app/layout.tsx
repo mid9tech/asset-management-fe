@@ -5,7 +5,8 @@ import { AuthProvider } from "@providers/auth";
 import Navbar from "@components/navbar";
 import Sidebar from "@components/sidebar";
 import { LoadingProvider } from "@providers/loading";
-
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css'
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -35,6 +36,18 @@ export default function RootLayout({
                 </div>
               </div>
             </div>
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+            />
           </AuthProvider>
         </LoadingProvider>
       </body>

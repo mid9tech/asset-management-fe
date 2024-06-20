@@ -75,6 +75,10 @@ const UserManagement: React.FC = () => {
         router.push('user/create');
     };
 
+    const handleNavigateEditUser = () => {
+        router.push('user/edit');
+    };
+
     const onSubmit = async (data: FormData) => {
         try {
             const response = await disableUser(data.id);
@@ -87,7 +91,6 @@ const UserManagement: React.FC = () => {
             } else {
                 console.log('User disabled successfully:', response);
                 setShowModalRemoveUser(false);
-                // Optionally, refresh the user list or navigate
             }
         } catch (error) {
             console.error('Error disabling user:', error);
@@ -127,6 +130,7 @@ const UserManagement: React.FC = () => {
                     data={filteredUsers}
                     onRowClick={handleRowClick}
                     onDeleteClick={handleDeleteClick}
+                    onEditClick={(e)=> handleNavigateEditUser()}
                 />
                 <nav aria-label="Page navigation example" className="mt-4">
                     <ul className="flex -space-x-px text-sm justify-end">
