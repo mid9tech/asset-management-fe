@@ -1,6 +1,6 @@
 "use client";
 import axios, { AxiosRequestConfig } from "axios";
-import { ACCESS_TOKEN } from "../../constants";
+import { ACCESS_TOKEN, USER } from "../../constants";
 
 export const restApiBase = async (
   data: any,
@@ -12,14 +12,13 @@ export const restApiBase = async (
   const headers = {
     "Content-Type": "application/json",
     authorization: token ? `Bearer ${token}` : "",
-    withCredentials: true,
   };
 
   const config: AxiosRequestConfig = {
     url: `${baseUrl}${endPoint}`,
-    method: method ? method : 'POST',
+    method: method ? method : "POST",
     data: data,
-    
+    withCredentials: true,
     headers: headers,
   };
 
@@ -41,8 +40,9 @@ export const restApiBase = async (
         withCredentials: true,
       })
         .then(async (rs) => {
-          const data = rs.data.accessToken;
-          localStorage.setItem(ACCESS_TOKEN, data);
+          const { accessToken, user } = rs.data;
+          localStorage.setItem(ACCESS_TOKEN, accessToken);
+          localStorage.setItem(USER, user);
           if (config.headers) {
             config.headers.authorization = `Bearer ${data}`;
           }
