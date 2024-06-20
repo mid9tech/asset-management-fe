@@ -34,7 +34,7 @@ const Navbar = () => {
                   leaveFrom="transform opacity-100 scale-100"
                   leaveTo="transform opacity-0 scale-95">
                   <MenuItems className="absolute right-0 mt-2 w-40 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                    <div className="p-3">
+                    <div className="p-3 flex justify-center flex-col">
                       <div className="hover:bg-nashtech hover:text-white text-black text-sm rounded px-2 mb-2">
                         <a href="#">Change Password</a>
                       </div>

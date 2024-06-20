@@ -95,7 +95,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         "api/auth/login"
       );
       if (result) {
-        localStorage.setItem(ACCESS_TOKEN, result?.data.accessToken);
+        localStorage.setItem(ACCESS_TOKEN, result.data.accessToken);
         localStorage.setItem(USER, JSON.stringify(result.data.user));
         setToken(result.data.accessToken);
         setUser(result.data.user);
@@ -122,7 +122,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         "api/auth/change-password"
       );
       if(!response){
-        return;
+        throw new Error();
       }
       setToken(response?.data.accessToken);
       setUser(response?.data.user);
@@ -137,7 +137,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const handleLogoutApi = async () => {
     try {
-      await restApiBase({}, "api/auth/logout");
+      const result = await restApiBase({}, "api/auth/logout");
+      if(!result) {
+        throw new Error();
+      }
       localStorage.removeItem(ACCESS_TOKEN);
       localStorage.removeItem(USER);
       setUser(null);
