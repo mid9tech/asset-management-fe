@@ -25,6 +25,9 @@ const config: Config = {
         'header-modal': '#EFF1F5',
         'border-gray': 'rgba(222, 226, 230, 1);'
       },
+      spacing: {
+        '26': '6.7rem',
+      }
     },
   },
   plugins: [],

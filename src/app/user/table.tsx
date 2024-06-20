@@ -5,6 +5,8 @@ import DetailModal from '@components/modal';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import SearchIcon from '@mui/icons-material/Search';
 import ReusableTable from '@components/table';
+import { useRouter } from 'next/navigation'
+
 
 type User = {
     staffCode: string;
@@ -36,6 +38,7 @@ const UserManagement: React.FC = () => {
     const [showModalRemoveUser, setShowModalRemoveUser] = useState(false);
     const [showModalDetailUser, setShowModalDetailUser] = useState(false);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
+    const router = useRouter()
 
     const filteredUsers = filterType ? users.filter(user => user.type === filterType) : users;
 
@@ -62,6 +65,10 @@ const UserManagement: React.FC = () => {
         setShowModalDetailUser(false);
     };
 
+    const handleNavigateCreateUser = () => {
+        router.push('user/create')
+    }
+
     return (
         <>
             <div className="container mx-auto p-4">
@@ -87,7 +94,7 @@ const UserManagement: React.FC = () => {
                             <div className="border-l h-9 mx-2"></div>
                             <SearchIcon />
                         </div>
-                        <button className="bg-red-600 text-white rounded px-4 py-2 cursor-pointer">Create new user</button>
+                        <button className="bg-red-600 text-white rounded px-4 py-2 cursor-pointer" onClick={handleNavigateCreateUser}>Create new user</button>
                     </div>
                 </div>
                 <ReusableTable
