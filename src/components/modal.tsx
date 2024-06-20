@@ -13,7 +13,7 @@ const DetailModal: React.FC<DetailModalProps> = ({ isOpen, onClose, title, child
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50" onClick={onClose}>
+    <div id="static-modal" data-modal-backdrop="static" className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white rounded-lg shadow-lg w-4/12" onClick={(e) => e.stopPropagation()}>
         <div className="bg-header-modal px-4 pb-4 pt-5 sm:p-6 sm:pb-4 rounded-t-md">
           <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left flex justify-between items-center mb-4">

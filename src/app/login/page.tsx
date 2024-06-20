@@ -7,10 +7,17 @@ import Image from "next/image";
 
 import { useLoading } from "@providers/loading";
 import { useAuth } from "@providers/auth";
+import { useRouter } from "next/navigation";
+import axios from "axios";
+import { ACCESS_TOKEN, USER } from "../../constants";
+
+export const dynamic = 'force-dynamic';
 
 export default function Index() {
+  const router = useRouter();
   const { setLoading }: any = useLoading();
   const { handleLoginApi }: any = useAuth();
+
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -18,11 +25,40 @@ export default function Index() {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async () => {
+    // try {
+    //   setLoading(true);
+    //   const result = await handleLoginApi(username, password);
+    //   console.log('result: ', result);
+    //   setLoading(false);
+    //   if (!result) {
+    //     setErrorMsg("Username or password is incorrect. Please try again");
+    //     return;
+    //   }
+    //   router.push("/home");
+    // } catch (error) {
+    //   setErrorMsg("Username or password is incorrect. Please try again");
+    //   setLoading(false);
+    // }
+
     try {
       setLoading(true);
-      await handleLoginApi(username, password);
-    } catch (error) {
+      const response = await axios({
+        url: "http://localhost:8080/api/auth/login",
+        method: "post",
+        data: { username, password },
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+      const { accessToken, user } = response.data;
+      localStorage.setItem(ACCESS_TOKEN, accessToken);
+      localStorage.setItem(USER, JSON.stringify(user));
+      router.push("/home");
+    } catch (error: any) {
+      console.log(error);
       setErrorMsg("Username or password is incorrect. Please try again");
+    } finally {
       setLoading(false);
     }
   };
@@ -56,8 +92,8 @@ export default function Index() {
               }}>
               <div className="md:flex md:items-center mb-6">
                 <div className="md:w-1/3">
-                  <label className="block text-gray-700 font-bold mb-1 md:mb-0 pr-4">
-                    Username
+                  <label className="block text-gray-700 mb-1 md:mb-0 pr-4">
+                    Username <span className="text-red-500">*</span>
                   </label>
                 </div>
                 <div className="md:w-2/3">
@@ -75,8 +111,8 @@ export default function Index() {
               </div>
               <div className="md:flex md:items-center mb-3 relative">
                 <div className="md:w-1/3">
-                  <label className="block text-gray-700 font-bold mb-1 md:mb-0 pr-4">
-                    Password
+                  <label className="block text-gray-700 mb-1 md:mb-0 pr-4">
+                    Password <span className="text-red-500">*</span>
                   </label>
                 </div>
                 <div className="md:w-2/3 relative">
