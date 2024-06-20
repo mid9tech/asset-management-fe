@@ -25,40 +25,17 @@ export default function Index() {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async () => {
-    // try {
-    //   setLoading(true);
-    //   const result = await handleLoginApi(username, password);
-    //   console.log('result: ', result);
-    //   setLoading(false);
-    //   if (!result) {
-    //     setErrorMsg("Username or password is incorrect. Please try again");
-    //     return;
-    //   }
-    //   router.push("/home");
-    // } catch (error) {
-    //   setErrorMsg("Username or password is incorrect. Please try again");
-    //   setLoading(false);
-    // }
-
     try {
       setLoading(true);
-      const response = await axios({
-        url: "http://localhost:8080/api/auth/login",
-        method: "post",
-        data: { username, password },
-        withCredentials: true,
-        headers: {
-          "Content-Type": "application/json"
-        }
-      });
-      const { accessToken, user } = response.data;
-      localStorage.setItem(ACCESS_TOKEN, accessToken);
-      localStorage.setItem(USER, JSON.stringify(user));
+      const result = await handleLoginApi(username, password);
+      setLoading(false);
+      if (!result) {
+        setErrorMsg("Username or password is incorrect. Please try again");
+        return;
+      }
       router.push("/home");
-    } catch (error: any) {
-      console.log(error);
+    } catch (error) {
       setErrorMsg("Username or password is incorrect. Please try again");
-    } finally {
       setLoading(false);
     }
   };
