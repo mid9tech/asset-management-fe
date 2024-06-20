@@ -2,3 +2,59 @@
 @tailwind components;
 @tailwind utilities;
 
+.dropdown  {
+    height: 30px;
+    overflow: hidden;
+    transition: all .2s;
+    
+}
+.dropdown.active  {
+    height: 150px;
+    transition: all .2s;
+    overflow: scroll;
+}
+.dropdown-label {
+    left: 0;
+    position: sticky;
+    right: 0;
+    z-index: 9;
+    top: 0;
+    background: white;
+}
+.dropdown-item {
+    transition: all .1s
+
+}
+.dropdown-item:hover {
+    color: white;
+    background: #cf2338;
+    transition: all .1s
+}
+.loader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5); /* semi-transparent background */
+    z-index: 9999; /* Ensure it overlays on top of everything else */
+  }
+/* HTML: <div class="loader"></div> */
+.loader {
+    width: 50px;
+    --b: 8px; 
+    aspect-ratio: 1;
+    border-radius: 50%;
+    padding: 1px;
+    background: conic-gradient(#0000 10%,#f03355) content-box;
+    -webkit-mask:
+      repeating-conic-gradient(#0000 0deg,#000 1deg 20deg,#0000 21deg 36deg),
+      radial-gradient(farthest-side,#0000 calc(100% - var(--b) - 1px),#000 calc(100% - var(--b)));
+    -webkit-mask-composite: destination-in;
+            mask-composite: intersect;
+    animation:l4 1s infinite steps(10);
+  }
+  @keyframes l4 {to{transform: rotate(1turn)}}
