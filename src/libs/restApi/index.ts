@@ -1,3 +1,4 @@
+"use client";
 import axios, { AxiosRequestConfig } from "axios";
 import { ACCESS_TOKEN } from "../../constants";
 
@@ -10,15 +11,15 @@ export const restApiBase = async (
   const token = localStorage.getItem(ACCESS_TOKEN);
   const headers = {
     "Content-Type": "application/json",
-    // authorization: token ? `Bearer ${token}` : "",
+    authorization: token ? `Bearer ${token}` : "",
+    withCredentials: true,
   };
 
   const config: AxiosRequestConfig = {
     url: `${baseUrl}${endPoint}`,
-    method: method ? method : "post",
+    method: method ? method : 'POST',
     data: data,
-    withCredentials: true,
-
+    
     headers: headers,
   };
 
@@ -37,6 +38,7 @@ export const restApiBase = async (
           "Content-Type": "application/json",
         },
         method: "POST",
+        withCredentials: true,
       })
         .then(async (rs) => {
           const data = rs.data.accessToken;

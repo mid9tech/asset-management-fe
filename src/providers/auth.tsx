@@ -8,15 +8,14 @@ import React, {
   Dispatch,
   SetStateAction,
 } from "react";
-import { useLoading } from "./loading";
-import LoginPage from "../app/login/page";
-import { ACCESS_TOKEN, USER } from "../constants";
 import { restApiBase } from "@libs/restApi";
 import DetailModal from "@components/modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-import { url } from "inspector";
-import axios from "axios";
+
+import { useLoading } from "./loading";
+import LoginPage from "../app/login/page";
+import { ACCESS_TOKEN, USER } from "../constants";
 
 type menuItem = {
   name: string;
@@ -31,8 +30,7 @@ export const AuthContext = createContext<{
   menuItems: menuItem[];
   logout: () => void;
   handleLoginApi: (username: string, password: string) => void;
-  // account: Account | null;
-  // setAccount: Dispatch<SetStateAction<Account | null>>;
+  user: User | null;
 } | null>(null);
 
 const menuItems = [
@@ -63,23 +61,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { setLoading }: any = useLoading();
 
   useEffect(() => {
-    const token = localStorage.getItem(ACCESS_TOKEN);
-    // if (typeof window !== "undefined") {
-    //   const storedUser = JSON.parse(localStorage.getItem(USER) as string);
-    //   setUser(storedUser);
-    // }
-
-    if (token !== null) {
-      setToken(token);
-      if (!user?.isActived) {
-        setIsOpenModal(true);
-      }
+    const storedToken = localStorage.getItem(ACCESS_TOKEN);
+    const storedUser = localStorage.getItem(USER);
+    if (storedToken && storedUser) {
+      setToken(storedToken);
+      setUser(JSON.parse(storedUser));
+      setLoading(false);
     } else {
       router.push("/login");
     }
-
-    setLoading(false);
   }, []);
+
+  useEffect(() => {
+    if (user && !user.isActived) {
+      setIsOpenModal(true);
+    }
+  }, [user]);
 
   const currentItem =
     menuItems.find((item) => item.path === pathname) ?? menuItems[0];
@@ -88,8 +85,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const logout = async () => {
     setLoading(true);
     await handleLogoutApi();
-    setToken(""); // Clear the token state
-    router.push("/login"); // Redirect to login page
+    setToken("");
+    router.push("/login");
   };
   const handleLoginApi = async (username: string, password: string) => {
     try {
@@ -97,37 +94,41 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         { username, password },
         "api/auth/login"
       );
-      // const result = await axios({
-      //   method: 'POST',
-      //   url: 'http://localhost:8080/api/auth/login',
-      //   data: {
-      //     username: username, 
-      //     password: password
-      //   },
-      //   withCredentials: true
-      // })
-      localStorage.setItem(ACCESS_TOKEN, result?.data.accessToken);
-      localStorage.setItem(USER, JSON.stringify(result?.data.user));
-      setLoading(false);
-      router.push("/home");
-    } catch (error) {
+      if (result) {
+        localStorage.setItem(ACCESS_TOKEN, result.data.accessToken);
+        localStorage.setItem(USER, JSON.stringify(result.data.user));
+        setToken(result.data.accessToken);
+        setUser(result.data.user);
+        return result;
+      }
+    } catch (error: any) {
       console.log(error);
-      throw error;
+      throw new Error(error);
     }
   };
-  const handleSubmit = () => {
-    handleChangePasswordFirstLoginApi(password);
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    await handleChangePasswordFirstLoginApi(password);
+    setIsOpenModal(false);
+    await handleLogoutApi();
+    router.push("/login");
   };
+
   const handleChangePasswordFirstLoginApi = async (password: string) => {
     try {
-      // if (!password) {
-      //   return;
-      // }
-      // localStorage.setItem(USER, JSON.stringify({ ...user, isActived: true }));
-      // setUser({ isActived: true });
-      const response = await restApiBase({ newPassword: password }, 'api/auth/change-password');
-      console.log("password changed: ", response);
-      router.push("/home");
+      const response = await restApiBase(
+        { newPassword: password },
+        "api/auth/change-password"
+      );
+      if(!response){
+        throw new Error();
+      }
+      setToken(response?.data.accessToken);
+      setUser(response?.data.user);
+      localStorage.setItem(ACCESS_TOKEN, response?.data.accessToken);
+      localStorage.setItem(USER, JSON.stringify(response?.data.user));
+      setLoading(false);
     } catch (error) {
       console.log(error);
       throw error;
@@ -136,9 +137,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const handleLogoutApi = async () => {
     try {
-      await restApiBase({}, "api/auth/logout");
+      const result = await restApiBase({}, "api/auth/logout");
+      if(!result) {
+        throw new Error();
+      }
       localStorage.removeItem(ACCESS_TOKEN);
       localStorage.removeItem(USER);
+      setUser(null);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -158,6 +163,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           setToken,
           logout,
           handleLoginApi,
+          user,
         }}>
         <LoginPage />
       </AuthContext.Provider>
@@ -173,6 +179,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setToken,
         logout,
         handleLoginApi,
+        user,
       }}>
       {children}
       <DetailModal
@@ -221,10 +228,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
             <div className="flex flex-row-reverse mt-2">
               <button
-                className={`bg-nashtech text-white py-1 px-3 rounded ${!password
+                className={`bg-nashtech text-white py-1 px-3 rounded ${
+                  !password
                     ? "opacity-50 cursor-not-allowed"
                     : "hover:opacity-75"
-                  }`}
+                }`}
                 disabled={!password}
                 type="submit">
                 Save
