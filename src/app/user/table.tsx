@@ -5,11 +5,11 @@ import DetailModal from '@components/modal';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import SearchIcon from '@mui/icons-material/Search';
 import ReusableTable from '@components/table';
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation';
 import { disableUser } from '@services/user';
 
-
 type User = {
+    id: number;
     staffCode: string;
     fullName: string;
     username: string;
@@ -25,9 +25,9 @@ interface FormData {
 }
 
 const users: User[] = [
-    { staffCode: 'SD1901', fullName: 'An Nguyen Thuy', username: 'annt', joinedDate: '20/06/2019', type: 'Staff', dateOfBirth: '10/11/1996', gender: 'Female', location: 'HCM' },
-    { staffCode: 'SD1234', fullName: 'An Tran Van', username: 'antv', joinedDate: '09/04/2019', type: 'Staff', dateOfBirth: '10/11/1996', gender: 'Male', location: 'HCM' },
-    { staffCode: 'SD0971', fullName: 'Binh Nguyen Van', username: 'binhnv', joinedDate: '08/03/2018', type: 'Admin', dateOfBirth: '05/08/1995', gender: 'Male', location: 'HN' },
+    { id: 1, staffCode: 'SD1901', fullName: 'An Nguyen Thuy', username: 'annt', joinedDate: '20/06/2019', type: 'Staff', dateOfBirth: '10/11/1996', gender: 'Female', location: 'HCM' },
+    { id: 2, staffCode: 'SD1234', fullName: 'An Tran Van', username: 'antv', joinedDate: '09/04/2019', type: 'Staff', dateOfBirth: '10/11/1996', gender: 'Male', location: 'HCM' },
+    { id: 3, staffCode: 'SD0971', fullName: 'Binh Nguyen Van', username: 'binhnv', joinedDate: '08/03/2018', type: 'Admin', dateOfBirth: '05/08/1995', gender: 'Male', location: 'HN' },
 ];
 
 const userColumns = [
@@ -43,7 +43,7 @@ const UserManagement: React.FC = () => {
     const [showModalRemoveUser, setShowModalRemoveUser] = useState(false);
     const [showModalDetailUser, setShowModalDetailUser] = useState(false);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
-    const router = useRouter()
+    const router = useRouter();
 
     const filteredUsers = filterType ? users.filter(user => user.type === filterType) : users;
 
@@ -56,9 +56,10 @@ const UserManagement: React.FC = () => {
         setShowModalRemoveUser(false);
     };
 
-    const handleConfirmDelete = () => {
-        setShowModalRemoveUser(false);
-        // Add your delete logic here
+    const handleConfirmDelete = async () => {
+        if (selectedUser) {
+            await onSubmit({ id: selectedUser.id });
+        }
     };
 
     const handleRowClick = (user: User) => {
@@ -71,29 +72,25 @@ const UserManagement: React.FC = () => {
     };
 
     const handleNavigateCreateUser = () => {
-        router.push('user/create')
-    }
+        router.push('user/create');
+    };
 
     const onSubmit = async (data: FormData) => {
         try {
-    
-            const response = await disableUser(
-                data.id
-            );
+            const response = await disableUser(data.id);
             console.log("Response disable: ", response);
-    
+
             if (response.errors) {
                 response.errors.forEach((error: any) => {
                     console.error(`GraphQL error message: ${error.message}`);
                 });
             } else {
-                // toast.success("Disable User Successfully")
-                // router.push('/user')
                 console.log('User disabled successfully:', response);
+                setShowModalRemoveUser(false);
+                // Optionally, refresh the user list or navigate
             }
         } catch (error) {
-            // toast.error("Something went wrong! Please try again")
-            console.error('Error creating user:', error);
+            console.error('Error disabling user:', error);
         }
     };
 
@@ -126,10 +123,10 @@ const UserManagement: React.FC = () => {
                     </div>
                 </div>
                 <ReusableTable
-                    columns={userColumns} 
-                    data={filteredUsers} 
-                    onRowClick={handleRowClick} 
-                    onDeleteClick={handleDeleteClick} 
+                    columns={userColumns}
+                    data={filteredUsers}
+                    onRowClick={handleRowClick}
+                    onDeleteClick={handleDeleteClick}
                 />
                 <nav aria-label="Page navigation example" className="mt-4">
                     <ul className="flex -space-x-px text-sm justify-end">
@@ -153,35 +150,35 @@ const UserManagement: React.FC = () => {
             </div>
             <DetailModal
                 isOpen={showModalRemoveUser}
-                onClose={handleConfirmDelete}
+                onClose={handleCloseModal}
                 title='Are you sure'
             >
                 <div className="bg-white sm:p-6 sm:pb-4 !pt-0">
-              <div className="sm:flex sm:items-start">
-                <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                  <p className="text-md text-gray-500">Do you want to disable this user?</p>
+                    <div className="sm:flex sm:items-start">
+                        <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                            <p className="text-md text-gray-500">Do you want to disable this user?</p>
+                        </div>
+                    </div>
                 </div>
-              </div>
-            </div>
-            <div className="bg-gray-50 sm:flex sm:flex-row-reverse gap-4">
-              <button
-                type="button"
-                className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-                onClick={()=> setShowModalRemoveUser(false)}
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
-                onClick={()=> setShowModalRemoveUser(false)}
-              >
-                Disable
-              </button>
-            </div>
+                <div className="bg-gray-50 sm:flex sm:flex-row-reverse gap-4">
+                    <button
+                        type="button"
+                        className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+                        onClick={() => setShowModalRemoveUser(false)}
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        type="button"
+                        className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
+                        onClick={handleConfirmDelete}
+                    >
+                        Disable
+                    </button>
+                </div>
             </DetailModal>
             {selectedUser && (
-                <DetailModal 
+                <DetailModal
                     isOpen={showModalDetailUser}
                     onClose={handleCloseDetailModal}
                     title="Detailed User Information"

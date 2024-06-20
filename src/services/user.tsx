@@ -14,7 +14,7 @@ const CREATE_USER_MUTATION = `
 `;
 
 const DISABLE_USER_MUTATION = `
-  mutation DisableUser($id: Int!) {
+  mutation DisableUser($id: Number!) {
     disableUser(id: $id)
   }
 `;
