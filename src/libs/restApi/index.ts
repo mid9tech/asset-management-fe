@@ -27,7 +27,6 @@ export const restApiBase = async (
     const response = await axios(config);
     return response;
   } catch (error: any) {
-    console.log("error", error);
     if (
       error.response.data.message === "Unauthorized" &&
       error.response.data.statusCode === 401

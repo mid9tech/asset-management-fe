@@ -11,7 +11,6 @@ import { Fragment, useEffect, useState } from "react";
 import { useAuth } from "@providers/auth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DetailModal from "@components/modal";
-import { useRouter } from "next/navigation";
 import { useLoading } from "@providers/loading";
 import { restApiBase } from "@libs/restApi";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
@@ -21,7 +20,6 @@ import { USER } from "../../constants";
 const Navbar = () => {
   const { activeItem, logout, user } = useAuth();
   const { setLoading }: any = useLoading();
-  const router = useRouter();
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
