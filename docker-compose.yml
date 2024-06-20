@@ -9,3 +9,15 @@ services:
     volumes:
       - .:/app
     entrypoint: ["gitleaks", "detect", "-c", "/app/gitleaks/.gitleaks.toml"]
+  asset-assignment-fe:
+    container_name: asset_assignment_fe
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:3000"
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - .:/app
+    command: ["npm", "start"]
