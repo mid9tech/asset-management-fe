@@ -26,7 +26,8 @@ import { differenceInYears, isAfter, isWeekend } from "date-fns";
 import { useState } from "react";
 import { useRouter } from 'next/navigation'
 import DetailModal from "@components/modal";
-import createUser from "@services/user";
+import { createUser } from '@services/user';
+
 
 enum Gender {
     Male = "MALE",
@@ -163,7 +164,7 @@ const CreateUser = () => {
     
     return (
         <>
-            <div className="p-10 w-1/2">
+            <div className="-mt-8 ml-14 w-1/2">
                 <h1 className="text-nashtech font-semibold mb-5">Create New User</h1>
                 <Form {...form}>
                     <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
