@@ -163,7 +163,7 @@ const CreateUser = () => {
     
     return (
         <>
-            <div className="p-10 w-1/3">
+            <div className="p-10 w-1/2">
                 <h1 className="text-nashtech font-semibold mb-5">Create New User</h1>
                 <Form {...form}>
                     <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>

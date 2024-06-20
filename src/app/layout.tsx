@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@styles/globals.css";
-import AppHeader from "@components/header";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { AuthProvider } from "@providers/auth";
+import Navbar from "@components/navbar";
+import Sidebar from "@components/sidebar";
+import { LoadingProvider } from "@providers/loading";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -17,22 +19,24 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <AppHeader />
-        {children}
-        <ToastContainer
-          position="top-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-
-        />
+      <body>
+        <LoadingProvider>
+          <AuthProvider>
+            <Navbar />
+            <div className="grid grid-cols-10 gap-4">
+              <div className="col-start-2 col-span-8">
+                <div className="grid sm:grid-cols-1 md:grid-cols-5 lg:grid-cols-5 gap-10">
+                  <div>
+                    <Sidebar />
+                  </div>
+                  <div className="col-span-4 p-5">
+                    <div className="mt-20">{children}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </AuthProvider>
+        </LoadingProvider>
       </body>
     </html>
   );

@@ -12,3 +12,4 @@ describe("Home Component", () => {
     expect(paragraphElement).toBeInTheDocument();
   });
 });
+

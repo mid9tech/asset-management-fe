@@ -9,6 +9,7 @@ import {
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { onError } from "@apollo/client/link/error";
+import { ACCESS_TOKEN } from "../../constants";
 const httpLink = new HttpLink({
   uri: process.env.NEXT_PUBLIC_URL_SERVER,
   fetchOptions: { cache: "no-store" },
@@ -23,7 +24,7 @@ const defaultOptions: DefaultOptions = {
   },
 };
 const authLink = setContext((_, { headers }) => {
-  const token = localStorage.getItem("accessToken");
+  const token = localStorage.getItem(ACCESS_TOKEN);
   return {
     headers: {
       ...headers,
