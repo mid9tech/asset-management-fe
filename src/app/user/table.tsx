@@ -7,6 +7,9 @@ import SearchIcon from '@mui/icons-material/Search';
 import ReusableTable from '@components/table';
 import { useRouter } from 'next/navigation';
 import { disableUser } from '@services/user';
+import { convertEnumToMap } from '@utils/enumToMap';
+import { USER_TYPE } from '../../types/enum.type';
+import Filter from '@components/filter';
 
 type User = {
     id: number;
@@ -101,16 +104,7 @@ const UserManagement: React.FC = () => {
                 <div className="flex justify-between items-center mb-4">
                     <div className="flex items-center space-x-2">
                         <div className="relative">
-                            <select
-                                onChange={(e) => setFilterType(e.target.value)}
-                                className="border rounded p-2 pr-8 w-32 cursor-pointer"
-                                style={{ appearance: 'none' }}
-                            >
-                                <option value="">Type</option>
-                                <option value="Staff">Staff</option>
-                                <option value="Admin">Admin</option>
-                            </select>
-                            <FilterAltIcon className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none" />
+                           <Filter label="Type" data={convertEnumToMap(USER_TYPE)}/>
                         </div>
                     </div>
                     <div className='flex gap-10'>
