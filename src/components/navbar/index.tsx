@@ -23,7 +23,8 @@ const Navbar = () => {
   const { setLoading }: any = useLoading();
   const router = useRouter();
   const [isOpenModal, setIsOpenModal] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
   const [oldPassword, setOldPassword] = useState<string>();
   const [newPassword, setNewPassword] = useState<string>();
   const [errorMsg, setErrorMsg] = useState("");
@@ -43,8 +44,11 @@ const Navbar = () => {
   const handleOpenDetailModal = () => {
     setIsOpenModal(true);
   };
-  const toggleShowPassword = () => {
-    setShowPassword(!showPassword);
+  const toggleShowOldPassword = () => {
+    setShowOldPassword(!showOldPassword);
+  };
+  const toggleShowNewPassword = () => {
+    setShowNewPassword(!showNewPassword);
   };
   const handleChangePassword = async (oldPass: string, newPass: string) => {
     try {
@@ -96,15 +100,15 @@ const Navbar = () => {
                   leaveTo="transform opacity-0 scale-95">
                   <MenuItems className="absolute right-0 mt-2 w-40 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                     <div className="p-3 flex justify-center flex-col">
-                      <div className="hover:bg-nashtech hover:text-white text-black text-sm rounded px-2 mb-2">
-                        <a href="#" onClick={handleOpenDetailModal}>
-                          Change Password
-                        </a>
+                      <div
+                        className="hover:bg-nashtech hover:text-white text-black text-sm rounded px-2 cursor-pointer mb-2"
+                        onClick={handleOpenDetailModal}>
+                        Change Password
                       </div>
-                      <div className="hover:bg-nashtech hover:text-white text-black text-sm rounded px-2">
-                        <a href="#" onClick={logout}>
-                          Logout
-                        </a>
+                      <div
+                        className="hover:bg-nashtech hover:text-white text-black text-sm rounded cursor-pointer px-2"
+                        onClick={logout}>
+                        Logout
                       </div>
                     </div>
                   </MenuItems>
@@ -136,7 +140,7 @@ const Navbar = () => {
                   className="border border-black rounded w-full py-1 px-4"
                   id="inline-password"
                   name="oldPassword"
-                  type={showPassword ? "text" : "password"}
+                  type={showOldPassword ? "text" : "password"}
                   value={oldPassword}
                   onChange={(e) => {
                     setOldPassword(e.target.value), setErrorMsg("");
@@ -144,9 +148,11 @@ const Navbar = () => {
                 />
                 <button
                   type="button"
-                  onClick={toggleShowPassword}
+                  onClick={toggleShowOldPassword}
                   className="absolute right-0 top-0 mt-1 mr-2 text-gray-600 focus:outline-none">
-                  <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} />
+                  <FontAwesomeIcon
+                    icon={showOldPassword ? faEye : faEyeSlash}
+                  />
                 </button>
               </div>
             </div>
@@ -161,7 +167,7 @@ const Navbar = () => {
                   className="border border-black rounded w-full py-1 px-4"
                   id="inline-password"
                   name="newPassword"
-                  type={showPassword ? "text" : "password"}
+                  type={showNewPassword ? "text" : "password"}
                   value={newPassword}
                   onChange={(e) => {
                     setNewPassword(e.target.value), setErrorMsg("");
@@ -169,9 +175,11 @@ const Navbar = () => {
                 />
                 <button
                   type="button"
-                  onClick={toggleShowPassword}
+                  onClick={toggleShowNewPassword}
                   className="absolute right-0 top-0 mt-1 mr-2 text-gray-600 focus:outline-none">
-                  <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} />
+                  <FontAwesomeIcon
+                    icon={showNewPassword ? faEye : faEyeSlash}
+                  />
                 </button>
               </div>
             </div>
