@@ -80,6 +80,10 @@ const UserManagement: React.FC = () => {
     setLoading(false);
   };
 
+  const handleNavigateEditUser = () => {
+    router.push("user/edit");
+  };
+
   const handleSortClick = (item: string) => {
     setSortOder((prevSortOrder) =>
       prevSortOrder === SORT_ORDER.ASC ? SORT_ORDER.DESC : SORT_ORDER.ASC
@@ -171,6 +175,7 @@ const UserManagement: React.FC = () => {
           onRowClick={handleRowClick}
           onDeleteClick={handleDeleteClick}
           onSortClick={handleSortClick}
+          onEditClick={(e) => handleNavigateEditUser()}
         />
         <nav aria-label="Page navigation example" className="mt-4">
           <ul className="flex -space-x-px text-sm justify-end">
@@ -185,7 +190,7 @@ const UserManagement: React.FC = () => {
               <a
                 href="#"
                 aria-current="page"
-                className="flex items-center justify-center px-3 h-8 leading-tight text-nashtech border-gray border hover:bg-gray-100 hover:text-gray-700 py-4">
+                className="bg-red-600 flex items-center justify-center px-3 h-8 leading-tight text-white border-gray border hover:bg-gray-100 hover:text-gray-700 py-4">
                 1
               </a>
             </li>
@@ -199,7 +204,7 @@ const UserManagement: React.FC = () => {
             <li>
               <a
                 href="#"
-                className="bg-red-600 flex items-center justify-center px-3 h-8 text-white border-gray border hover:bg-red-700 py-4">
+                className="flex items-center justify-center px-3 h-8 text-nashtech border-gray border hover:bg-red-700 py-4">
                 3
               </a>
             </li>
@@ -263,7 +268,9 @@ const UserManagement: React.FC = () => {
             </div>
             <div className="flex mb-2">
               <span className="text-sm w-40">Date of Birth:</span>{" "}
-              <span className="text-sm">{formatDate(new Date(selectedUser.dateOfBirth))}</span>
+              <span className="text-sm">
+                {formatDate(new Date(selectedUser.dateOfBirth))}
+              </span>
             </div>
             <div className="flex mb-2">
               <span className="text-sm w-40">Gender:</span>{" "}
@@ -271,7 +278,9 @@ const UserManagement: React.FC = () => {
             </div>
             <div className="flex mb-2">
               <span className="text-sm w-40">Joined Date:</span>{" "}
-              <span className="text-sm">{formatDate(new Date (selectedUser.joinedDate))}</span>
+              <span className="text-sm">
+                {formatDate(new Date(selectedUser.joinedDate))}
+              </span>
             </div>
             <div className="flex mb-2">
               <span className="text-sm w-40">Type:</span>{" "}
