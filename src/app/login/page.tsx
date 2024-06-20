@@ -8,8 +8,6 @@ import Image from "next/image";
 import { useLoading } from "@providers/loading";
 import { useAuth } from "@providers/auth";
 import { useRouter } from "next/navigation";
-import axios from "axios";
-import { ACCESS_TOKEN, USER } from "../../constants";
 
 export const dynamic = 'force-dynamic';
 
