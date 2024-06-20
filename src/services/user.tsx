@@ -15,6 +15,20 @@ export const CREATE_USER_MUTATION = gql`
   }
 `;
 
+const EDIT_USER_MUTATION = `
+  mutation UpdateUser($updateUserInput: UpdateUserInput!, $id: Number) {
+    updateUser(updateUserInput: $updateUserInput) {
+      id
+      firstName
+      lastName
+      gender
+      joinedDate
+      dateOfBirth
+      type
+    }
+  }
+`;
+
 const DISABLE_USER_MUTATION = `
   mutation DisableUser($id: Number!) {
     disableUser(id: $id)
@@ -110,16 +124,41 @@ export const createUser = async (
     console.error("Error creating user:", error);
     throw error;
   }
-  // try {
-  //   const response = await axios.post(process.env.NEXT_PUBLIC_URL_SERVER as string, userData, config);
-  //   return response.data;
-  // } catch (error) {
-  //   console.error("Error creating user:", error);
-  //   throw error;
-  // }
 };
 
-export const disableUser = async (id: string): Promise<any> => {
+// export const editUser = async (id: number): Promise<any> => {
+//   const userData = {
+//     query: EDIT_USER_MUTATION,
+//     variables: {
+//       createUserInput: {
+//         id
+//         firstName,
+//         lastName,
+//         gender,
+//         joinedDate,
+//         dateOfBirth,
+//         type
+//       }
+//     }
+//   };
+
+//   const config = {
+//     headers: {
+//       'Content-Type': 'application/json',
+//       'Authorization': `Bearer ${process.env.REACT_APP_API_TOKEN}`, 
+//     }
+//   };
+
+//   try {
+//     const response = await axios.post(process.env.NEXT_PUBLIC_URL_SERVER_GRAPHQL as string, userData, config);
+//     return response.data;
+//   } catch (error) {
+//     console.error("Error creating user:", error);
+//     throw error;
+//   }
+// };
+
+export const disableUser = async (id: number): Promise<any> => {
   const userData = {
     query: DISABLE_USER_MUTATION,
     variables: {

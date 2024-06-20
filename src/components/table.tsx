@@ -21,10 +21,11 @@ interface ReusableTableProps<T> {
     data: T[];
     onRowClick: (item: T) => void;
     onDeleteClick: (item: T) => void;
+    onEditClick: (item:  T) => void;
     onSortClick: (item: string) => void;
 }
 
-const ReusableTable = <T extends {}>({ columns, data, onRowClick, onDeleteClick, onSortClick }: ReusableTableProps<T>) => {
+const ReusableTable = <T extends {}>({ columns, data, onRowClick, onDeleteClick,onEditClick, onSortClick }: ReusableTableProps<T>) => {
     return (
         <Table>
             <TableHeader>
@@ -46,8 +47,8 @@ const ReusableTable = <T extends {}>({ columns, data, onRowClick, onDeleteClick,
                             </TableCell>
                         ))}
                         <TableCell onClick={(e) => e.stopPropagation()}>
-                            <CreateIcon className="text-gray-500 cursor-pointer" />
-                            <HighlightOffIcon sx={{ color: '#cf2338' }} onClick={(e) => { e.stopPropagation(); onDeleteClick(row); }} className='cursor-pointer' />
+                            <CreateIcon className="text-gray-500 cursor-pointer" onClick={(e)=> {e.stopPropagation(); onEditClick(row)}}/>
+                            <HighlightOffIcon sx={{ color: '#cf2338' }} onClick={(e) => { e.stopPropagation(); onDeleteClick(row)}} className='cursor-pointer' />
                         </TableCell>
                     </TableRow>
                 ))}

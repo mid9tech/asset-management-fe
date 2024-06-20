@@ -5,6 +5,8 @@ import { AuthProvider } from "@providers/auth";
 import Navbar from "@components/navbar";
 import Sidebar from "@components/sidebar";
 import { LoadingProvider } from "@providers/loading";
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css'
 import ApolloCustomProvider from "@providers/apollo";
 
 const inter = Inter({ subsets: ["latin"] });
