@@ -1,14 +1,14 @@
 'use client'
 import { useState } from "react";
-import DetailModal from "./modal"
+import DetailModal from "./modal";
 import { Input } from "./ui/input";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { Button } from "./ui/button"
+import { Button } from "./ui/button";
 
 const AppHeader = () => {
     const [showModalChangePassword, setShowModalChangePassword] = useState(false);
-    const [showPassword, setShowPassword] = useState(false)
+    const [showPassword, setShowPassword] = useState(false);
     const handleCloseDetailModal = () => {
         setShowModalChangePassword(false);
     };
@@ -58,11 +58,11 @@ const AppHeader = () => {
                 title="Welcome to Online Asset Management"
             >
                 <div className="text-gray pb-10">
-                    <div className="flex mb-2 items-center"><span className="text-sm w-40">Username (*)</span> <Input type="email" placeholder="binhvn" disabled className="bg-transparent border-gray dark:border-gray-200 px-3 py-2 rounded-md"/></div>
+                    <div className="flex mb-2 items-center"><span className="text-sm w-40">Username (*)</span> <Input type="email" placeholder="binhvn" disabled className="input-class bg-transparent border-gray dark:border-gray-200 px-3 py-2 rounded-md w-full"/></div>
                     <div className="flex mb-2 items-center">
                         <span className="text-sm w-40">Password (*)</span>
-                        <div className="relative flex">
-                            <Input type={showPassword ? "text" : "password"} placeholder="Input here to change password" className="bg-transparent border-gray dark:border-gray-200 px-3 py-2 rounded-md w-[295px]"/>
+                        <div className="relative flex w-full">
+                            <Input type={showPassword ? "text" : "password"} placeholder="Input here to change password" className="input-class bg-transparent border-gray dark:border-gray-200 px-3 py-2 rounded-md w-full"/>
                             <span
                                 onClick={() => setShowPassword((prev) => !prev)}
                                 className="absolute top-1 right-3 "
@@ -79,7 +79,7 @@ const AppHeader = () => {
                 </div>
             </DetailModal>
         </>
-    )
+    );
 }
 
-export default AppHeader
+export default AppHeader;
