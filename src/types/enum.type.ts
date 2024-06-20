@@ -3,3 +3,8 @@ export enum USER_TYPE {
     ADMIN = 'ADMIN',
     STAFF = 'USER',
 }
+
+export enum SORT_ORDER {
+    ASC = 'asc',
+    DESC = 'desc',
+}

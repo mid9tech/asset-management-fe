@@ -21,15 +21,16 @@ interface ReusableTableProps<T> {
     data: T[];
     onRowClick: (item: T) => void;
     onDeleteClick: (item: T) => void;
+    onSortClick: (item: string) => void;
 }
 
-const ReusableTable = <T extends {}>({ columns, data, onRowClick, onDeleteClick }: ReusableTableProps<T>) => {
+const ReusableTable = <T extends {}>({ columns, data, onRowClick, onDeleteClick, onSortClick }: ReusableTableProps<T>) => {
     return (
         <Table>
             <TableHeader>
                 <TableRow>
                     {columns.map((column, index) => (
-                        <TableHead key={index} className="w-[150px]">
+                        <TableHead key={index} className="w-[150px] cursor-pointer" onClick={() => onSortClick(column.accessor as string)}>
                             {column.header} <ArrowDropDownIcon />
                         </TableHead>
                     ))}

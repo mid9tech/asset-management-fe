@@ -18,7 +18,7 @@ const Sidebar = () => {
           key={item.name}
           onClick={() => setActiveItem(item)}
           className={`p-3 cursor-pointer font-bold ${
-            activeItem.name === item.name
+            activeItem?.name === item.name
               ? "bg-nashtech text-white"
               : "bg-bluegray hover:opacity-75"
           }`}>

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -10,22 +11,10 @@ import Filter from "@components/filter";
 import { useLoading } from "@providers/loading";
 import Search from "@components/search";
 
-import { USER_TYPE } from "../../types/enum.type";
+import { SORT_ORDER, USER_TYPE } from "../../types/enum.type";
 import { loadData } from "./fechData";
 import { User } from "../../__generated__/graphql";
 import { formatDate } from "../../utils/timeFormat";
-
-// type User = {
-//   id: number;
-//   staffCode: string;
-//   fullName: string;
-//   username: string;
-//   joinedDate: string;
-//   type: string;
-//   dateOfBirth?: string;
-//   gender?: string;
-//   location?: string;
-// };
 
 interface FormData {
   id: string;
@@ -50,16 +39,19 @@ const UserManagement: React.FC = () => {
 
   let filterType = params.get("Type");
   let queryString = params.get("query");
+  const [sortOrder, setSortOder] = useState(SORT_ORDER.ASC);
+  const [sortBy, setSortBy] = useState("firstName");
 
   useEffect(() => {
     setLoading(true);
     loadUserList();
-  }, [queryString, filterType]);
+  }, [queryString, filterType, sortBy, sortOrder]);
 
   const loadUserList = async () => {
     let request: { [k: string]: any } = {};
-    console.log("filterType: ", filterType);
     request.page = 1;
+    request.sort = sortBy;
+    request.sortOrder = sortOrder;
     if (queryString) {
       request.query = queryString;
     }
@@ -70,7 +62,6 @@ const UserManagement: React.FC = () => {
         request.type = filterType;
       }
     }
-    console.log('request', request);
     const { data }: any = await loadData(request);
     const listUserCustome = data?.map(
       (item: {
@@ -87,6 +78,23 @@ const UserManagement: React.FC = () => {
     );
     setListUsers(listUserCustome);
     setLoading(false);
+  };
+
+  const handleSortClick = (item: string) => {
+    setSortOder((prevSortOrder) =>
+      prevSortOrder === SORT_ORDER.ASC ? SORT_ORDER.DESC : SORT_ORDER.ASC
+    );
+    switch (item) {
+      case "fullName":
+        setSortBy("lastName");
+        break;
+      case "joinedAt":
+        setSortBy("joinedDate");
+        break;
+      default:
+        setSortBy(item);
+        break;
+    }
   };
 
   const handleDeleteClick = (user: User) => {
@@ -114,7 +122,9 @@ const UserManagement: React.FC = () => {
   };
 
   const handleNavigateCreateUser = () => {
+    setLoading(true);
     router.push("user/create");
+    setLoading(false);
   };
 
   const onSubmit = async (data: FormData) => {
@@ -160,6 +170,7 @@ const UserManagement: React.FC = () => {
           data={listUser ?? []}
           onRowClick={handleRowClick}
           onDeleteClick={handleDeleteClick}
+          onSortClick={handleSortClick}
         />
         <nav aria-label="Page navigation example" className="mt-4">
           <ul className="flex -space-x-px text-sm justify-end">
@@ -173,6 +184,7 @@ const UserManagement: React.FC = () => {
             <li>
               <a
                 href="#"
+                aria-current="page"
                 className="flex items-center justify-center px-3 h-8 leading-tight text-nashtech border-gray border hover:bg-gray-100 hover:text-gray-700 py-4">
                 1
               </a>
@@ -187,7 +199,6 @@ const UserManagement: React.FC = () => {
             <li>
               <a
                 href="#"
-                aria-current="page"
                 className="bg-red-600 flex items-center justify-center px-3 h-8 text-white border-gray border hover:bg-red-700 py-4">
                 3
               </a>
@@ -252,7 +263,7 @@ const UserManagement: React.FC = () => {
             </div>
             <div className="flex mb-2">
               <span className="text-sm w-40">Date of Birth:</span>{" "}
-              <span className="text-sm">{selectedUser.dateOfBirth}</span>
+              <span className="text-sm">{formatDate(new Date(selectedUser.dateOfBirth))}</span>
             </div>
             <div className="flex mb-2">
               <span className="text-sm w-40">Gender:</span>{" "}
@@ -260,7 +271,7 @@ const UserManagement: React.FC = () => {
             </div>
             <div className="flex mb-2">
               <span className="text-sm w-40">Joined Date:</span>{" "}
-              <span className="text-sm">{selectedUser.joinedDate}</span>
+              <span className="text-sm">{formatDate(new Date (selectedUser.joinedDate))}</span>
             </div>
             <div className="flex mb-2">
               <span className="text-sm w-40">Type:</span>{" "}
