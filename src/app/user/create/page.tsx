@@ -163,15 +163,15 @@ const CreateUser = () => {
             });
             console.log("Response from FE: ", response);
 
-            // if (response.errors) {
-            //     response.errors.forEach((error: any) => {
-            //         console.error(`GraphQL error message: ${error.message}`);
-            //     });
-            // } else {
-            //     toast.success("Create User Successfully")
-            //     router.push('/user')
-            //     console.log('User created successfully:', response);
-            // }
+            if (response.errors) {
+                response.errors.forEach((error: any) => {
+                    console.error(`GraphQL error message: ${error.message}`);
+                });
+            } else {
+                toast.success("Create User Successfully")
+                router.push('/user')
+                console.log('User created successfully:', response);
+            }
         } catch (error) {
             toast.error("Something went wrong! Please try again")
             console.error('Error creating user:', error);
