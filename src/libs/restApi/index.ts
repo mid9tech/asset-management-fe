@@ -7,7 +7,7 @@ export const restApiBase = async (
   endPoint: string,
   method?: string
 ) => {
-  const baseUrl: string = process.env.NEXT_PUBLIC_URL_BASE_API_URL as string;
+  const baseUrl: string = process.env.NEXT_PUBLIC_URL_SERVER as string;
   const token = localStorage.getItem(ACCESS_TOKEN);
   const headers = {
     "Content-Type": "application/json",
