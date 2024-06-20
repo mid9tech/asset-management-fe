@@ -20,7 +20,6 @@ export const restApiBase = async (
     data: data,
     withCredentials: true,
     headers: headers,
-
   };
 
   try {

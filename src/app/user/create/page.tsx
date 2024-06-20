@@ -5,7 +5,7 @@ import { z, ZodSchema } from "zod";
 import { Button } from "@components/ui/button";
 import { Label } from "@components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@components/ui/radio-group";
-import {toast} from 'react-toastify'
+import { toast } from 'react-toastify'
 import {
     Select,
     SelectContent,
@@ -26,7 +26,8 @@ import { differenceInYears, isAfter, isWeekend } from "date-fns";
 import { useState } from "react";
 import { useRouter } from 'next/navigation'
 import DetailModal from "@components/modal";
-import { createUser } from '@services/user';
+import { CREATE_USER_MUTATION, createUser } from '@services/user';
+import { useMutation } from "@apollo/client";
 
 
 enum Gender {
@@ -107,6 +108,8 @@ interface FormData {
 }
 
 const CreateUser = () => {
+    const [createUserMutation] = useMutation(CREATE_USER_MUTATION);
+
     const [showModalCancel, setShowModalCancel] = useState(false);
     const router = useRouter()
 
@@ -136,17 +139,30 @@ const CreateUser = () => {
 
     const onSubmit = async (data: FormData) => {
         try {
-    
-            const response = await createUser(
-                data.firstName,
-                data.lastName,
-                data.gender,
-                data.joinedDate,
-                data.dateOfBirth,
-                data.type
-            );
+
+            // const response = await createUser(
+            //     data.firstName,
+            //     data.lastName,
+            //     data.gender,
+            //     data.joinedDate,
+            //     data.dateOfBirth,
+            //     data.type
+            // );
+            console.log(data)
+            const response = await createUserMutation({
+                variables: {
+                    createUserInput: {
+                        firstName: data.firstName,
+                        lastName: data.lastName,
+                        gender: data.gender,
+                        joinedDate: data.joinedDate,
+                        dateOfBirth: data.dateOfBirth,
+                        type: data.type,
+                    },
+                },
+            });
             console.log("Response from FE: ", response);
-    
+
             if (response.errors) {
                 response.errors.forEach((error: any) => {
                     console.error(`GraphQL error message: ${error.message}`);
@@ -161,7 +177,7 @@ const CreateUser = () => {
             console.error('Error creating user:', error);
         }
     };
-    
+
     return (
         <>
             <div className="-mt-8 ml-14 w-1/2">

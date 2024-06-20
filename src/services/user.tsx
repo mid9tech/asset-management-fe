@@ -1,7 +1,8 @@
-import axios from "axios";
-import { FindUsersInput } from "../__generated__/graphql";
+import gql from 'graphql-tag';
+import axios from 'axios';
+import { FindUsersInput } from '../__generated__/graphql';
 
-const CREATE_USER_MUTATION = `
+export const CREATE_USER_MUTATION = gql`
   mutation CreateUser($createUserInput: CreateUserInput!) {
     createUser(createUserInput: $createUserInput) {
       firstName
@@ -91,6 +92,12 @@ export const createUser = async (
       Authorization: `Bearer ${process.env.REACT_APP_API_TOKEN}`,
     },
   };
+  // const config = {
+  //   headers: {
+  //     'Content-Type': 'application/json',
+  //     'Authorization': `Bearer ${process.env.REACT_APP_API_TOKEN}`,
+  //   }
+  // };
 
   try {
     const response = await axios.post(
@@ -103,9 +110,16 @@ export const createUser = async (
     console.error("Error creating user:", error);
     throw error;
   }
+  // try {
+  //   const response = await axios.post(process.env.NEXT_PUBLIC_URL_SERVER as string, userData, config);
+  //   return response.data;
+  // } catch (error) {
+  //   console.error("Error creating user:", error);
+  //   throw error;
+  // }
 };
 
-export const disableUser = async (id: string): Promise<any> => {
+export const disableUser = async (id: number): Promise<any> => {
   const userData = {
     query: DISABLE_USER_MUTATION,
     variables: {
