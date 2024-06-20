@@ -6,7 +6,7 @@ import {
   MenuItems,
   Transition,
 } from "@headlessui/react";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useAuth } from "@providers/auth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DetailModal from "@components/modal";
@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import { useLoading } from "@providers/loading";
 import { restApiBase } from "@libs/restApi";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { USER } from "../../constants";
 
 // Define the User type based on your application's user structure
 const Navbar = () => {
@@ -25,6 +26,15 @@ const Navbar = () => {
   const [oldPassword, setOldPassword] = useState<string>();
   const [newPassword, setNewPassword] = useState<string>();
   const [errorMsg, setErrorMsg] = useState("");
+  const [userCurrent, setUserCurrent] = useState<User | null>(null);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem(USER);
+    if (storedUser) {
+      setUserCurrent(JSON.parse(storedUser));
+      setLoading(false);
+    }
+  }, []);
 
   const handleCloseDetailModal = () => {
     setIsOpenModal(false);
@@ -37,18 +47,29 @@ const Navbar = () => {
   };
   const handleChangePassword = async (oldPass: string, newPass: string) => {
     try {
-      const result = await restApiBase({oldPassword: oldPass, newPassword: newPass}, 'api/auth/change-password', 'PUT');  
+      const result = await restApiBase(
+        { oldPassword: oldPass, newPassword: newPass },
+        "api/auth/change-password",
+        "PUT"
+      );
+      setLoading(false);
+      return result;
     } catch (error) {
       console.error(error);
     }
-    
   };
   const handleSubmit = async () => {
     setLoading(true);
-    await handleChangePassword(oldPassword as string, newPassword as string);
+    const result = await handleChangePassword(
+      oldPassword as string,
+      newPassword as string
+    );
+    if (!result) {
+      setErrorMsg("Old password is incorrect!");
+      return;
+    }
     setIsOpenModal(false);
     logout();
-    router.push("/login");
   };
 
   return (
@@ -61,7 +82,7 @@ const Navbar = () => {
               <Menu as="div" className="relative inline-block text-left">
                 <div>
                   <MenuButton className="inline-flex justify-center w-full px-4 py-2 bg-nashtech text-sm font-medium text-white hover:bg-gray-700 focus:outline-none">
-                    {user?.username}
+                    {userCurrent?.username}
                   </MenuButton>
                 </div>
                 <Transition
@@ -75,7 +96,9 @@ const Navbar = () => {
                   <MenuItems className="absolute right-0 mt-2 w-40 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                     <div className="p-3 flex justify-center flex-col">
                       <div className="hover:bg-nashtech hover:text-white text-black text-sm rounded px-2 mb-2">
-                        <a href="#" onClick={handleOpenDetailModal}>Change Password</a>
+                        <a href="#" onClick={handleOpenDetailModal}>
+                          Change Password
+                        </a>
                       </div>
                       <div className="hover:bg-nashtech hover:text-white text-black text-sm rounded px-2">
                         <a href="#" onClick={logout}>
