@@ -1,5 +1,5 @@
 export enum USER_TYPE {
-    ALL = '',
+    ALL = 'ALL',
     ADMIN = 'ADMIN',
-    STAFF = 'STAFF',
+    STAFF = 'USER',
 }

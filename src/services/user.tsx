@@ -119,7 +119,7 @@ export const createUser = async (
   // }
 };
 
-export const disableUser = async (id: number): Promise<any> => {
+export const disableUser = async (id: string): Promise<any> => {
   const userData = {
     query: DISABLE_USER_MUTATION,
     variables: {

@@ -28,29 +28,10 @@ const Filter = ({ data, label }: Props) => {
   };
   return (
     <Fragment>
-      {/* <div className={`${isActive ? 'active' : ''}  bg-graycustom2 relative dropdown text-sm w-full rounded border-solid border outline-none  border-graycustom`}>
-                <div className="dropdown-label pt-1">
-                    <div onClick={() => setIsActive(!isActive)} className=" flex justify-between cursor-pointer pb-1  px-3 border-graycustom border-b">
-                        <span className="uppercase">
-                            {defaultLabel? defaultLabel : label}
-                        </span>
-                        <Image className="rotate-180" src={TriangleIcon} width={10} height={10} alt={"search icon"} />
-                    </div>
-                </div>
-                <div className="dropdown-content">
-                    <ul>
-                        {Array.from(data).map(([key, value]) => (
-                            <li onClick={() => handleChange(value)} key={key} className="dropdown-item cursor-pointer px-3 py-1">
-                                {value}
-                            </li>
-                        ))}
-
-                    </ul>
-                </div>
-            </div> */}
       <select
         onChange={(e) => handleChange(e.target.value)}
-        className="border rounded p-2 pr-8 w-32 cursor-pointer"
+        className="border rounded p-2 pr-8 w-32 cursor-pointer h-full"
+        defaultValue={undefined}
         style={{ appearance: "none" }}>
         {Array.from(data).map(([key, value]) => (
           <option
@@ -61,7 +42,7 @@ const Filter = ({ data, label }: Props) => {
           </option>
         ))}
       </select>
-      <FilterAltIcon className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none" />
+      <FilterAltIcon className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none h-10" />
     </Fragment>
   );
 };

@@ -1,11 +1,8 @@
-import clientWithoutAuth from "@libs/graphQl/apolloCilentWithAuth";
-import { USER_TYPE } from "../../types/enum.type";
 import { findUsers } from "./query";
 import client from "@libs/graphQl/apolloClient";
+import { FindUsersInput } from "../../__generated__/graphql";
 
-export const loadData = async (
-  request = { page: 1}
-) => {
+export const loadData = async (request: FindUsersInput) => {
   const bookQuery = await client.query({
     query: findUsers,
     variables: request,

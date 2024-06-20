@@ -1,15 +1,16 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Input } from "@components/ui/input";
+import { useRouter, useSearchParams } from "next/navigation";
+
 import DetailModal from "@components/modal";
-import FilterAltIcon from "@mui/icons-material/FilterAlt";
-import SearchIcon from "@mui/icons-material/Search";
 import ReusableTable from "@components/table";
-import { useRouter } from "next/navigation";
 import { disableUser } from "@services/user";
 import { convertEnumToMap } from "@utils/enumToMap";
-import { USER_TYPE } from "../../types/enum.type";
 import Filter from "@components/filter";
+import { useLoading } from "@providers/loading";
+import Search from "@components/search";
+
+import { USER_TYPE } from "../../types/enum.type";
 import { loadData } from "./fechData";
 import { User } from "../../__generated__/graphql";
 import { formatDate } from "../../utils/timeFormat";
@@ -39,30 +40,53 @@ const userColumns = [
 ];
 
 const UserManagement: React.FC = () => {
-  const [filterType, setFilterType] = useState<string | null>(null);
   const [showModalRemoveUser, setShowModalRemoveUser] = useState(false);
   const [showModalDetailUser, setShowModalDetailUser] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [listUser, setListUsers] = useState<User[] | []>();
   const router = useRouter();
+  const params = useSearchParams();
+  const { setLoading }: any = useLoading();
+
+  let filterType = params.get("Type");
+  let queryString = params.get("query");
 
   useEffect(() => {
+    setLoading(true);
     loadUserList();
-  }, []);
+  }, [queryString, filterType]);
 
   const loadUserList = async () => {
-    const { data }: any = await loadData({
-      page: 1,
-    });
+    let request: { [k: string]: any } = {};
+    console.log("filterType: ", filterType);
+    request.page = 1;
+    if (queryString) {
+      request.query = queryString;
+    }
+    if (filterType) {
+      if (filterType === USER_TYPE.ALL) {
+        delete request.type;
+      } else {
+        request.type = filterType;
+      }
+    }
+    console.log('request', request);
+    const { data }: any = await loadData(request);
     const listUserCustome = data?.map(
-      (item: { lastName: any; firstName: any; joinedDate: any, dateOfBirth: any }) => ({
+      (item: {
+        lastName: any;
+        firstName: any;
+        joinedDate: any;
+        dateOfBirth: any;
+      }) => ({
         ...item,
         fullName: `${item.lastName} ${item.firstName}`,
         dob: formatDate(new Date(item.dateOfBirth)),
-        joinedAt: formatDate(new Date(item.joinedDate))
+        joinedAt: formatDate(new Date(item.joinedDate)),
       })
     );
     setListUsers(listUserCustome);
+    setLoading(false);
   };
 
   const handleDeleteClick = (user: User) => {
@@ -118,22 +142,14 @@ const UserManagement: React.FC = () => {
         <h2 className="text-2xl font-bold mb-4 text-nashtech">User List</h2>
         <div className="flex justify-between items-center mb-4">
           <div className="flex items-center space-x-2">
-            <div className="relative">
+            <div className="relative w-32">
               <Filter label="Type" data={convertEnumToMap(USER_TYPE)} />
             </div>
           </div>
           <div className="flex gap-10">
-            <div className="flex items-center border rounded">
-              <Input
-                type="text"
-                placeholder="Search"
-                className="border-none focus:ring-0 pr-2"
-              />
-              <div className="border-l h-9 mx-2"></div>
-              <SearchIcon />
-            </div>
+            <Search />
             <button
-              className="bg-red-600 text-white rounded px-4 py-2 cursor-pointer"
+              className="bg-red-600 text-white rounded px-4 py-1 cursor-pointer"
               onClick={handleNavigateCreateUser}>
               Create new user
             </button>
