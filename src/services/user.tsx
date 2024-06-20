@@ -13,7 +13,13 @@ const CREATE_USER_MUTATION = `
   }
 `;
 
-const createUser = async (
+const DISABLE_USER_MUTATION = `
+  mutation DisableUser($id: Int!) {
+    disableUser(id: $id)
+  }
+`;
+
+export const createUser = async (
   firstName: string,
   lastName: string,
   gender: string,
@@ -51,4 +57,26 @@ const createUser = async (
   }
 };
 
-export default createUser;
+export const disableUser = async (id: number): Promise<any> => {
+  const userData = {
+    query: DISABLE_USER_MUTATION,
+    variables: {
+      id
+    }
+  };
+
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${process.env.REACT_APP_API_TOKEN}`, 
+    }
+  };
+
+  try {
+    const response = await axios.post(process.env.NEXT_PUBLIC_URL_SERVER_GRAPHQL as string, userData, config);
+    return response.data;
+  } catch (error) {
+    console.error("Error disabling user:", error);
+    throw error;
+  }
+};

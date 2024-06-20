@@ -6,6 +6,7 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import SearchIcon from '@mui/icons-material/Search';
 import ReusableTable from '@components/table';
 import { useRouter } from 'next/navigation'
+import { disableUser } from '@services/user';
 
 
 type User = {
@@ -18,6 +19,10 @@ type User = {
     gender?: string;
     location?: string;
 };
+
+interface FormData {
+    id: number;
+}
 
 const users: User[] = [
     { staffCode: 'SD1901', fullName: 'An Nguyen Thuy', username: 'annt', joinedDate: '20/06/2019', type: 'Staff', dateOfBirth: '10/11/1996', gender: 'Female', location: 'HCM' },
@@ -68,6 +73,29 @@ const UserManagement: React.FC = () => {
     const handleNavigateCreateUser = () => {
         router.push('user/create')
     }
+
+    const onSubmit = async (data: FormData) => {
+        try {
+    
+            const response = await disableUser(
+                data.id
+            );
+            console.log("Response disable: ", response);
+    
+            if (response.errors) {
+                response.errors.forEach((error: any) => {
+                    console.error(`GraphQL error message: ${error.message}`);
+                });
+            } else {
+                // toast.success("Disable User Successfully")
+                // router.push('/user')
+                console.log('User disabled successfully:', response);
+            }
+        } catch (error) {
+            // toast.error("Something went wrong! Please try again")
+            console.error('Error creating user:', error);
+        }
+    };
 
     return (
         <>
@@ -123,19 +151,12 @@ const UserManagement: React.FC = () => {
                     </ul>
                 </nav>
             </div>
-            {/* <AppModalConfirm 
-                isOpen={showModalRemoveUser} 
-                onClose={handleCloseModal} 
-                onConfirm={handleConfirmDelete}
-                title="Are you sure?"
-                message="Do you want to disable this user?" 
-            /> */}
             <DetailModal
                 isOpen={showModalRemoveUser}
                 onClose={handleConfirmDelete}
                 title='Are you sure'
             >
-                <div className="bg-white sm:p-6 sm:pb-4">
+                <div className="bg-white sm:p-6 sm:pb-4 !pt-0">
               <div className="sm:flex sm:items-start">
                 <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                   <p className="text-md text-gray-500">Do you want to disable this user?</p>
