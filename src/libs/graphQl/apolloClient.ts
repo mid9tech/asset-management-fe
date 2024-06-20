@@ -10,7 +10,7 @@ import {
 import { setContext } from "@apollo/client/link/context";
 import { onError } from "@apollo/client/link/error";
 import { ACCESS_TOKEN } from "../../constants";
-
+import { useRouter } from "next/navigation";
 
 const httpLink = new HttpLink({
   uri: `${process.env.NEXT_PUBLIC_URL_SERVER}graphql`,
@@ -36,10 +36,11 @@ const authLink = setContext((_, { headers }) => {
 });
 export const onErrorCustom = onError(
   ({ graphQLErrors, networkError, operation, forward }) => {
-    console.log(graphQLErrors);
-    //   if (graphQLErrors) {
-
-    //   }
+    if (graphQLErrors) {
+      if (graphQLErrors[0].message === "Forbidden resource") {
+        location.href = "/error"
+      }
+    }
 
     if (networkError) {
       console.log(`[Network error]: ${networkError}`);
