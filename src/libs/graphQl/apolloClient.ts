@@ -10,8 +10,10 @@ import {
 import { setContext } from "@apollo/client/link/context";
 import { onError } from "@apollo/client/link/error";
 import { ACCESS_TOKEN } from "../../constants";
+
+
 const httpLink = new HttpLink({
-  uri: process.env.NEXT_PUBLIC_URL_SERVER,
+  uri: `${process.env.NEXT_PUBLIC_URL_SERVER}graphql`,
   fetchOptions: { cache: "no-store" },
 });
 
