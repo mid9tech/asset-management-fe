@@ -68,6 +68,7 @@ const UserManagement: React.FC = () => {
     const { data }: any = await loadData(request);
     const listUserCustome = data?.users.map(
       (item: {
+        type: USER_TYPE;
         lastName: any;
         firstName: any;
         joinedDate: any;
@@ -77,6 +78,7 @@ const UserManagement: React.FC = () => {
         fullName: `${item.lastName} ${item.firstName}`,
         dob: formatDate(new Date(item.dateOfBirth)),
         joinedAt: formatDate(new Date(item.joinedDate)),
+        type: item.type === USER_TYPE.STAFF ? 'STAFF' : item.type,
       })
     );
     setCurrentPage(data.page);
