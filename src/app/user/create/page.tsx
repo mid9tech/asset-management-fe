@@ -46,7 +46,7 @@ const formSchema: ZodSchema = z.object({
     firstName: z
         .string()
         .min(1, { message: "First Name is missing" })
-        .regex(/^[a-zA-Z0-9]+$/, {
+        .regex(/^[a-zA-Z0-9_ ]+$/, {
             message: "Must contain only alphabetic characters",
         })
         .max(128, {
@@ -55,7 +55,7 @@ const formSchema: ZodSchema = z.object({
     lastName: z
         .string()
         .min(1, { message: "Last Name is missing" })
-        .regex(/^[a-zA-Z0-9]+$/, {
+        .regex(/^[a-zA-Z0-9_ ]+$/, {
             message: "Must contain only alphabetic characters",
         })
         .max(128, {
