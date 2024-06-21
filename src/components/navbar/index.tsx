@@ -209,10 +209,10 @@ const Navbar = () => {
       </DetailModal>
       <DetailModal
         isOpen={confirmLogout}
-        onClose={handleOpenConfirm}
+        onClose={handleCloseDetailModal}
         title="Are you sure ?">
         <div>
-          <div>Do you want to log out ?</div>
+          <div>Do you want to logout ?</div>
           <div className="flex flex-row justify-center gap-3 mt-10">
             <Button onClick={logout} className="bg-nashtech text-white">
               Logout
