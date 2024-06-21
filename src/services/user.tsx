@@ -11,6 +11,7 @@ export const CREATE_USER_MUTATION = gql`
       joinedDate
       dateOfBirth
       type
+      location
     }
   }
 `;
@@ -84,7 +85,8 @@ export const createUser = async (
   gender: string,
   joinedDate: string,
   dateOfBirth: string,
-  type: string
+  type: string,
+  location: string
 ): Promise<any> => {
   const userData = {
     query: CREATE_USER_MUTATION,
@@ -96,8 +98,9 @@ export const createUser = async (
         joinedDate,
         dateOfBirth,
         type,
-      },
-    },
+        location
+      }
+    }
   };
 
   const config = {

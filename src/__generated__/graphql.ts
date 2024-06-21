@@ -1,4 +1,5 @@
 /* eslint-disable */
+import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -13,8 +14,6 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
-  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
-  DateTime: { input: any; output: any; }
 };
 
 export type Asset = {
@@ -60,6 +59,15 @@ export type FindUsersInput = {
   sort?: InputMaybe<Scalars['String']['input']>;
   sortOrder?: InputMaybe<Scalars['String']['input']>;
   type?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type FindUsersOutput = {
+  __typename?: 'FindUsersOutput';
+  limit?: Maybe<Scalars['Int']['output']>;
+  page?: Maybe<Scalars['Int']['output']>;
+  total?: Maybe<Scalars['Int']['output']>;
+  totalPages?: Maybe<Scalars['Int']['output']>;
+  users: Array<User>;
 };
 
 export type Mutation = {
@@ -151,7 +159,7 @@ export type Query = {
   assets: Array<Asset>;
   assignment: Assignment;
   assignments: Array<Assignment>;
-  findUsers: Array<User>;
+  findUsers: FindUsersOutput;
   requestReturn: RequestReturn;
   requestReturns: Array<RequestReturn>;
   user: User;
@@ -215,11 +223,11 @@ export type UpdateUserInput = {
 
 export type User = {
   __typename?: 'User';
-  dateOfBirth: Scalars['DateTime']['output'];
+  dateOfBirth: Scalars['String']['output'];
   firstName: Scalars['String']['output'];
   gender: Scalars['String']['output'];
   id: Scalars['ID']['output'];
-  joinedDate: Scalars['DateTime']['output'];
+  joinedDate: Scalars['String']['output'];
   lastName: Scalars['String']['output'];
   location: Scalars['String']['output'];
   staffCode: Scalars['String']['output'];
@@ -227,3 +235,13 @@ export type User = {
   type: Scalars['String']['output'];
   username: Scalars['String']['output'];
 };
+
+export type CreateUserMutationVariables = Exact<{
+  createUserInput: CreateUserInput;
+}>;
+
+
+export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'User', firstName: string, lastName: string, gender: string, joinedDate: string, dateOfBirth: string, type: string, location: string } };
+
+
+export const CreateUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateUser"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"createUserInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateUserInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"createUserInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"createUserInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"gender"}},{"kind":"Field","name":{"kind":"Name","value":"joinedDate"}},{"kind":"Field","name":{"kind":"Name","value":"dateOfBirth"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"location"}}]}}]}}]} as unknown as DocumentNode<CreateUserMutation, CreateUserMutationVariables>;
