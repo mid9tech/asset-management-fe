@@ -209,7 +209,7 @@ const Navbar = () => {
       </DetailModal>
       <DetailModal
         isOpen={confirmLogout}
-        onClose={handleOpenConfirm}
+        onClose={handleCloseDetailModal}
         title="Are you sure ?">
         <div>
           <div>Do you want to log out ?</div>
