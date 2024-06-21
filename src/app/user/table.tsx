@@ -156,7 +156,6 @@ const UserManagement: React.FC = () => {
   };
 
   const onClickNext = () => {
-    console.log("go next");
     setCurrentPage(currentPage + 1);
   };
 
