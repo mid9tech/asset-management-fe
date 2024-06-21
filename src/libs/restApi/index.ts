@@ -39,9 +39,8 @@ export const restApiBase = async (
         withCredentials: true,
       })
         .then(async (rs) => {
-          const { accessToken, user } = rs.data;
+          const { accessToken } = rs.data;
           localStorage.setItem(ACCESS_TOKEN, accessToken);
-          localStorage.setItem(USER, user);
           if (config.headers) {
             config.headers.authorization = `Bearer ${data}`;
           }
