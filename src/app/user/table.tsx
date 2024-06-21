@@ -33,6 +33,7 @@ const UserManagement: React.FC = () => {
   const [showModalDetailUser, setShowModalDetailUser] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [listUser, setListUsers] = useState<User[] | []>();
+
   const router = useRouter();
   const params = useSearchParams();
   const { setLoading }: any = useLoading();
@@ -41,15 +42,17 @@ const UserManagement: React.FC = () => {
   let queryString = params.get("query");
   const [sortOrder, setSortOder] = useState(SORT_ORDER.ASC);
   const [sortBy, setSortBy] = useState("firstName");
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totlaPage, setTotalPages] = useState<number>();
 
   useEffect(() => {
     setLoading(true);
     loadUserList();
-  }, [queryString, filterType, sortBy, sortOrder]);
+  }, [queryString, filterType, sortBy, sortOrder, currentPage]);
 
   const loadUserList = async () => {
     let request: { [k: string]: any } = {};
-    request.page = 1;
+    request.page = currentPage;
     request.sort = sortBy;
     request.sortOrder = sortOrder;
     if (queryString) {
@@ -63,7 +66,7 @@ const UserManagement: React.FC = () => {
       }
     }
     const { data }: any = await loadData(request);
-    const listUserCustome = data?.map(
+    const listUserCustome = data?.users.map(
       (item: {
         lastName: any;
         firstName: any;
@@ -76,6 +79,8 @@ const UserManagement: React.FC = () => {
         joinedAt: formatDate(new Date(item.joinedDate)),
       })
     );
+    setCurrentPage(data.page);
+    setTotalPages(data.totalPages);
     setListUsers(listUserCustome);
     setLoading(false);
   };
@@ -150,6 +155,30 @@ const UserManagement: React.FC = () => {
     }
   };
 
+  const onClickNext = () => {
+    console.log("go next");
+    setCurrentPage(currentPage + 1);
+  };
+
+  const onClickPrev = () => {
+    setCurrentPage(currentPage - 1);
+  };
+
+  const renderedTags = Array.from({ length: totlaPage || 1 }, (_, index) => {
+    const isActive = currentPage === index + 1;
+    const classNames = `flex items-center justify-center px-3 h-8 leading-tight border-gray border hover:bg-gray-100 hover:text-gray-700 py-4 ${
+      isActive ? "bg-nashtech text-white" : "hover:bg-nashtech hover:text-white"
+    }`;
+
+    return (
+      <li key={index} onClick={() => setCurrentPage(index + 1)}>
+        <a href="#" className={classNames}>
+          {index + 1}
+        </a>
+      </li>
+    );
+  });
+
   return (
     <>
       <div className="container mx-auto p-4">
@@ -176,44 +205,26 @@ const UserManagement: React.FC = () => {
           onDeleteClick={handleDeleteClick}
           onSortClick={handleSortClick}
           onEditClick={(e) => handleNavigateEditUser()}
+          sortBy={sortBy}
+          sortOrder={sortOrder}
         />
         <nav aria-label="Page navigation example" className="mt-4">
           <ul className="flex -space-x-px text-sm justify-end">
             <li>
-              <a
-                href="#"
+              <button disabled={currentPage === 1}
+                onClick={() => onClickPrev()}
                 className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 border border-gray rounded-l-md hover:bg-gray-100 hover:text-gray-700 py-4">
                 Previous
-              </a>
+              </button>
             </li>
+            {renderedTags}
             <li>
-              <a
-                href="#"
-                aria-current="page"
-                className="bg-red-600 flex items-center justify-center px-3 h-8 leading-tight text-white border-gray border hover:bg-gray-100 hover:text-gray-700 py-4">
-                1
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="flex items-center justify-center px-3 h-8 leading-tight text-nashtech border-gray border hover:bg-gray-100 hover:text-gray-700 py-4">
-                2
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="flex items-center justify-center px-3 h-8 text-nashtech border-gray border hover:bg-red-700 py-4">
-                3
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
+              <button
+              disabled={currentPage === totlaPage}
+                onClick={() => onClickNext()}
                 className="flex items-center justify-center px-3 h-8 leading-tight text-nashtech border border-gray rounded-r-md hover:bg-gray-100 hover:text-gray-700 py-4">
                 Next
-              </a>
+              </button>
             </li>
           </ul>
         </nav>
