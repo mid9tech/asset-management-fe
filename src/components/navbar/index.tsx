@@ -7,6 +7,7 @@ import {
   MenuItems,
   Transition,
 } from "@headlessui/react";
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { Fragment, useEffect, useState } from "react";
 import { useAuth } from "@providers/auth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -80,12 +81,12 @@ const Navbar = () => {
       <Disclosure as="nav" className="bg-nashtech text-white">
         <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
           <div className="relative flex h-16 items-center justify-between font-bold">
-            <div>{activeItem.name}</div>
+            <div>{activeItem?.name}</div>
             <div className="relative">
               <Menu as="div" className="relative inline-block text-left">
                 <div>
                   <MenuButton className="inline-flex justify-center w-full px-4 py-2 bg-nashtech text-sm font-medium text-white hover:bg-gray-700 focus:outline-none">
-                    {userCurrent?.username}
+                    {userCurrent?.username} <ArrowDropDownIcon />
                   </MenuButton>
                 </div>
                 <Transition

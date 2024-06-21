@@ -13,10 +13,11 @@ import { restApiBase } from "@libs/restApi";
 import DetailModal from "@components/modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-
 import { useLoading } from "./loading";
 import LoginPage from "../app/login/page";
+import ErrorPage from "../app/error/page";
 import { ACCESS_TOKEN, USER } from "../constants";
+import { USER_TYPE } from "../types/enum.type";
 
 type menuItem = {
   name: string;
@@ -26,7 +27,7 @@ type menuItem = {
 export const AuthContext = createContext<{
   token: string;
   setToken: Dispatch<SetStateAction<string>>;
-  activeItem: menuItem;
+  activeItem: menuItem | undefined;
   setActiveItem: (item: menuItem) => void;
   menuItems: menuItem[];
   logout: () => void;
@@ -34,7 +35,7 @@ export const AuthContext = createContext<{
   user: User | null;
 } | null>(null);
 
-const menuItems = [
+const menuForAdmin: menuItem[] = [
   { name: "Home", path: "/home" },
   { name: "Manage User", path: "/user" },
   { name: "Manage Asset", path: "/asset" },
@@ -42,6 +43,8 @@ const menuItems = [
   { name: "Request For Return", path: "/request-returning" },
   { name: "Report", path: "/report" },
 ];
+
+const menuForUsers: menuItem[] = [{ name: "Home", path: "/home" }];
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
@@ -51,13 +54,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [errorMsg, setErrorMsg] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-
-  const handleCloseDetailModal = () => {
-    // setIsOpenModal(false);
-  };
-  const toggleShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
+  const [menu, setMenu] = useState<menuItem[]>([]);
   const pathname = usePathname();
   const { setLoading }: any = useLoading();
 
@@ -74,14 +71,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   useEffect(() => {
-    if (user && !user.isActived) {
-      setIsOpenModal(true);
+    if (user) {
+      if (user.role === USER_TYPE.ADMIN) {
+        setMenu(menuForAdmin);
+      } else if (user.role === USER_TYPE.STAFF) {
+        setMenu(menuForUsers);
+      } else {
+        // Redirect or handle unauthorized access
+        router.push("/error");
+      }
+      if (!user.isActived) {
+        setIsOpenModal(true);
+      }
     }
   }, [user]);
 
-  const currentItem =
-    menuItems.find((item) => item.path === pathname) ?? menuItems[0];
-  const [activeItem, setActiveItem] = useState(currentItem);
+  useEffect(() => {
+    const currentItem = menu.find((item) => item.path === pathname);
+    setActiveItem(currentItem);
+  }, [pathname, menu]);
+
+  const [activeItem, setActiveItem] = useState<menuItem | undefined>(undefined);
 
   const logout = async () => {
     setLoading(true);
@@ -89,6 +99,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setToken("");
     router.push("/login");
   };
+
   const handleLoginApi = async (username: string, password: string) => {
     try {
       const result = await restApiBase(
@@ -122,7 +133,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         { newPassword: password },
         "api/auth/change-password"
       );
-      if(!response){
+      if (!response) {
         throw new Error();
       }
       setToken(response?.data.accessToken);
@@ -139,7 +150,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const handleLogoutApi = async () => {
     try {
       const result = await restApiBase({}, "api/auth/logout");
-      if(!result) {
+      if (!result) {
         throw new Error();
       }
       localStorage.removeItem(ACCESS_TOKEN);
@@ -152,12 +163,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
   const excludedPaths = ["/login"];
   if (excludedPaths.includes(pathname)) {
     return (
       <AuthContext.Provider
         value={{
-          menuItems,
+          menuItems: menu,
           activeItem,
           setActiveItem,
           token,
@@ -170,10 +185,30 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       </AuthContext.Provider>
     );
   }
+
+  const errorPath = ["/error"];
+  if (errorPath.includes(pathname)) {
+    return (
+      <AuthContext.Provider
+        value={{
+          menuItems: menu,
+          activeItem,
+          setActiveItem,
+          token,
+          setToken,
+          logout,
+          handleLoginApi,
+          user,
+        }}>
+        <ErrorPage />
+      </AuthContext.Provider>
+    );
+  }
+
   return (
     <AuthContext.Provider
       value={{
-        menuItems,
+        menuItems: menu,
         activeItem,
         setActiveItem,
         token,
@@ -185,7 +220,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       {children}
       <DetailModal
         isOpen={isOpenModal}
-        onClose={handleCloseDetailModal}
+        onClose={() => setIsOpenModal(false)}
         title="Change Password">
         <div>
           <div className="italic">This is the first time you logged in.</div>
