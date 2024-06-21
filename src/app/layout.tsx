@@ -5,6 +5,8 @@ import { AuthProvider } from "@providers/auth";
 import Navbar from "@components/navbar";
 import Sidebar from "@components/sidebar";
 import { LoadingProvider } from "@providers/loading";
+import ApolloCustomProvider from "@providers/apollo";
+
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css'
 const inter = Inter({ subsets: ["latin"] });
@@ -23,6 +25,8 @@ export default function RootLayout({
       <body>
         <LoadingProvider>
           <AuthProvider>
+          <ApolloCustomProvider>
+
             <Navbar />
             <div className="grid grid-cols-10 gap-4">
               <div className="col-start-2 col-span-8">
@@ -36,6 +40,7 @@ export default function RootLayout({
                 </div>
               </div>
             </div>
+            </ApolloCustomProvider>
             <ToastContainer
                 position="top-right"
                 autoClose={5000}
