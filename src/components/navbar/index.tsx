@@ -7,7 +7,7 @@ import {
   MenuItems,
   Transition,
 } from "@headlessui/react";
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { Fragment, useEffect, useState } from "react";
 import { useAuth } from "@providers/auth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -16,12 +16,14 @@ import { useLoading } from "@providers/loading";
 import { restApiBase } from "@libs/restApi";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { USER } from "../../constants";
+import { Button } from "@components/ui/button";
 
 // Define the User type based on your application's user structure
 const Navbar = () => {
   const { activeItem, logout, user } = useAuth();
   const { setLoading }: any = useLoading();
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const [confirmLogout, setConformLogout] = useState(false);
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [oldPassword, setOldPassword] = useState<string>();
@@ -39,9 +41,13 @@ const Navbar = () => {
 
   const handleCloseDetailModal = () => {
     setIsOpenModal(false);
+    setConformLogout(false);
   };
   const handleOpenDetailModal = () => {
     setIsOpenModal(true);
+  };
+  const handleOpenConfirm = () => {
+    setConformLogout(true);
   };
   const toggleShowOldPassword = () => {
     setShowOldPassword(!showOldPassword);
@@ -106,7 +112,7 @@ const Navbar = () => {
                       </div>
                       <div
                         className="hover:bg-nashtech hover:text-white text-black text-sm rounded cursor-pointer px-2"
-                        onClick={logout}>
+                        onClick={handleOpenConfirm}>
                         Logout
                       </div>
                     </div>
@@ -199,6 +205,20 @@ const Navbar = () => {
               </button>
             </div>
           </form>
+        </div>
+      </DetailModal>
+      <DetailModal
+        isOpen={confirmLogout}
+        onClose={handleOpenConfirm}
+        title="Are you sure ?">
+        <div>
+          <div>Do you want to log out ?</div>
+          <div className="flex flex-row justify-center gap-3 mt-10">
+            <Button onClick={logout} className="bg-nashtech text-white">
+              Logout
+            </Button>
+            <Button onClick={handleCloseDetailModal}>Cancel</Button>
+          </div>
         </div>
       </DetailModal>
     </>
