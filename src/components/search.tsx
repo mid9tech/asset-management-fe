@@ -20,7 +20,7 @@ const Search = () => {
     }, 300)
     return (
         <Fragment>
-                <div className="relative w-full">
+                <div className="relative w-52 h-full">
                     <input
                      defaultValue={searchParams.get('query')?.toString()}
                         onChange={(e) => {

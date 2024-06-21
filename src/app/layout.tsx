@@ -9,6 +9,7 @@ import ApolloCustomProvider from "@providers/apollo";
 
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css'
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -24,7 +25,6 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <LoadingProvider>
-          <AuthProvider>
           <ApolloCustomProvider>
 
             <Navbar />
