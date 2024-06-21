@@ -49,12 +49,6 @@ enum Location {
     DN = "DN"
 }
 
-enum Location {
-    HCM = "HCM",
-    HN = "HN",
-    DN = "DN"
-}
-
 const formSchema: ZodSchema = z
   .object({
     firstName: z
