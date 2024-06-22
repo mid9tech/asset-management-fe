@@ -9,12 +9,8 @@ import {
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { onError } from "@apollo/client/link/error";
-import { ACCESS_TOKEN, USER } from "../../constants";
-import { useRouter } from "next/navigation";
-import axios from "axios";
-import { restApiBase } from "@libs/restApi";
-
-const baseUrl = process.env.NEXT_PUBLIC_URL_SERVER;
+import { ACCESS_TOKEN } from "../../constants";
+import { logout, refreshToken } from "@services/auth";
 
 const httpLink = new HttpLink({
   uri: `${process.env.NEXT_PUBLIC_URL_SERVER}graphql`,
@@ -38,37 +34,6 @@ const authLink = setContext((_, { headers }) => {
     },
   };
 });
-const refreshToken = async() => {
-  await axios({
-    baseURL: `${baseUrl}api/auth/refresh-access`,
-    headers: {
-      "Content-Type": "application/json",
-    },
-    method: "POST",
-    withCredentials: true,
-  })
-    .then(async (rs) => {
-      const { accessToken } = rs.data;
-      localStorage.setItem(ACCESS_TOKEN, accessToken);
-    })
-    .catch((err) => {
-      console.log("error", err);
-      throw err;
-    });
-};
-
-const handleLogoutApi = async () => {
-  try {
-    const result = await restApiBase({}, "api/auth/logout");
-    if (!result) {
-      throw new Error();
-    }
-    localStorage.removeItem(ACCESS_TOKEN);
-    localStorage.removeItem(USER);
-  } catch (error) {
-    console.log(error);
-  }
-};
 
 export const onErrorCustom = onError(
   ({ graphQLErrors, networkError, operation, forward }) => {
@@ -89,7 +54,7 @@ export const onErrorCustom = onError(
               forward(operation).subscribe(subscriber);
             } catch (error) {
               observer.error(error);
-              await handleLogoutApi();
+              await logout();
               location.href = "/login"
             }
           })();

@@ -27,7 +27,6 @@ export default function RootLayout({
         <LoadingProvider>
         <AuthProvider>
           <ApolloCustomProvider>
-
             <Navbar />
             <div className="grid grid-cols-10 gap-4">
               <div className="col-start-2 col-span-8">

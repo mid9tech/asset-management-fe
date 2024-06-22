@@ -13,15 +13,17 @@ import { useAuth } from "@providers/auth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DetailModal from "@components/modal";
 import { useLoading } from "@providers/loading";
-import { restApiBase } from "@libs/restApi";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { USER } from "../../constants";
 import { Button } from "@components/ui/button";
+import { changePassword, logout } from "@services/auth";
+import { useRouter } from "next/navigation";
 
 // Define the User type based on your application's user structure
 const Navbar = () => {
-  const { activeItem, logout, user } = useAuth();
+  const { activeItem, user } = useAuth();
   const { setLoading }: any = useLoading();
+  const route = useRouter();
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [confirmLogout, setConformLogout] = useState(false);
   const [showOldPassword, setShowOldPassword] = useState(false);
@@ -55,31 +57,34 @@ const Navbar = () => {
   const toggleShowNewPassword = () => {
     setShowNewPassword(!showNewPassword);
   };
-  const handleChangePassword = async (oldPass: string, newPass: string) => {
-    try {
-      const result = await restApiBase(
-        { oldPassword: oldPass, newPassword: newPass },
-        "api/auth/change-password",
-        "PUT"
-      );
-      setLoading(false);
-      return result;
-    } catch (error) {
-      console.error(error);
-    }
-  };
   const handleSubmit = async () => {
     setLoading(true);
-    const result = await handleChangePassword(
-      oldPassword as string,
-      newPassword as string
-    );
-    if (!result) {
-      setErrorMsg("Old password is incorrect!");
-      return;
+    try {
+      const result = await changePassword(
+        oldPassword as string,
+        newPassword as string
+      );
+      if (result) {
+        route.push("/login");
+        setLoading(false);
+      }
+    } catch (error: any) {
+      setErrorMsg(error.message);
+      setLoading(false);
     }
-    setIsOpenModal(false);
-    logout();
+  };
+
+  const handleLogout = async () => {
+    try {
+      setLoading(true);
+      const result = await logout();
+      if (result) {
+        setLoading(false);
+        route.push("/login");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -214,7 +219,7 @@ const Navbar = () => {
         <div>
           <div>Do you want to logout ?</div>
           <div className="flex flex-row justify-center gap-3 mt-10">
-            <Button onClick={logout} className="bg-nashtech text-white">
+            <Button onClick={handleLogout} className="bg-nashtech text-white">
               Logout
             </Button>
             <Button onClick={handleCloseDetailModal}>Cancel</Button>

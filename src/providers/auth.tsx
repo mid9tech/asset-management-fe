@@ -9,7 +9,6 @@ import React, {
   Dispatch,
   SetStateAction,
 } from "react";
-import { restApiBase } from "@libs/restApi";
 import DetailModal from "@components/modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
@@ -18,6 +17,7 @@ import LoginPage from "../app/login/page";
 import ErrorPage from "../app/error/page";
 import { ACCESS_TOKEN, USER } from "../constants";
 import { USER_TYPE } from "../types/enum.type";
+import { changePasswordFirstTimeLogin, logout } from "@services/auth";
 
 type menuItem = {
   name: string;
@@ -30,8 +30,6 @@ export const AuthContext = createContext<{
   activeItem: menuItem | undefined;
   setActiveItem: (item: menuItem) => void;
   menuItems: menuItem[];
-  logout: () => void;
-  handleLoginApi: (username: string, password: string) => void;
   user: User | null;
 } | null>(null);
 
@@ -77,7 +75,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       } else if (user.role === USER_TYPE.STAFF) {
         setMenu(menuForUsers);
       } else {
-        // Redirect or handle unauthorized access
         router.push("/error");
       }
       if (!user.isActived) {
@@ -93,74 +90,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const [activeItem, setActiveItem] = useState<menuItem | undefined>(undefined);
 
-  const logout = async () => {
-    setLoading(true);
-    await handleLogoutApi();
-    setToken("");
-    router.push("/login");
-  };
-
-  const handleLoginApi = async (username: string, password: string) => {
-    try {
-      const result = await restApiBase(
-        { username, password },
-        "api/auth/login"
-      );
-      if (result) {
-        localStorage.setItem(ACCESS_TOKEN, result.data.accessToken);
-        localStorage.setItem(USER, JSON.stringify(result.data.user));
-        setToken(result.data.accessToken);
-        setUser(result.data.user);
-        return result;
-      }
-    } catch (error: any) {
-      console.log(error);
-      throw new Error(error);
-    }
-  };
-
   const handleSubmit = async () => {
     setLoading(true);
-    await handleChangePasswordFirstLoginApi(password);
-    setIsOpenModal(false);
-    await handleLogoutApi();
-    router.push("/login");
-  };
-
-  const handleChangePasswordFirstLoginApi = async (password: string) => {
-    try {
-      const response = await restApiBase(
-        { newPassword: password },
-        "api/auth/change-password"
-      );
-      if (!response) {
-        throw new Error();
-      }
-      setToken(response?.data.accessToken);
-      setUser(response?.data.user);
-      localStorage.setItem(ACCESS_TOKEN, response?.data.accessToken);
-      localStorage.setItem(USER, JSON.stringify(response?.data.user));
+    Promise.all([changePasswordFirstTimeLogin(password), logout]).then(() => {
+      setIsOpenModal(false);
       setLoading(false);
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
-  };
-
-  const handleLogoutApi = async () => {
-    try {
-      const result = await restApiBase({}, "api/auth/logout");
-      if (!result) {
-        throw new Error();
-      }
-      localStorage.removeItem(ACCESS_TOKEN);
-      localStorage.removeItem(USER);
-      setUser(null);
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
-    }
+    });
   };
 
   const toggleShowPassword = () => {
@@ -177,8 +112,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           setActiveItem,
           token,
           setToken,
-          logout,
-          handleLoginApi,
           user,
         }}>
         <LoginPage />
@@ -196,8 +129,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           setActiveItem,
           token,
           setToken,
-          logout,
-          handleLoginApi,
           user,
         }}>
         <ErrorPage />
@@ -213,8 +144,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setActiveItem,
         token,
         setToken,
-        logout,
-        handleLoginApi,
         user,
       }}>
       {children}
