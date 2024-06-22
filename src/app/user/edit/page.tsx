@@ -230,7 +230,7 @@ const CreateUser = () => {
   return (
     <>
       <div className="-mt-8 ml-14 w-1/2">
-        <h1 className="text-nashtech font-semibold mb-5">Create New User</h1>
+        <h1 className="text-nashtech font-semibold mb-5">Edit User</h1>
         <Form {...form}>
           <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
