@@ -194,12 +194,15 @@ const CreateUser = ({ addUserToList }: { addUserToList: (user: User) => void }) 
   const onSubmit = async (data: FormData) => {
     setLoading(true);
     try {
-      console.log(data);
+      // Capitalize first name and last name
+      const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+      const capitalizedFirstName = capitalize(data.firstName);
+      const capitalizedLastName = capitalize(data.lastName);
   
       const variables: any = {
         createUserInput: {
-          firstName: data.firstName,
-          lastName: data.lastName,
+          firstName: capitalizedFirstName,
+          lastName: capitalizedLastName,
           gender: data.gender,
           joinedDate: data.joinedDate,
           dateOfBirth: data.dateOfBirth,
@@ -243,6 +246,7 @@ const CreateUser = ({ addUserToList }: { addUserToList: (user: User) => void }) 
       setLoading(false);
     }
   };
+  
   
   
 

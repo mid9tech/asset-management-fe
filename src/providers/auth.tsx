@@ -220,7 +220,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       {children}
       <DetailModal
         isOpen={isOpenModal}
-        onClose={() => setIsOpenModal(false)}
+        onClose={() => setIsOpenModal(true)}
         title="Change Password">
         <div>
           <div className="italic">This is the first time you logged in.</div>

@@ -38,7 +38,7 @@ const Filter = ({ data, label }: Props) => {
             className="dropdown-item cursor-pointer px-3 py-1"
             key={key}
             value={value}>
-            {value}
+            {key}
           </option>
         ))}
       </select>
