@@ -1,4 +1,5 @@
-'use client'
+/* eslint-disable react-hooks/exhaustive-deps */
+"use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
 import { z, ZodSchema } from "zod";
@@ -44,9 +45,9 @@ enum Type {
 }
 
 enum Location {
-    HCM = "HCM",
-    HN = "HN",
-    DN = "DN"
+  HCM = "HCM",
+  HN = "HN",
+  DN = "DN"
 }
 
 const formSchema: ZodSchema = z
@@ -55,10 +56,13 @@ const formSchema: ZodSchema = z
       .string()
       .min(1, { message: "First Name is missing" })
       .regex(/^[a-zA-Z0-9_ ]+$/, {
-        message: "Must contain only alphabetic characters",
+        message: "Must contain alphabetic characters",
       })
       .max(128, {
         message: "First Name can't be more than 128 characters",
+      })
+      .refine((val) => /[a-zA-Z]/.test(val), {
+        message: "First Name is invalid",
       }),
     lastName: z
       .string()
@@ -68,7 +72,11 @@ const formSchema: ZodSchema = z
       })
       .max(128, {
         message: "Last Name can't be more than 128 characters",
-      }),
+      })
+      .refine((val) => /[a-zA-Z]/.test(val),{
+        message: "Last Name is invalid"
+      })
+      ,
     dateOfBirth: z
       .string()
       .min(1, { message: "Date of birth is missing" })
@@ -142,12 +150,12 @@ interface FormData {
   gender: Gender;
   joinedDate: string;
   type: Type;
-location: Location
+  location: Location
 }
 
-const CreateUser = () => {
+const CreateUser = ({ addUserToList }: { addUserToList: (user: User) => void }) => {
     const [createUserMutation] = useMutation(CREATE_USER_MUTATION);
-    const { setLoading }: any = useLoading()
+    const { setLoading }: any = useLoading();
 
   const [showModalCancel, setShowModalCancel] = useState(false);
   const router = useRouter();
@@ -181,55 +189,70 @@ const CreateUser = () => {
     },
   });
 
-    const allFieldsFilled = !!form.watch("firstName") && !!form.watch("lastName") && !!form.watch("dateOfBirth") && !!form.watch("gender") && !!form.watch("joinedDate") && (!!form.watch("location") || form.watch("type") === Type.Staff);
+  const allFieldsFilled = !!form.watch("firstName") && !!form.watch("lastName") && !!form.watch("dateOfBirth") && !!form.watch("gender") && !!form.watch("joinedDate") && (!!form.watch("location") || form.watch("type") === Type.Staff);
 
-    const onSubmit = async (data: FormData) => {
-        setLoading(true);
-        try {
-            console.log(data);
-            
-            const variables: any = {
-                createUserInput: {
-                    firstName: data.firstName,
-                    lastName: data.lastName,
-                    gender: data.gender,
-                    joinedDate: data.joinedDate,
-                    dateOfBirth: data.dateOfBirth,
-                    type: data.type,
-                    location: data.location
-                }
-            };
-    
-            if (data.type === Type.Admin) {
-                variables.createUserInput.location = data.location;
-            }
-    
-            const response = await createUserMutation({ variables });
-            console.log("Response from FE: ", response);
-    
-            if (response.errors) {
-                response.errors.forEach((error: any) => {
-                    console.error(`GraphQL error message: ${error.message}`);
-                });
-            } else {
-                router.push('/user');
-                toast.success("Create User Successfully");
-                console.log('User created successfully:', response);
-            }
-        } catch (error) {
-            toast.error("Something went wrong! Please try again");
-            console.error('Error creating user:', error);
-        } finally {
-            setLoading(false);
+  const onSubmit = async (data: FormData) => {
+    setLoading(true);
+    try {
+      // Capitalize first name and last name
+      const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+      const capitalizedFirstName = capitalize(data.firstName);
+      const capitalizedLastName = capitalize(data.lastName);
+  
+      const variables: any = {
+        createUserInput: {
+          firstName: capitalizedFirstName,
+          lastName: capitalizedLastName,
+          gender: data.gender,
+          joinedDate: data.joinedDate,
+          dateOfBirth: data.dateOfBirth,
+          type: data.type,
+          location: data.location
         }
-    };
-    
-    
-    
+      };
+  
+      if (data.type === Type.Admin) {
+        variables.createUserInput.location = data.location;
+      }
+  
+      const response = await createUserMutation({ variables });
+      console.log("Response from FE: ", response);
+  
+      if (response.errors) {
+        response.errors.forEach((error: any) => {
+          console.error(`GraphQL error message: ${error.message}`);
+        });
+      } else {
+        // Save user ID to local storage
+        const userId = response.data.createUser.id;
+        localStorage.setItem('userId', userId);
+  
+        toast.success("Create User Successfully");
+        console.log('User created successfully:', response);
+  
+        const users = JSON.parse(localStorage.getItem('users') || '[]');
+        const newUser = {
+          ...response.data.createUser,
+          index: users.length + 1
+        };
+        users.push(newUser);
+        localStorage.setItem('users', JSON.stringify(users));
+        router.push('/user')
+      }
+    } catch (error) {
+      toast.error("Something went wrong! Please try again");
+      console.error('Error creating user:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  
+  
 
   return (
     <>
-      <div className="-mt-8 ml-14 w-1/2">
+      <div className="ml-14 w-1/2 space-y-6">
         <h1 className="text-nashtech font-semibold mb-5">Create New User</h1>
         <Form {...form}>
           <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
@@ -399,38 +422,38 @@ const CreateUser = () => {
                 </FormItem>
               )}
             />
-                        {form.watch("type") === Type.Admin && (
-                            <FormField
-                                control={form.control}
-                                name="location"
-                                render={({ field, fieldState }) => (
-                                    <FormItem>
-                                        <div className="flex items-center gap-5 mt-12">
-                                            <FormLabel className="w-[120px]">Location</FormLabel>
-                                            <FormControl>
-                                                <Select
-                                                    {...field}
-                                                    value={field.value}
-                                                    onValueChange={field.onChange}
-                                                >
-                                                    <SelectTrigger>
-                                                        <SelectValue className="cursor-pointer" ref={field.ref} />
-                                                    </SelectTrigger>
-                                                    <SelectContent className="bg-black text-white">
-                                                        <SelectItem value={Location.HCM}>Ho Chi Minh</SelectItem>
-                                                        <SelectItem value={Location.HN}>Ha Noi</SelectItem>
-                                                        <SelectItem value={Location.DN}>Da Nang</SelectItem>
-                                                    </SelectContent>
-                                                </Select>
-                                            </FormControl>
-                                        </div>
-                                        <FormMessage className="text-nashtech float-left ml-26">
-                                            {fieldState.error?.message}
-                                        </FormMessage>
-                                    </FormItem>
-                                )}
-                            />
-                        )}
+            {form.watch("type") === Type.Admin && (
+              <FormField
+                control={form.control}
+                name="location"
+                render={({ field, fieldState }) => (
+                  <FormItem>
+                    <div className="flex items-center gap-5 mt-12">
+                      <FormLabel className="w-[120px]">Location</FormLabel>
+                      <FormControl>
+                        <Select
+                          {...field}
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger>
+                            <SelectValue className="cursor-pointer" ref={field.ref} />
+                          </SelectTrigger>
+                          <SelectContent className="bg-black text-white">
+                            <SelectItem value={Location.HCM}>Ho Chi Minh</SelectItem>
+                            <SelectItem value={Location.HN}>Ha Noi</SelectItem>
+                            <SelectItem value={Location.DN}>Da Nang</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                    </div>
+                    <FormMessage className="text-nashtech float-left ml-26">
+                      {fieldState.error?.message}
+                    </FormMessage>
+                  </FormItem>
+                )}
+              />
+            )}
             <div className="float-right">
               <Button
                 type="submit"
