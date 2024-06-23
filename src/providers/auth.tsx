@@ -46,6 +46,9 @@ const menuForUsers: menuItem[] = [{ name: "Home", path: "/home" }];
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
+  const pathname = usePathname();
+  const { setLoading }: any = useLoading();
+
   const [token, setToken] = useState("");
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [password, setPassword] = useState("");
@@ -53,8 +56,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [errorMsg, setErrorMsg] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [menu, setMenu] = useState<menuItem[]>([]);
-  const pathname = usePathname();
-  const { setLoading }: any = useLoading();
+  
 
   useEffect(() => {
     const storedToken = sessionStorage.getItem(ACCESS_TOKEN);
@@ -95,8 +97,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     Promise.all([changePasswordFirstTimeLogin(password), logout]).then(() => {
       setIsOpenModal(false);
       setLoading(false);
-      router.push('/login');
-    });
+      router.push("/login");
+    }).catch((error) => {
+      setErrorMsg(error.message);
+      setLoading(false);
+    })
   };
 
   const toggleShowPassword = () => {
@@ -151,14 +156,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       <DetailModal
         isOpen={isOpenModal}
         onClose={() => setIsOpenModal(true)}
+        isShowCloseIcon={false}
         title="Change Password">
-        <div>
-          <div className="italic">This is the first time you logged in.</div>
-          <div className="italic">
-            You have to change your password to continue.
+        <div className="flex flex-col gap-10">
+          <div>
+            <div className="italic">This is the first time you logged in.</div>
+            <div className="italic">
+              You have to change your password to continue.
+            </div>
           </div>
+
           <form
-            className="w-full p-5"
+            className="w-full "
             onSubmit={(e) => {
               e.preventDefault();
               handleSubmit();
@@ -166,7 +175,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             <div className="md:flex md:items-center mb-3 relative">
               <div className="md:w-1/3">
                 <label className="block text-gray-700 mb-1 md:mb-0 pr-4">
-                  New Password
+                  New Password <span className="text-red-500">*</span>
                 </label>
               </div>
               <div className="md:w-2/3 relative">

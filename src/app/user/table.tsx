@@ -62,9 +62,11 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
   };
 
   const handleSortClick = (item: string) => {
-    setSortOder((prevSortOrder: SORT_ORDER) =>
-      prevSortOrder === SORT_ORDER.ASC ? SORT_ORDER.DESC : SORT_ORDER.ASC
-    );
+    let defaultOrder = SORT_ORDER.ASC;
+    if (sortBy === item || (sortBy === 'firstName' && item === 'fullName')) {
+      defaultOrder = sortOrder === SORT_ORDER.ASC ? SORT_ORDER.DESC : SORT_ORDER.ASC;
+    }
+    setSortOder(defaultOrder);
     if (item === "fullName") {
       setSortBy("firstName");
     } else {
@@ -128,11 +130,11 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
         <div className="flex justify-between items-center mb-4">
           <div className="flex items-center space-x-2">
             <div className="relative w-32">
-              <Filter label="Type" data={convertEnumToMap(USER_TYPE)} />
+              <Filter setCurrentPage={setCurrentPage} label="Type" data={convertEnumToMap(USER_TYPE)} />
             </div>
           </div>
           <div className="flex gap-10">
-            <Search />
+            <Search setCurrentPage={setCurrentPage} />
             <button
               className="bg-red-600 text-white rounded px-4 py-1 cursor-pointer"
               onClick={handleNavigateCreateUser}>
@@ -146,8 +148,8 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
           onRowClick={handleRowClick}
           onDeleteClick={handleDeleteClick}
           onSortClick={handleSortClick}
-          onEditClick={(e) => handleNavigateEditUser()}
-          sortBy={sortBy}
+          onEditClick={() => handleNavigateEditUser()}
+          sortBy={sortBy === 'firstName' ? 'fullName' : sortBy}
           sortOrder={sortOrder}
         />
         <Pagination
@@ -159,6 +161,7 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
       <DetailModal
         isOpen={showModalRemoveUser}
         onClose={handleCloseModal}
+        isShowCloseIcon={true}
         title="Are you sure">
         <div className="bg-white sm:p-6 sm:pb-4 !pt-0">
           <div className="sm:flex sm:items-start">

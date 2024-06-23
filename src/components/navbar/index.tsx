@@ -108,18 +108,20 @@ const Navbar = () => {
                   leave="transition ease-in duration-75"
                   leaveFrom="transform opacity-100 scale-100"
                   leaveTo="transform opacity-0 scale-95">
-                  <MenuItems className="absolute right-0 mt-2 w-40 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                  <MenuItems className="absolute right-0 mt-2 w-60 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                     <div className="p-3 flex justify-center flex-col">
-                      <div
+                      <Button
+                        variant="ghost"
                         className="hover:bg-nashtech hover:text-white text-black text-sm rounded px-2 cursor-pointer mb-2"
                         onClick={handleOpenDetailModal}>
                         Change Password
-                      </div>
-                      <div
+                      </Button>
+                      <Button
+                        variant="ghost"
                         className="hover:bg-nashtech hover:text-white text-black text-sm rounded cursor-pointer px-2"
                         onClick={handleOpenConfirm}>
                         Logout
-                      </div>
+                      </Button>
                     </div>
                   </MenuItems>
                 </Transition>
@@ -130,7 +132,8 @@ const Navbar = () => {
       </Disclosure>
       <DetailModal
         isOpen={isOpenModal}
-        onClose={handleCloseDetailModal}
+        onClose={() => {}}
+        isShowCloseIcon={false}
         title="Change Password">
         <div>
           <form
@@ -197,8 +200,14 @@ const Navbar = () => {
               <span className="text-nashtech text-xs italic">{errorMsg}</span>
             </div>
 
-            <div className="flex flex-row-reverse mt-2">
-              <button
+            <div className="flex flex-row-reverse mt-2 gap-5">
+              <Button
+                variant="outline"
+                onClick={handleCloseDetailModal}
+                type="button">
+                Cancel
+              </Button>
+              <Button
                 className={`bg-nashtech text-white py-1 px-3 rounded ${
                   !oldPassword && !newPassword
                     ? "opacity-50 cursor-not-allowed"
@@ -207,22 +216,28 @@ const Navbar = () => {
                 disabled={!oldPassword && !newPassword}
                 type="submit">
                 Save
-              </button>
+              </Button>
             </div>
           </form>
         </div>
       </DetailModal>
       <DetailModal
         isOpen={confirmLogout}
-        onClose={handleCloseDetailModal}
+        onClose={() => {}}
+        isShowCloseIcon={false}
         title="Are you sure ?">
         <div>
           <div>Do you want to logout ?</div>
           <div className="flex flex-row justify-center gap-3 mt-10">
-            <Button onClick={handleLogout} className="bg-nashtech text-white">
+            <Button onClick={handleLogout} className="bg-nashtech text-white hover:opacity-75">
               Logout
             </Button>
-            <Button onClick={handleCloseDetailModal}>Cancel</Button>
+            <Button
+              variant="outline"
+              onClick={handleCloseDetailModal}
+              type="button">
+              Cancel
+            </Button>
           </div>
         </div>
       </DetailModal>

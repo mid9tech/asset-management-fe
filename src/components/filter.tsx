@@ -8,8 +8,9 @@ import FilterAltIcon from "@mui/icons-material/FilterAlt";
 interface Props {
   label: string;
   data: Map<string, string>;
+  setCurrentPage: (value: number) => void;
 }
-const Filter = ({ data, label }: Props) => {
+const Filter = ({ data, label, setCurrentPage }: Props) => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
@@ -21,6 +22,7 @@ const Filter = ({ data, label }: Props) => {
     } else {
       params.delete(`${label}`, value);
     }
+    setCurrentPage(1);
     replace(`${pathname}?${params.toString()}`);
   };
   return (

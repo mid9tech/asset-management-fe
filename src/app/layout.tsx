@@ -35,7 +35,7 @@ export default function RootLayout({
                     <Sidebar />
                   </div>
                   <div className="col-span-4 p-5">
-                    <div className="mt-20">{children}</div>
+                    <div className="mt-14">{children}</div>
                   </div>
                 </div>
               </div>
