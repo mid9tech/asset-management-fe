@@ -8,7 +8,7 @@ export const restApiBase = async (
   method?: string
 ) => {
   const baseUrl: string = process.env.NEXT_PUBLIC_URL_SERVER as string;
-  const token = localStorage.getItem(ACCESS_TOKEN);
+  const token = sessionStorage.getItem(ACCESS_TOKEN);
   const headers = {
     "Content-Type": "application/json",
     authorization: token ? `Bearer ${token}` : "",
@@ -41,7 +41,7 @@ export const restApiBase = async (
         })
           .then(async (rs) => {
             const { accessToken } = rs.data;
-            localStorage.setItem(ACCESS_TOKEN, accessToken);
+            sessionStorage.setItem(ACCESS_TOKEN, accessToken);
             if (config.headers) {
               config.headers.authorization = `Bearer ${data}`;
             }

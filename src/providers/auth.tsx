@@ -57,8 +57,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { setLoading }: any = useLoading();
 
   useEffect(() => {
-    const storedToken = localStorage.getItem(ACCESS_TOKEN);
-    const storedUser = localStorage.getItem(USER);
+    const storedToken = sessionStorage.getItem(ACCESS_TOKEN);
+    const storedUser = sessionStorage.getItem(USER);
     if (storedToken && storedUser) {
       setToken(storedToken);
       setUser(JSON.parse(storedUser));
@@ -95,6 +95,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     Promise.all([changePasswordFirstTimeLogin(password), logout]).then(() => {
       setIsOpenModal(false);
       setLoading(false);
+      router.push('/login');
     });
   };
 

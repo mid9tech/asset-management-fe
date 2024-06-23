@@ -5,8 +5,8 @@ export const login = async (username: string, password: string) => {
   try {
     const result = await restApiBase({ username, password }, "api/auth/login");
     const { accessToken, user } = result?.data;
-    localStorage.setItem(ACCESS_TOKEN, accessToken);
-    localStorage.setItem(USER, JSON.stringify(user));
+    sessionStorage.setItem(ACCESS_TOKEN, accessToken);
+    sessionStorage.setItem(USER, JSON.stringify(user));
     return result;
   } catch (error: any) {
     throw error.response.data;
@@ -44,8 +44,8 @@ export const changePassword = async (
 export const logout = async () => {
   try {
     const result = await restApiBase({}, "api/auth/logout");
-    localStorage.removeItem(ACCESS_TOKEN);
-    localStorage.removeItem(USER);
+    sessionStorage.removeItem(ACCESS_TOKEN);
+    sessionStorage.removeItem(USER);
     return result;
   } catch (error: any) {
     throw error.response.data;
@@ -56,7 +56,7 @@ export const refreshToken = async () => {
   try {
     const result = await restApiBase({}, "api/auth/logout");
     const { accessToken } = result?.data;
-    localStorage.setItem(ACCESS_TOKEN, accessToken);
+    sessionStorage.setItem(ACCESS_TOKEN, accessToken);
     return result;
   } catch (error: any) {
     throw error.response.data;

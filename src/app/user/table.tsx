@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import DetailModal from "@components/modal";
 import ReusableTable from "@components/table";
@@ -12,99 +12,63 @@ import { useLoading } from "@providers/loading";
 import Search from "@components/search";
 
 import { SORT_ORDER, USER_TYPE } from "../../types/enum.type";
-import { loadData } from "./fechData";
 import { User } from "../../__generated__/graphql";
 import { formatDate } from "../../utils/timeFormat";
+import Pagination from "@components/pagination";
 
 interface FormData {
   id: string;
+}
+
+interface UserManagementProps {
+  data: User[];
+  totalPages: number;
+  currentPage: number;
+  sortOrder: SORT_ORDER;
+  sortBy: string;
+  setSortBy: (value: any) => void;
+  setSortOder: (value: any) => void;
+  setCurrentPage: (value: number) => void;
 }
 
 const userColumns = [
   { header: "Staff Code", accessor: "staffCode" as keyof User },
   { header: "Full Name", accessor: "fullName" as keyof User },
   { header: "Username", accessor: "username" as keyof User },
-  { header: "Joined Date", accessor: "joinedAt" as keyof User },
+  { header: "Joined Date", accessor: "joinedDate" as keyof User },
   { header: "Type", accessor: "type" as keyof User },
 ];
 
-const UserManagement: React.FC = () => {
+const UserManagement: React.FC<UserManagementProps> = (props) => {
+  const {
+    data,
+    totalPages,
+    currentPage,
+    sortOrder,
+    sortBy,
+    setSortBy,
+    setSortOder,
+    setCurrentPage,
+  } = props;
   const [showModalRemoveUser, setShowModalRemoveUser] = useState(false);
   const [showModalDetailUser, setShowModalDetailUser] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [listUser, setListUsers] = useState<User[] | []>();
 
   const router = useRouter();
-  const params = useSearchParams();
   const { setLoading }: any = useLoading();
-
-  let filterType = params.get("Type");
-  let queryString = params.get("query");
-  const [sortOrder, setSortOder] = useState(SORT_ORDER.ASC);
-  const [sortBy, setSortBy] = useState("firstName");
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [totlaPage, setTotalPages] = useState<number>();
-
-  useEffect(() => {
-    setLoading(true);
-    loadUserList();
-  }, [queryString, filterType, sortBy, sortOrder, currentPage]);
-
-  const loadUserList = async () => {
-    let request: { [k: string]: any } = {};
-    request.page = currentPage;
-    request.sort = sortBy;
-    request.sortOrder = sortOrder;
-    if (queryString) {
-      request.query = queryString;
-    }
-    if (filterType) {
-      if (filterType === USER_TYPE.ALL) {
-        delete request.type;
-      } else {
-        request.type = filterType;
-      }
-    }
-    const { data }: any = await loadData(request);
-    const listUserCustome = data?.users.map(
-      (item: {
-        type: USER_TYPE;
-        lastName: any;
-        firstName: any;
-        joinedDate: any;
-        dateOfBirth: any;
-      }) => ({
-        ...item,
-        fullName: `${item.lastName} ${item.firstName}`,
-        dob: formatDate(new Date(item.dateOfBirth)),
-        joinedAt: formatDate(new Date(item.joinedDate)),
-        type: item.type === USER_TYPE.STAFF ? 'STAFF' : item.type,
-      })
-    );
-    setCurrentPage(data.page);
-    setTotalPages(data.totalPages);
-    setListUsers(listUserCustome);
-    setLoading(false);
-  };
 
   const handleNavigateEditUser = () => {
     router.push("user/edit");
   };
 
   const handleSortClick = (item: string) => {
-    setSortOder((prevSortOrder) =>
+    setSortOder((prevSortOrder: SORT_ORDER) =>
       prevSortOrder === SORT_ORDER.ASC ? SORT_ORDER.DESC : SORT_ORDER.ASC
     );
-    switch (item) {
-      case "fullName":
-        setSortBy("lastName");
-        break;
-      case "joinedAt":
-        setSortBy("joinedDate");
-        break;
-      default:
-        setSortBy(item);
-        break;
+    if (item === "fullName") {
+      setSortBy("firstName");
+    } else {
+      setSortBy(item);
     }
   };
 
@@ -157,29 +121,6 @@ const UserManagement: React.FC = () => {
     }
   };
 
-  const onClickNext = () => {
-    setCurrentPage(currentPage + 1);
-  };
-
-  const onClickPrev = () => {
-    setCurrentPage(currentPage - 1);
-  };
-
-  const renderedTags = Array.from({ length: totlaPage || 1 }, (_, index) => {
-    const isActive = currentPage === index + 1;
-    const classNames = `flex items-center justify-center px-3 h-8 leading-tight border-gray border hover:bg-gray-100 hover:text-gray-700 py-4 ${
-      isActive ? "bg-nashtech text-white" : "hover:bg-nashtech hover:text-white"
-    }`;
-
-    return (
-      <li key={index} onClick={() => setCurrentPage(index + 1)}>
-        <a href="#" className={classNames}>
-          {index + 1}
-        </a>
-      </li>
-    );
-  });
-
   return (
     <>
       <div className="container mx-auto p-4">
@@ -201,7 +142,7 @@ const UserManagement: React.FC = () => {
         </div>
         <ReusableTable
           columns={userColumns}
-          data={listUser ?? []}
+          data={data ?? []}
           onRowClick={handleRowClick}
           onDeleteClick={handleDeleteClick}
           onSortClick={handleSortClick}
@@ -209,26 +150,11 @@ const UserManagement: React.FC = () => {
           sortBy={sortBy}
           sortOrder={sortOrder}
         />
-        <nav aria-label="Page navigation example" className="mt-4">
-          <ul className="flex -space-x-px text-sm justify-end">
-            <li>
-              <button disabled={currentPage === 1}
-                onClick={() => onClickPrev()}
-                className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-nashtech border border-gray rounded-l-md hover:bg-gray-100 hover:text-gray-700 py-4">
-                Previous
-              </button>
-            </li>
-            {renderedTags}
-            <li>
-              <button
-              disabled={currentPage === totlaPage}
-                onClick={() => onClickNext()}
-                className="flex items-center justify-center px-3 h-8 leading-tight text-nashtech border border-gray rounded-r-md hover:bg-gray-100 hover:text-gray-700 py-4">
-                Next
-              </button>
-            </li>
-          </ul>
-        </nav>
+        <Pagination
+          totalPages={totalPages}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+        />
       </div>
       <DetailModal
         isOpen={showModalRemoveUser}

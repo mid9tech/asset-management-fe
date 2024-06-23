@@ -13,9 +13,6 @@ const Filter = ({ data, label }: Props) => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
-  const defaultLabel = searchParams.get(`${label}`);
-
-  const [isActive, setIsActive] = useState(false);
 
   const handleChange = (value: string) => {
     const params = new URLSearchParams(searchParams.toString());

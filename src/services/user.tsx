@@ -1,6 +1,8 @@
 import gql from 'graphql-tag';
 import axios from 'axios';
 import { FindUsersInput } from '../__generated__/graphql';
+import { findUsers, fineOneUser } from "./query/user.query";
+import client from "@libs/graphQl/apolloClient";
 
 export const CREATE_USER_MUTATION = gql`
   mutation CreateUser($createUserInput: CreateUserInput!) {
@@ -35,49 +37,6 @@ const DISABLE_USER_MUTATION = `
     disableUser(id: $id)
   }
 `;
-
-const GET_LIST_USER_QUERY = `
-  query FindUsers {
-    findUsers(request: FindUsersInput! 
-    ) {
-        id
-        firstName
-        staffCode
-        lastName
-        username
-        joinedDate
-        type
-    }
-}
-`;
-
-export const getListUser = async (request: FindUsersInput) => {
-  const userData = {
-    query: GET_LIST_USER_QUERY,
-    variables: {
-      request,
-    },
-  };
-
-  const config = {
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.REACT_APP_API_TOKEN}`,
-    },
-  };
-
-  try {
-    const response = await axios.post(
-      process.env.NEXT_PUBLIC_URL_SERVER_GRAPHQL as string,
-      userData,
-      config
-    );
-    return response.data;
-  } catch (error) {
-    console.error("Error creating user:", error);
-    throw error;
-  }
-};
 
 export const createUser = async (
   firstName: string,
@@ -188,3 +147,24 @@ export const disableUser = async (id: string): Promise<any> => {
     throw error;
   }
 };
+
+// CALL WITH GRAPHQL
+export const loadData = async (request: FindUsersInput) => {
+  const bookQuery = await client.query({
+    query: findUsers,
+    variables: request,
+  });
+  return {
+    data: bookQuery.data.findUsers,
+  };
+};
+
+export const loadDetail = async(id: string) => {
+  const result = await client.query({
+    query: fineOneUser,
+    variables: {id}
+  });
+  return {
+    data: result.data.user
+  }
+}

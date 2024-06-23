@@ -34,7 +34,7 @@ const Navbar = () => {
   const [userCurrent, setUserCurrent] = useState<User | null>(null);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem(USER);
+    const storedUser = sessionStorage.getItem(USER);
     if (storedUser) {
       setUserCurrent(JSON.parse(storedUser));
       setLoading(false);
