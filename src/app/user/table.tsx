@@ -15,6 +15,8 @@ import { SORT_ORDER, USER_TYPE } from "../../types/enum.type";
 import { User } from "../../__generated__/graphql";
 import { formatDate } from "../../utils/timeFormat";
 import Pagination from "@components/pagination";
+import { Button } from "@components/ui/button";
+import { toast } from "react-toastify";
 
 interface FormData {
   id: string;
@@ -63,8 +65,9 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
 
   const handleSortClick = (item: string) => {
     let defaultOrder = SORT_ORDER.ASC;
-    if (sortBy === item || (sortBy === 'firstName' && item === 'fullName')) {
-      defaultOrder = sortOrder === SORT_ORDER.ASC ? SORT_ORDER.DESC : SORT_ORDER.ASC;
+    if (sortBy === item || (sortBy === "firstName" && item === "fullName")) {
+      defaultOrder =
+        sortOrder === SORT_ORDER.ASC ? SORT_ORDER.DESC : SORT_ORDER.ASC;
     }
     setSortOder(defaultOrder);
     if (item === "fullName") {
@@ -84,8 +87,17 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
   };
 
   const handleConfirmDelete = async () => {
-    if (selectedUser) {
-      await onSubmit({ id: selectedUser.id });
+    try {
+      setLoading(true);
+      const response = await disableUser(parseInt(selectedUser?.id as string));
+      console.log("Response disable: ", response);
+      if(response) {
+        setShowModalRemoveUser(false);
+        toast.success("Disable User Successfully");
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error("Error disabling user:", error);
     }
   };
 
@@ -104,24 +116,7 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
     setLoading(false);
   };
 
-  const onSubmit = async (data: FormData) => {
-    try {
-      const response = await disableUser(data.id);
-      console.log("Response disable: ", response);
-
-      if (response.errors) {
-        response.errors.forEach((error: any) => {
-          console.error(`GraphQL error message: ${error.message}`);
-        });
-      } else {
-        console.log("User disabled successfully:", response);
-        setShowModalRemoveUser(false);
-        // Optionally, refresh the user list or navigate
-      }
-    } catch (error) {
-      console.error("Error disabling user:", error);
-    }
-  };
+  const onSubmit = async (data: FormData) => {};
 
   return (
     <>
@@ -130,7 +125,11 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
         <div className="flex justify-between items-center mb-4">
           <div className="flex items-center space-x-2">
             <div className="relative w-32">
-              <Filter setCurrentPage={setCurrentPage} label="Type" data={convertEnumToMap(USER_TYPE)} />
+              <Filter
+                setCurrentPage={setCurrentPage}
+                label="Type"
+                data={convertEnumToMap(USER_TYPE)}
+              />
             </div>
           </div>
           <div className="flex gap-10">
@@ -149,7 +148,7 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
           onDeleteClick={handleDeleteClick}
           onSortClick={handleSortClick}
           onEditClick={() => handleNavigateEditUser()}
-          sortBy={sortBy === 'firstName' ? 'fullName' : sortBy}
+          sortBy={sortBy === "firstName" ? "fullName" : sortBy}
           sortOrder={sortOrder}
         />
         <Pagination
@@ -162,29 +161,27 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
         isOpen={showModalRemoveUser}
         onClose={handleCloseModal}
         isShowCloseIcon={true}
-        title="Are you sure">
-        <div className="bg-white sm:p-6 sm:pb-4 !pt-0">
+        title="Are you sure ?">
+        <div className="p-3">
           <div className="sm:flex sm:items-start">
-            <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-              <p className="text-md text-gray-500">
-                Do you want to disable this user?
-              </p>
-            </div>
+            <p className="text-md text-gray-500">
+              Do you want to disable this user?
+            </p>
           </div>
         </div>
-        <div className="bg-gray-50 sm:flex sm:flex-row-reverse gap-4">
-          <button
-            type="button"
-            className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-            onClick={() => setShowModalRemoveUser(false)}>
-            Cancel
-          </button>
-          <button
+        <div className="sm:flex sm:flex-row gap-4">
+          <Button
             type="button"
             className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
             onClick={handleConfirmDelete}>
             Disable
-          </button>
+          </Button>
+          <Button
+            variant="outline"
+            type="button"
+            onClick={() => setShowModalRemoveUser(false)}>
+            Cancel
+          </Button>
         </div>
       </DetailModal>
       {selectedUser && (

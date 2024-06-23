@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 
-export const fineOneUser = gql`
+export const fineOneUserQuery = gql`
     query User($id: Int!) {
     user(id: $id) {
         id
@@ -18,7 +18,7 @@ export const fineOneUser = gql`
 }
 `;
 
-export const findUsers = gql`
+export const findUsersQuery = gql`
   query FindUsers(
     $page: Int
     $query: String
@@ -53,5 +53,11 @@ export const findUsers = gql`
         location
       }
     }
+  }
+`;
+
+export const disableUserQuery = gql`
+  mutation DisableUser($id: Int!) {
+    disableUser(id: $id)
   }
 `;

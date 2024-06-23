@@ -51,12 +51,12 @@ export default function Index() {
           </div>
         </div>
       </Disclosure>
-      <div className="w-full h-screen flex justify-center items-start mt-28">
-        <div className="border rounded border-black">
+      <div className="w-full h-auto flex justify-center items-start mt-28">
+        <div className="border rounded border-black w-auto">
           <div className="py-3 bg-cyangray rounded text-nashtech font-bold flex justify-center">
             <span>Welcome to Online Asset Management</span>
           </div>
-          <hr className="border border-black" />
+          <hr className="border-b border-black" />
           <div>
             <form
               className="w-full p-5"
