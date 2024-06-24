@@ -32,6 +32,7 @@ import { useMutation } from "@apollo/client";
 import { useLoading } from "@providers/loading";
 
 import { useAuth } from "@providers/auth";
+import { User } from "../../../__generated__/graphql";
 
 enum Gender {
   Male = "MALE",
@@ -185,7 +186,7 @@ const CreateUser = ({ addUserToList }: { addUserToList: (user: User) => void }) 
       gender: Gender.Female,
       joinedDate: "",
       type: Type.Staff,
-            location: Location.HCM 
+      location: Location.HCM 
     },
   });
 

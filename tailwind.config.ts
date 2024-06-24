@@ -23,6 +23,7 @@ const config: Config = {
         'graycustom2': '#f5f5f5',
         'gray': '#707070',
         'header-modal': '#EFF1F5',
+        'input-gray': '#EFF1F5',
         'border-gray': 'rgba(222, 226, 230, 1);'
       },
       spacing: {
