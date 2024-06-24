@@ -19,11 +19,7 @@ import { USER_TYPE } from "../types/enum.type";
 import { changePasswordFirstTimeLogin, logout } from "@services/auth";
 import { UserStoreType } from "../types/user.type";
 import { USER } from "../constants";
-
-type menuItem = {
-  name: string;
-  path: string;
-};
+import { menuItem } from "../types/menu.type";
 
 export const AuthContext = createContext<{
   token: string;
@@ -36,15 +32,25 @@ export const AuthContext = createContext<{
 } | null>(null);
 
 const menuForAdmin: menuItem[] = [
-  { name: "Home", path: "/home" },
-  { name: "Manage User", path: "/user" },
-  { name: "Manage Asset", path: "/asset" },
-  { name: "Manage Assignment", path: "/assignment" },
-  { name: "Request For Return", path: "/request-returning" },
-  { name: "Report", path: "/report" },
+  { name: "Home", path: ["/home"], component: "Home" },
+  {
+    name: "Manage User",
+    path: ["/user", "/user/create", "/user/edit"],
+    component: "User",
+  },
+  { name: "Manage Asset", path: ["/asset"], component: "Asset" },
+  { name: "Manage Assignment", path: ["/assignment"], component: "Assignment" },
+  {
+    name: "Request For Return",
+    path: ["/request-returning"],
+    component: "Request For Return",
+  },
+  { name: "Report", path: ["/report"], component: "Report" },
 ];
 
-const menuForUsers: menuItem[] = [{ name: "Home", path: "/home" }];
+const menuForUsers: menuItem[] = [
+  { name: "Home", path: ["/home"], component: "Home" },
+];
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
@@ -81,7 +87,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, [user, activeItem]);
 
   useEffect(() => {
-    const currentItem = menu?.find((item) => item.path === pathname);
+    const currentItem = menu?.find((item) => item.path.includes(pathname));
     const userStorage = localStorage.getItem(USER);
     setUser(JSON.parse(userStorage as string));
     setActiveItem(currentItem);

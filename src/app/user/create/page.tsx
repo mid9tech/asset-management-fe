@@ -154,7 +154,7 @@ interface FormData {
   location: Location
 }
 
-const CreateUser = ({ addUserToList }: { addUserToList: (user: User) => void }) => {
+const CreateUser = () => {
     const [createUserMutation] = useMutation(CREATE_USER_MUTATION);
     const { setLoading }: any = useLoading();
 
@@ -162,9 +162,9 @@ const CreateUser = ({ addUserToList }: { addUserToList: (user: User) => void }) 
   const router = useRouter();
   const {setActiveItem} = useAuth();
 
-  useEffect(() => {
-    setActiveItem({ name: "Manage User", path: "/user" });
-  }, []);
+  // useEffect(() => {
+  //   setActiveItem({ name: "Manage User", path: "/user" });
+  // }, []);
 
   const handleCloseCancelModal = () => {
     setShowModalCancel(false);

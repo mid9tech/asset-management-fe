@@ -31,24 +31,11 @@ import { CREATE_USER_MUTATION } from "@services/user";
 import { useMutation } from "@apollo/client";
 import { useLoading } from "@providers/loading";
 import CheckIcon from '@mui/icons-material/Check';
-import { useAuth } from "@providers/auth";
-import { User } from "../../../__generated__/graphql";
+import ClearIcon from '@mui/icons-material/Clear';
 
-enum Gender {
-    Male = "MALE",
-    Female = "FEMALE",
-    Other = "OTHER",
-}
-
-enum Type {
-    Admin = "ADMIN",
-    Staff = "USER",
-}
-
-enum Location {
-    HCM = "HCM",
-    HN = "HN",
-    DN = "DN"
+enum State {
+    AVAILABLE = "AVAILABLE",
+    NOT_AVAILABLE = "NOT_AVAILABLE"
 }
 
 const formSchema: ZodSchema = z
@@ -86,9 +73,8 @@ const formSchema: ZodSchema = z
                     const date = new Date(val);
                     return differenceInYears(new Date(), date) >= 18;
                 },
-                { message: "User is under 18. Please select a different date" }
+                { message: "User is under 18." }
             ),
-        gender: z.nativeEnum(Gender, { message: "Gender is missing" }),
         joinedDate: z
             .string()
             .min(1, { message: "Joined Date is missing" })
@@ -126,45 +112,25 @@ const formSchema: ZodSchema = z
                 path: ["joinedDate"],
             });
         }
-
-        if (values.type === Type.Admin && !values.location) {
-            ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                message: "Location is required when Type is Admin",
-                path: ["location"],
-            });
-        }
-
-        if (values.type === Type.Admin && !values.location) {
-            ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                message: "Location is required when Type is Admin",
-                path: ["location"],
-            });
-        }
     });
 
 interface FormData {
-    firstName: string;
-    lastName: string;
-    dateOfBirth: string;
-    gender: Gender;
-    joinedDate: string;
-    type: Type;
-    location: Location
+    name: string;
+    category: string;
+    specification: string;
+    installedDate: string;
+    state: State;
 }
 
-const CreateAsset = ({ addUserToList }: { addUserToList: (user: User) => void }) => {
+const CreateAsset = () => {
     const [createUserMutation] = useMutation(CREATE_USER_MUTATION);
     const { setLoading }: any = useLoading();
 
     const [showModalCancel, setShowModalCancel] = useState(false);
+    const [showNewCategoryInput, setShowNewCategoryInput] = useState(false);
+    const [newCategory, setNewCategory] = useState("");
+    const [abbreviation, setAbbreviation] = useState("");
     const router = useRouter();
-    const { setActiveItem } = useAuth();
-
-    useEffect(() => {
-        setActiveItem({ name: "Manage User", path: "/user" });
-    }, []);
 
     const handleCloseCancelModal = () => {
         setShowModalCancel(false);
@@ -176,45 +142,60 @@ const CreateAsset = ({ addUserToList }: { addUserToList: (user: User) => void })
         router.push("/user");
     };
 
+    const handleAddNewCategory = () => {
+        setShowNewCategoryInput(true);
+    };
+
+    const handleSaveNewCategory = () => {
+        setShowNewCategoryInput(false);
+    };
+
+    const handleCancelNewCategory = () => {
+        setShowNewCategoryInput(false);
+        setNewCategory("");
+        setAbbreviation("");
+    };
+
     const form = useForm<FormData>({
         resolver: zodResolver(formSchema),
         mode: "onChange",
         defaultValues: {
-            firstName: "",
-            lastName: "",
-            dateOfBirth: "",
-            gender: Gender.Female,
-            joinedDate: "",
-            type: Type.Staff,
-            location: Location.HCM
+            name: "",
+            category: "",
+            specification: "",
+            installedDate: "",
+            state: State.AVAILABLE,
         },
     });
 
-    const allFieldsFilled = !!form.watch("firstName") && !!form.watch("lastName") && !!form.watch("dateOfBirth") && !!form.watch("gender") && !!form.watch("joinedDate") && (!!form.watch("location") || form.watch("type") === Type.Staff);
+    useEffect(() => {
+        const words = newCategory.split(" ");
+        const abbreviation = words.map(word => word.charAt(0)).join("").toUpperCase();
+        setAbbreviation(abbreviation);
+    }, [newCategory]);
+
+    const allFieldsFilled = !!form.watch("name") &&
+        !!form.watch("category") &&
+        !!form.watch("specification") &&
+        !!form.watch("installedDate") &&
+        (!!form.watch("state"));
 
     const onSubmit = async (data: FormData) => {
         setLoading(true);
         try {
-            // Capitalize first name and last name
             const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-            const capitalizedFirstName = capitalize(data.firstName);
-            const capitalizedLastName = capitalize(data.lastName);
+            const capitalizedName = capitalize(data.name);
+            const capitalizedCategory = capitalize(data.category);
 
             const variables: any = {
                 createUserInput: {
-                    firstName: capitalizedFirstName,
-                    lastName: capitalizedLastName,
-                    gender: data.gender,
-                    joinedDate: data.joinedDate,
-                    dateOfBirth: data.dateOfBirth,
-                    type: data.type,
-                    location: data.location
+                    name: capitalizedName,
+                    category: capitalizedCategory,
+                    specification: data.specification,
+                    installedDate: data.installedDate,
+                    state: data.state,
                 }
             };
-
-            if (data.type === Type.Admin) {
-                variables.createUserInput.location = data.location;
-            }
 
             const response = await createUserMutation({ variables });
             console.log("Response from FE: ", response);
@@ -248,9 +229,6 @@ const CreateAsset = ({ addUserToList }: { addUserToList: (user: User) => void })
         }
     };
 
-
-
-
     return (
         <>
             <div className="ml-14 w-1/2 space-y-6">
@@ -259,11 +237,11 @@ const CreateAsset = ({ addUserToList }: { addUserToList: (user: User) => void })
                     <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
                         <FormField
                             control={form.control}
-                            name="lastName"
+                            name="name"
                             render={({ field, fieldState }) => (
                                 <FormItem>
                                     <div className="flex items-center gap-5">
-                                        <FormLabel className="w-[120px]">Name</FormLabel>
+                                        <FormLabel className="w-[150px]">Name</FormLabel>
                                         <FormControl>
                                             <Input
                                                 placeholder=""
@@ -281,33 +259,51 @@ const CreateAsset = ({ addUserToList }: { addUserToList: (user: User) => void })
                         />
                         <FormField
                             control={form.control}
-                            name="type"
+                            name="category"
                             render={({ field, fieldState }) => (
                                 <FormItem>
                                     <div className="flex items-center gap-5">
-                                        <FormLabel className="w-[120px]">Category</FormLabel>
+                                        <FormLabel className="w-[150px]">Category</FormLabel>
                                         <FormControl>
                                             <>
                                                 <Select
                                                     {...field}
                                                     value={field.value}
-                                                    onValueChange={field.onChange}
-                                                    defaultValue={Type.Staff}>
+                                                    onValueChange={field.onChange}>
                                                     <SelectTrigger>
                                                         <SelectValue
                                                             className="cursor-pointer"
                                                             ref={field.ref}
                                                         />
                                                     </SelectTrigger>
-                                                    <SelectContent className="bg-graycustom2 text-black">
-                                                        <SelectItem value={Type.Admin}>Laptop</SelectItem>
-                                                        <SelectItem value={Type.Staff}>Monitor</SelectItem>
-                                                        <div className="relative mb-6 text-black">
-                                                            <input type="text" id="input-group-1" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="name@flowbite.com" />
-                                                            <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-                                                                <CheckIcon />
+                                                    <SelectContent className="bg-graycustom2 text-black w-full">
+                                                        <SelectItem value="laptop">Laptop</SelectItem>
+                                                        <SelectItem value="monitor">Monitor</SelectItem>
+                                                        <SelectItem value="personal-computer">Personal Computer</SelectItem>
+                                                        {showNewCategoryInput ? (
+                                                            <div className="relative text-black mt-4 border-t-2 border-black bg-input-gray flex flex-col items-center w-full">
+                                                                <div className="flex mr-10">
+                                                                    <Input
+                                                                        value={newCategory}
+                                                                        onChange={(e) => setNewCategory(e.target.value)}
+                                                                        className="h-fit w-full mt-1 bg-gray-50 border border-gray-100 text-gray-900 text-sm block dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black rounded-none"
+                                                                    />
+                                                                    <Input
+                                                                        value={abbreviation}  
+                                                                        readOnly
+                                                                        className="h-fit mt-1 bg-gray-50 b-l-0 border border-gray-100 text-gray-900 text-sm block w-[60px] dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black rounded-none"
+                                                                    />
+                                                                </div>
+                                                                <div className="absolute inset-y-0 end-0 flex items-center">
+                                                                    <CheckIcon onClick={handleSaveNewCategory} className="text-nashtech font-bold cursor-pointer" />
+                                                                    <ClearIcon onClick={handleCancelNewCategory} className="cursor-pointer" />
+                                                                </div>
                                                             </div>
-                                                        </div>
+                                                        ) : (
+                                                            <p className="p-2 text-nashtech border-t-2 border-gray bg-input-gray text-sm italic underline py-1 cursor-pointer" onClick={handleAddNewCategory}>
+                                                                Add New Category
+                                                            </p>
+                                                        )}
                                                     </SelectContent>
                                                 </Select>
                                             </>
@@ -321,18 +317,17 @@ const CreateAsset = ({ addUserToList }: { addUserToList: (user: User) => void })
                         />
                         <FormField
                             control={form.control}
-                            name="dateOfBirth"
+                            name="specification"
                             render={({ field, fieldState }) => (
                                 <FormItem>
-                                    <div className="flex items-center gap-5">
-                                        <FormLabel className="w-[120px]">Specification</FormLabel>
+                                    <div className="flex items-start gap-5">
+                                        <FormLabel className="w-[150px]">Specification</FormLabel>
                                         <FormControl>
                                             <Input
-                                                placeholder="Select a date"
                                                 {...field}
-                                                type="date"
-                                                className={`flex justify-end cursor-pointer flex-col ${fieldState.error ? "border-nashtech" : ""
-                                                    }`}
+                                                type="text"
+                                                className={`h-[100px] flex justify-end cursor-pointer flex-col ${fieldState.error ? "border-nashtech" : ""
+                                                }`}
                                             />
                                         </FormControl>
                                     </div>
@@ -344,11 +339,11 @@ const CreateAsset = ({ addUserToList }: { addUserToList: (user: User) => void })
                         />
                         <FormField
                             control={form.control}
-                            name="joinedDate"
+                            name="installedDate"
                             render={({ field, fieldState }) => (
                                 <FormItem>
                                     <div className="flex items-center gap-5">
-                                        <FormLabel className="w-[120px]">Installed Date</FormLabel>
+                                        <FormLabel className="w-[150px]">Installed Date</FormLabel>
                                         <FormControl>
                                             <Input
                                                 placeholder=""
@@ -367,7 +362,7 @@ const CreateAsset = ({ addUserToList }: { addUserToList: (user: User) => void })
                         />
                         <Controller
                             control={form.control}
-                            name="gender"
+                            name="state"
                             render={({ field, fieldState }) => (
                                 <FormItem>
                                     <div className="flex">
@@ -379,12 +374,12 @@ const CreateAsset = ({ addUserToList }: { addUserToList: (user: User) => void })
                                                 onValueChange={field.onChange}
                                                 className="cursor-pointer">
                                                 <div className="flex items-center space-x-2">
-                                                    <RadioGroupItem value={Gender.Male} id="option-one" />
-                                                    <Label htmlFor="option-one">Available</Label>
+                                                    <RadioGroupItem value={State.AVAILABLE} id="option-one" />
+                                                    <Label htmlFor="option-one" className="">Available</Label>
                                                 </div>
                                                 <div className="flex items-center space-x-2">
                                                     <RadioGroupItem
-                                                        value={Gender.Female}
+                                                        value={State.NOT_AVAILABLE}
                                                         id="option-two"
                                                     />
                                                     <Label htmlFor="option-two">Not Available</Label>

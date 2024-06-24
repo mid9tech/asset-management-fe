@@ -152,12 +152,12 @@ const EditUser = ({ params }: { params: { id: string } }) => {
 
     const [dataUpdate, setDataUpdate] = useState<FormData | null>(null);
 
-    useEffect(() => {
-        setActiveItem({ name: "Manage User", path: "/user" });
-        if (userData) {
-            setDataUpdate(userData.user);
-        }
-    }, [userData, setActiveItem]);
+    // useEffect(() => {
+    //     setActiveItem({ name: "Manage User", path: "/user" });
+    //     if (userData) {
+    //         setDataUpdate(userData.user);
+    //     }
+    // }, [userData, setActiveItem]);
     
     useEffect(() => {
         if (userData) {
