@@ -32,18 +32,25 @@ export const AuthContext = createContext<{
 } | null>(null);
 
 const menuForAdmin: menuItem[] = [
-  { name: "Home", path: ["/home"] },
+  { name: "Home", path: ["/home"], component: "Home" },
   {
     name: "Manage User",
     path: ["/user", "/user/create", "/user/edit"],
+    component: "User",
   },
-  { name: "Manage Asset", path: ["/asset"] },
-  { name: "Manage Assignment", path: ["/assignment"] },
-  { name: "Request For Return", path: ["/request-returning"] },
-  { name: "Report", path: ["/report"] },
+  { name: "Manage Asset", path: ["/asset"], component: "Asset" },
+  { name: "Manage Assignment", path: ["/assignment"], component: "Assignment" },
+  {
+    name: "Request For Return",
+    path: ["/request-returning"],
+    component: "Request For Return",
+  },
+  { name: "Report", path: ["/report"], component: "Report" },
 ];
 
-const menuForUsers: menuItem[] = [{ name: "Home", path: ["/home"] }];
+const menuForUsers: menuItem[] = [
+  { name: "Home", path: ["/home"], component: "Home" },
+];
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();

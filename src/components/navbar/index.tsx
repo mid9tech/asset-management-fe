@@ -90,6 +90,21 @@ const Navbar = () => {
     }
   };
 
+  const renderName = () => {
+    let result = activeItem?.name;
+    if(pathname.includes("/create")){
+      result = `${activeItem?.name} > Create new ${activeItem?.component} `
+    }
+    if(pathname.includes("/edit")){
+      result = `${activeItem?.name} > Edit ${activeItem?.component} `
+    }
+    return (
+      <>
+        {result}
+      </>
+    )
+  }
+
   console.log('activate', activeItem);
 
   return (
@@ -97,7 +112,7 @@ const Navbar = () => {
       <Disclosure as="nav" className="bg-nashtech text-white">
         <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
           <div className="relative flex h-16 items-center justify-between font-bold">
-            <div>{activeItem?.name}</div>
+            <div>{renderName()}</div>
             <div className="relative">
               <Menu as="div" className="relative inline-block text-left">
                 <div>
