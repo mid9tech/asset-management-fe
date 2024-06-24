@@ -1,10 +1,17 @@
-import gql from 'graphql-tag';
-import axios from 'axios';
-import { FindUsersInput } from '../__generated__/graphql';
+import gql from "graphql-tag";
+import axios from "axios";
+import { FindUsersInput } from "../__generated__/graphql";
+import {
+  disableUserQuery,
+  fineOneUserQuery,
+  findUsersQuery,
+} from "./query/user.query";
+import client from "@libs/graphQl/apolloClient";
 
 export const CREATE_USER_MUTATION = gql`
   mutation CreateUser($createUserInput: CreateUserInput!) {
     createUser(createUserInput: $createUserInput) {
+      id
       firstName
       lastName
       gender
@@ -15,33 +22,24 @@ export const CREATE_USER_MUTATION = gql`
     }
   }
 `;
-const GET_USER_QUERY = gql`
-  query GetUser($id: ID!) {
-    user(id: $id) {
+
+
+export const EDIT_USER_MUTATION = gql`
+  mutation UpdateUser($id: Float!, $updateUserInput: UpdateUserInput!) {
+    updateUser(id: $id, 
+      updateUserInput: $updateUserInput) {
       id
       firstName
       lastName
-      dateOfBirth
       gender
       joinedDate
+      dateOfBirth
       type
       location
     }
   }
 `;
-const EDIT_USER_MUTATION = `
-  mutation UpdateUser($updateUserInput: UpdateUserInput!, $id: Number) {
-    updateUser(updateUserInput: $updateUserInput) {
-      id
-      firstName
-      lastName
-      gender
-      joinedDate
-      dateOfBirth
-      type
-    }
-  }
-`;
+
 
 const DISABLE_USER_MUTATION = `
   mutation DisableUser($id: Number!) {
@@ -62,6 +60,23 @@ const GET_LIST_USER_QUERY = `
         type
     }
 }
+`;
+
+export const GET_USER_BY_ID_QUERY = gql`
+  query GetUserById($id: Int!) {
+    user(id: $id) {
+      id
+      firstName
+      lastName
+      gender
+      joinedDate
+      dateOfBirth
+      type
+      location
+      staffCode
+      username
+    }
+  }
 `;
 
 export const getListUser = async (request: FindUsersInput) => {
@@ -111,6 +126,50 @@ export const createUser = async (
         joinedDate,
         dateOfBirth,
         type,
+        location,
+      },
+    },
+  };
+
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${process.env.REACT_APP_API_TOKEN}`,
+    },
+  };
+
+  try {
+    const response = await axios.post(
+      process.env.NEXT_PUBLIC_URL_SERVER_GRAPHQL as string,
+      userData,
+      config
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error creating user:", error);
+    throw error;
+  }
+};
+
+export const editUser = async (
+  firstName: string,
+  lastName: string,
+  gender: string,
+  joinedDate: string,
+  dateOfBirth: string,
+  type: string,
+  location: string
+): Promise<any> => {
+  const userData = {
+    query: CREATE_USER_MUTATION,
+    variables: {
+      createUserInput: {
+        firstName,
+        lastName,
+        gender,
+        joinedDate,
+        dateOfBirth,
+        type,
         location
       }
     }
@@ -122,12 +181,6 @@ export const createUser = async (
       Authorization: `Bearer ${process.env.REACT_APP_API_TOKEN}`,
     },
   };
-  // const config = {
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //     'Authorization': `Bearer ${process.env.REACT_APP_API_TOKEN}`,
-  //   }
-  // };
 
   try {
     const response = await axios.post(
@@ -161,7 +214,7 @@ export const createUser = async (
 //   const config = {
 //     headers: {
 //       'Content-Type': 'application/json',
-//       'Authorization': `Bearer ${process.env.REACT_APP_API_TOKEN}`, 
+//       'Authorization': `Bearer ${process.env.REACT_APP_API_TOKEN}`,
 //     }
 //   };
 
@@ -174,30 +227,33 @@ export const createUser = async (
 //   }
 // };
 
-export const disableUser = async (id: string): Promise<any> => {
-  const userData = {
-    query: DISABLE_USER_MUTATION,
-    variables: {
-      id,
-    },
+// CALL WITH GRAPHQL
+export const loadData = async (request: FindUsersInput) => {
+  const result = await client.query({
+    query: findUsersQuery,
+    variables: request,
+  });
+  return {
+    data: result.data.findUsers,
   };
+};
 
-  const config = {
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.REACT_APP_API_TOKEN}`,
-    },
+export const loadDetail = async (id: number) => {
+  const result = await client.query({
+    query: fineOneUserQuery,
+    variables: { id },
+  });
+  return {
+    data: result.data.user,
   };
+};
 
-  try {
-    const response = await axios.post(
-      process.env.NEXT_PUBLIC_URL_SERVER_GRAPHQL as string,
-      userData,
-      config
-    );
-    return response.data;
-  } catch (error) {
-    console.error("Error disabling user:", error);
-    throw error;
-  }
+export const disableUser = async (id: number) => {
+  const result = await client.mutate({
+    mutation: disableUserQuery,
+    variables: { id },
+  });
+  return {
+    data: result.data.disableUser,
+  };
 };

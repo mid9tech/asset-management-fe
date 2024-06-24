@@ -32,6 +32,7 @@ import { useMutation } from "@apollo/client";
 import { useLoading } from "@providers/loading";
 
 import { useAuth } from "@providers/auth";
+import { User } from "../../../__generated__/graphql";
 
 enum Gender {
   Male = "MALE",
@@ -47,7 +48,7 @@ enum Type {
 enum Location {
   HCM = "HCM",
   HN = "HN",
-  DN = "DN"
+  DN = "DN",
 }
 
 const formSchema: ZodSchema = z
@@ -73,10 +74,9 @@ const formSchema: ZodSchema = z
       .max(128, {
         message: "Last Name can't be more than 128 characters",
       })
-      .refine((val) => /[a-zA-Z]/.test(val),{
-        message: "Last Name is invalid"
-      })
-      ,
+      .refine((val) => /[a-zA-Z]/.test(val), {
+        message: "Last Name is invalid",
+      }),
     dateOfBirth: z
       .string()
       .min(1, { message: "Date of birth is missing" })
@@ -102,7 +102,7 @@ const formSchema: ZodSchema = z
         }
       ),
     type: z.string().min(1, { message: "Type is missing" }),
-    location: z.string().optional()
+    location: z.string().optional(),
   })
   .superRefine((values, ctx) => {
     const dobDate = new Date(values.dateOfBirth);
@@ -125,23 +125,23 @@ const formSchema: ZodSchema = z
         path: ["joinedDate"],
       });
     }
-  
+
     if (values.type === Type.Admin && !values.location) {
-        ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "Location is required when Type is Admin",
-            path: ["location"],
-        });
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Location is required when Type is Admin",
+        path: ["location"],
+      });
     }
 
     if (values.type === Type.Admin && !values.location) {
-        ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "Location is required when Type is Admin",
-            path: ["location"],
-        });
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Location is required when Type is Admin",
+        path: ["location"],
+      });
     }
-});
+  });
 
 interface FormData {
   firstName: string;
@@ -150,20 +150,15 @@ interface FormData {
   gender: Gender;
   joinedDate: string;
   type: Type;
-  location: Location
+  location: Location;
 }
 
 const CreateUser = () => {
-    const [createUserMutation] = useMutation(CREATE_USER_MUTATION);
-    const { setLoading }: any = useLoading();
+  const [createUserMutation] = useMutation(CREATE_USER_MUTATION);
+  const { setLoading }: any = useLoading();
 
   const [showModalCancel, setShowModalCancel] = useState(false);
   const router = useRouter();
-  const {setActiveItem} = useAuth();
-
-  useEffect(() => {
-    setActiveItem({ name: "Manage User", path: "/user" });
-  }, []);
 
   const handleCloseCancelModal = () => {
     setShowModalCancel(false);
@@ -185,20 +180,27 @@ const CreateUser = () => {
       gender: Gender.Female,
       joinedDate: "",
       type: Type.Staff,
-            location: Location.HCM 
+      location: Location.HCM,
     },
   });
 
-  const allFieldsFilled = !!form.watch("firstName") && !!form.watch("lastName") && !!form.watch("dateOfBirth") && !!form.watch("gender") && !!form.watch("joinedDate") && (!!form.watch("location") || form.watch("type") === Type.Staff);
+  const allFieldsFilled =
+    !!form.watch("firstName") &&
+    !!form.watch("lastName") &&
+    !!form.watch("dateOfBirth") &&
+    !!form.watch("gender") &&
+    !!form.watch("joinedDate") &&
+    (!!form.watch("location") || form.watch("type") === Type.Staff);
 
   const onSubmit = async (data: FormData) => {
     setLoading(true);
     try {
       // Capitalize first name and last name
-      const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+      const capitalize = (str: string) =>
+        str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
       const capitalizedFirstName = capitalize(data.firstName);
       const capitalizedLastName = capitalize(data.lastName);
-  
+
       const variables: any = {
         createUserInput: {
           firstName: capitalizedFirstName,
@@ -207,17 +209,17 @@ const CreateUser = () => {
           joinedDate: data.joinedDate,
           dateOfBirth: data.dateOfBirth,
           type: data.type,
-          location: data.location
-        }
+          location: data.location,
+        },
       };
-  
+
       if (data.type === Type.Admin) {
         variables.createUserInput.location = data.location;
       }
-  
+
       const response = await createUserMutation({ variables });
       console.log("Response from FE: ", response);
-  
+
       if (response.errors) {
         response.errors.forEach((error: any) => {
           console.error(`GraphQL error message: ${error.message}`);
@@ -225,30 +227,20 @@ const CreateUser = () => {
       } else {
         // Save user ID to local storage
         const userId = response.data.createUser.id;
-        localStorage.setItem('userId', userId);
-  
+        localStorage.setItem("newUserId", '"' + userId.toString() + '"');
+
         toast.success("Create User Successfully");
-        console.log('User created successfully:', response);
-  
-        const users = JSON.parse(localStorage.getItem('users') || '[]');
-        const newUser = {
-          ...response.data.createUser,
-          index: users.length + 1
-        };
-        users.push(newUser);
-        localStorage.setItem('users', JSON.stringify(users));
-        router.push('/user')
+        console.log("User created successfully:", response);
+
+        router.push("/user");
       }
     } catch (error) {
       toast.error("Something went wrong! Please try again");
-      console.error('Error creating user:', error);
+      console.error("Error creating user:", error);
     } finally {
       setLoading(false);
     }
   };
-  
-  
-  
 
   return (
     <>
@@ -338,7 +330,8 @@ const CreateUser = () => {
                         {...field}
                         value={field.value}
                         onValueChange={field.onChange}
-                        className="flex cursor-pointer">
+                        className="flex cursor-pointer"
+                      >
                         <div className="flex items-center space-x-2">
                           <RadioGroupItem value={Gender.Male} id="option-one" />
                           <Label htmlFor="option-one">Male</Label>
@@ -402,7 +395,8 @@ const CreateUser = () => {
                         {...field}
                         value={field.value}
                         onValueChange={field.onChange}
-                        defaultValue={Type.Staff}>
+                        defaultValue={Type.Staff}
+                      >
                         <SelectTrigger>
                           <SelectValue
                             className="cursor-pointer"
@@ -437,10 +431,15 @@ const CreateUser = () => {
                           onValueChange={field.onChange}
                         >
                           <SelectTrigger>
-                            <SelectValue className="cursor-pointer" ref={field.ref} />
+                            <SelectValue
+                              className="cursor-pointer"
+                              ref={field.ref}
+                            />
                           </SelectTrigger>
                           <SelectContent className="bg-black text-white">
-                            <SelectItem value={Location.HCM}>Ho Chi Minh</SelectItem>
+                            <SelectItem value={Location.HCM}>
+                              Ho Chi Minh
+                            </SelectItem>
                             <SelectItem value={Location.HN}>Ha Noi</SelectItem>
                             <SelectItem value={Location.DN}>Da Nang</SelectItem>
                           </SelectContent>
@@ -458,7 +457,8 @@ const CreateUser = () => {
               <Button
                 type="submit"
                 className="bg-nashtech text-white mr-4 cursor-pointer"
-                disabled={!allFieldsFilled}>
+                disabled={!allFieldsFilled}
+              >
                 Save
               </Button>
               <Button type="button" onClick={() => setShowModalCancel(true)}>
@@ -471,7 +471,8 @@ const CreateUser = () => {
       <DetailModal
         isOpen={showModalCancel}
         onClose={handleCloseCancelModal}
-        title="Are you sure">
+        title="Are you sure"
+      >
         <div className="bg-white sm:p-6 sm:pb-4">
           <div className="sm:flex sm:items-start">
             <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
@@ -485,13 +486,15 @@ const CreateUser = () => {
           <Button
             type="button"
             className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-            onClick={() => setShowModalCancel(false)}>
+            onClick={() => setShowModalCancel(false)}
+          >
             Cancel
           </Button>
           <Button
             type="button"
             className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
-            onClick={handleDiscard}>
+            onClick={handleDiscard}
+          >
             Discard
           </Button>
         </div>

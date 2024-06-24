@@ -13,15 +13,21 @@ import { useAuth } from "@providers/auth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DetailModal from "@components/modal";
 import { useLoading } from "@providers/loading";
-import { restApiBase } from "@libs/restApi";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { USER } from "../../constants";
 import { Button } from "@components/ui/button";
+import { changePassword, logout } from "@services/auth";
+import { useParams, usePathname, useRouter } from "next/navigation";
+import { UserStoreType } from "../../types/user.type";
 
 // Define the User type based on your application's user structure
 const Navbar = () => {
-  const { activeItem, logout, user } = useAuth();
+  const { activeItem } = useAuth();
   const { setLoading }: any = useLoading();
+  const route = useRouter();
+  const pathname = usePathname();
+  const params = useParams();
+
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [confirmLogout, setConformLogout] = useState(false);
   const [showOldPassword, setShowOldPassword] = useState(false);
@@ -29,7 +35,7 @@ const Navbar = () => {
   const [oldPassword, setOldPassword] = useState<string>();
   const [newPassword, setNewPassword] = useState<string>();
   const [errorMsg, setErrorMsg] = useState("");
-  const [userCurrent, setUserCurrent] = useState<User | null>(null);
+  const [userCurrent, setUserCurrent] = useState<UserStoreType | null>(null);
 
   useEffect(() => {
     const storedUser = localStorage.getItem(USER);
@@ -55,39 +61,58 @@ const Navbar = () => {
   const toggleShowNewPassword = () => {
     setShowNewPassword(!showNewPassword);
   };
-  const handleChangePassword = async (oldPass: string, newPass: string) => {
-    try {
-      const result = await restApiBase(
-        { oldPassword: oldPass, newPassword: newPass },
-        "api/auth/change-password",
-        "PUT"
-      );
-      setLoading(false);
-      return result;
-    } catch (error) {
-      console.error(error);
-    }
-  };
   const handleSubmit = async () => {
     setLoading(true);
-    const result = await handleChangePassword(
-      oldPassword as string,
-      newPassword as string
-    );
-    if (!result) {
-      setErrorMsg("Old password is incorrect!");
-      return;
+    try {
+      const result = await changePassword(
+        oldPassword as string,
+        newPassword as string
+      );
+      if (result) {
+        route.push("/login");
+        setLoading(false);
+      }
+    } catch (error: any) {
+      setErrorMsg(error.message);
+      setLoading(false);
     }
-    setIsOpenModal(false);
-    logout();
   };
+
+  const handleLogout = async () => {
+    try {
+      setLoading(true);
+      const result = await logout();
+      if (result) {
+        setLoading(false);
+        route.push("/login");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const renderName = () => {
+    let result = activeItem?.name;
+    
+    if(pathname.includes("/create")){
+      result = `${activeItem?.name} > Create new ${activeItem?.component} `
+    }
+    if(Object.keys(params).length > 0){
+      result = `${activeItem?.name} > Edit ${activeItem?.component} `
+    }
+    return (
+      <>
+        {result}
+      </>
+    )
+  }
 
   return (
     <>
       <Disclosure as="nav" className="bg-nashtech text-white">
         <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
           <div className="relative flex h-16 items-center justify-between font-bold">
-            <div>{activeItem?.name}</div>
+            <div>{renderName()}</div>
             <div className="relative">
               <Menu as="div" className="relative inline-block text-left">
                 <div>
@@ -103,18 +128,20 @@ const Navbar = () => {
                   leave="transition ease-in duration-75"
                   leaveFrom="transform opacity-100 scale-100"
                   leaveTo="transform opacity-0 scale-95">
-                  <MenuItems className="absolute right-0 mt-2 w-40 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                  <MenuItems className="absolute right-0 mt-2 w-60 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                     <div className="p-3 flex justify-center flex-col">
-                      <div
+                      <Button
+                        variant="ghost"
                         className="hover:bg-nashtech hover:text-white text-black text-sm rounded px-2 cursor-pointer mb-2"
                         onClick={handleOpenDetailModal}>
                         Change Password
-                      </div>
-                      <div
+                      </Button>
+                      <Button
+                        variant="ghost"
                         className="hover:bg-nashtech hover:text-white text-black text-sm rounded cursor-pointer px-2"
                         onClick={handleOpenConfirm}>
                         Logout
-                      </div>
+                      </Button>
                     </div>
                   </MenuItems>
                 </Transition>
@@ -125,7 +152,8 @@ const Navbar = () => {
       </Disclosure>
       <DetailModal
         isOpen={isOpenModal}
-        onClose={handleCloseDetailModal}
+        onClose={() => {}}
+        isShowCloseIcon={false}
         title="Change Password">
         <div>
           <form
@@ -192,8 +220,14 @@ const Navbar = () => {
               <span className="text-nashtech text-xs italic">{errorMsg}</span>
             </div>
 
-            <div className="flex flex-row-reverse mt-2">
-              <button
+            <div className="flex flex-row-reverse mt-2 gap-5">
+              <Button
+                variant="outline"
+                onClick={handleCloseDetailModal}
+                type="button">
+                Cancel
+              </Button>
+              <Button
                 className={`bg-nashtech text-white py-1 px-3 rounded ${
                   !oldPassword && !newPassword
                     ? "opacity-50 cursor-not-allowed"
@@ -202,22 +236,30 @@ const Navbar = () => {
                 disabled={!oldPassword && !newPassword}
                 type="submit">
                 Save
-              </button>
+              </Button>
             </div>
           </form>
         </div>
       </DetailModal>
       <DetailModal
         isOpen={confirmLogout}
-        onClose={handleCloseDetailModal}
+        onClose={() => {}}
+        isShowCloseIcon={false}
         title="Are you sure ?">
         <div>
           <div>Do you want to logout ?</div>
           <div className="flex flex-row justify-center gap-3 mt-10">
-            <Button onClick={logout} className="bg-nashtech text-white">
+            <Button
+              onClick={handleLogout}
+              className="bg-nashtech text-white hover:opacity-75">
               Logout
             </Button>
-            <Button onClick={handleCloseDetailModal}>Cancel</Button>
+            <Button
+              variant="outline"
+              onClick={handleCloseDetailModal}
+              type="button">
+              Cancel
+            </Button>
           </div>
         </div>
       </DetailModal>

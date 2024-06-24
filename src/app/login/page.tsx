@@ -6,16 +6,16 @@ import { Disclosure } from "@headlessui/react";
 import Image from "next/image";
 
 import { useLoading } from "@providers/loading";
-import { useAuth } from "@providers/auth";
 import { useRouter } from "next/navigation";
+import { login } from "@services/auth";
+import { useAuth } from "@providers/auth";
 
 export const dynamic = 'force-dynamic';
 
 export default function Index() {
   const router = useRouter();
   const { setLoading }: any = useLoading();
-  const { handleLoginApi }: any = useAuth();
-
+  const {setUser, setToken}: any = useAuth();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -25,12 +25,15 @@ export default function Index() {
   const handleLogin = async () => {
     try {
       setLoading(true);
-      const result = await handleLoginApi(username, password);
+      const result = await login(username, password);
       setLoading(false);
       if (!result) {
         setErrorMsg("Username or password is incorrect. Please try again");
         return;
       }
+      const {accessToken, user} = result.data;
+      setUser(user);
+      setToken(accessToken);
       router.push("/home");
     } catch (error) {
       setErrorMsg("Username or password is incorrect. Please try again");
@@ -52,12 +55,12 @@ export default function Index() {
           </div>
         </div>
       </Disclosure>
-      <div className="w-full h-screen flex justify-center items-start mt-28">
-        <div className="border rounded border-black">
+      <div className="w-full h-auto flex justify-center items-start mt-28">
+        <div className="border rounded border-black w-auto">
           <div className="py-3 bg-cyangray rounded text-nashtech font-bold flex justify-center">
             <span>Welcome to Online Asset Management</span>
           </div>
-          <hr className="border border-black" />
+          <hr className="border-b border-black" />
           <div>
             <form
               className="w-full p-5"
