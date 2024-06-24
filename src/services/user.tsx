@@ -1,12 +1,17 @@
-import gql from 'graphql-tag';
-import axios from 'axios';
-import { FindUsersInput } from '../__generated__/graphql';
-import { disableUserQuery, fineOneUserQuery, findUsersQuery } from "./query/user.query";
+import gql from "graphql-tag";
+import axios from "axios";
+import { FindUsersInput } from "../__generated__/graphql";
+import {
+  disableUserQuery,
+  fineOneUserQuery,
+  findUsersQuery,
+} from "./query/user.query";
 import client from "@libs/graphQl/apolloClient";
 
 export const CREATE_USER_MUTATION = gql`
   mutation CreateUser($createUserInput: CreateUserInput!) {
     createUser(createUserInput: $createUserInput) {
+      id
       firstName
       lastName
       gender
@@ -120,9 +125,9 @@ export const createUser = async (
         joinedDate,
         dateOfBirth,
         type,
-        location
-      }
-    }
+        location,
+      },
+    },
   };
 
   const config = {
@@ -208,7 +213,7 @@ export const editUser = async (
 //   const config = {
 //     headers: {
 //       'Content-Type': 'application/json',
-//       'Authorization': `Bearer ${process.env.REACT_APP_API_TOKEN}`, 
+//       'Authorization': `Bearer ${process.env.REACT_APP_API_TOKEN}`,
 //     }
 //   };
 
@@ -221,7 +226,6 @@ export const editUser = async (
 //   }
 // };
 
-
 // CALL WITH GRAPHQL
 export const loadData = async (request: FindUsersInput) => {
   const result = await client.query({
@@ -233,22 +237,22 @@ export const loadData = async (request: FindUsersInput) => {
   };
 };
 
-export const loadDetail = async(id: number) => {
+export const loadDetail = async (id: number) => {
   const result = await client.query({
     query: fineOneUserQuery,
-    variables: {id}
+    variables: { id },
   });
   return {
-    data: result.data.user
-  }
-}
+    data: result.data.user,
+  };
+};
 
-export const disableUser = async(id: number) => {
+export const disableUser = async (id: number) => {
   const result = await client.mutate({
     mutation: disableUserQuery,
-    variables: {id}
+    variables: { id },
   });
   return {
-    data: result.data.disableUser
-  }
-}
+    data: result.data.disableUser,
+  };
+};
