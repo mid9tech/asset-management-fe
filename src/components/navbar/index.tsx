@@ -17,15 +17,16 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { USER } from "../../constants";
 import { Button } from "@components/ui/button";
 import { changePassword, logout } from "@services/auth";
-import { usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { UserStoreType } from "../../types/user.type";
 
 // Define the User type based on your application's user structure
 const Navbar = () => {
-  const { activeItem, setActiveItem } = useAuth();
+  const { activeItem } = useAuth();
   const { setLoading }: any = useLoading();
   const route = useRouter();
   const pathname = usePathname();
+  const params = useParams();
 
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [confirmLogout, setConformLogout] = useState(false);
@@ -92,10 +93,11 @@ const Navbar = () => {
 
   const renderName = () => {
     let result = activeItem?.name;
+    
     if(pathname.includes("/create")){
       result = `${activeItem?.name} > Create new ${activeItem?.component} `
     }
-    if(pathname.includes("/edit")){
+    if(Object.keys(params).length > 0){
       result = `${activeItem?.name} > Edit ${activeItem?.component} `
     }
     return (
@@ -104,8 +106,6 @@ const Navbar = () => {
       </>
     )
   }
-
-  console.log('activate', activeItem);
 
   return (
     <>

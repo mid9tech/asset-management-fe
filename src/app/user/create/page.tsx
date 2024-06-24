@@ -163,7 +163,7 @@ const CreateUser = ({ addUserToList }: { addUserToList: (user: User) => void }) 
   const {setActiveItem} = useAuth();
 
   useEffect(() => {
-    setActiveItem({ name: "Manage User", path: "/user" });
+    // setActiveItem({ name: "Manage User", path: "/user" });
   }, []);
 
   const handleCloseCancelModal = () => {

@@ -8,7 +8,12 @@ import { usePathname } from "next/navigation";
 const Sidebar = () => {
   const { activeItem, setActiveItem, menuItems } = useAuth();
   const pathname = usePathname();
-  
+
+  const matchPath = (pattern: string, path: string) => {
+    const regex = new RegExp(`^${pattern.replace(/:[^\s/]+/g, "([^\\s/]+)")}$`);
+    return regex.test(path);
+  };
+
   return (
     <div className="h-370 left-10 top-96 flex flex-col gap-1">
       <div className="flex flex-col justify-items-start py-6">
@@ -21,7 +26,7 @@ const Sidebar = () => {
           key={item.name}
           onClick={() => setActiveItem(item)}
           className={`p-3 cursor-pointer font-bold ${
-            item?.path.includes(pathname)
+            item.path.some((p) => matchPath(p, pathname))
               ? "bg-nashtech text-white"
               : "bg-bluegray hover:opacity-75"
           }`}>
