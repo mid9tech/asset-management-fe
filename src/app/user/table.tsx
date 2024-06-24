@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter,useSearchParams } from "next/navigation";
 
 import DetailModal from "@components/modal";
 import ReusableTable from "@components/table";
@@ -33,6 +33,7 @@ const UserManagement: React.FC = () => {
   const [showModalDetailUser, setShowModalDetailUser] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [listUser, setListUsers] = useState<User[] | []>();
+  const [dataUpdate, setDataUpdate] = useState<User | User[] | null>(null);
 
   const router = useRouter();
   const params = useSearchParams();
@@ -87,9 +88,13 @@ const UserManagement: React.FC = () => {
     setLoading(false);
   };
 
-  const handleNavigateEditUser = () => {
-    router.push("user/edit");
-  };
+  const handleNavigateEditUser = (user: User) => {
+    setDataUpdate(user);
+    console.log("user data update table: ", user);
+    router.push(`/user/${user.id}`);
+};
+
+
 
   const handleSortClick = (item: string) => {
     setSortOder((prevSortOrder) =>
@@ -205,7 +210,7 @@ const UserManagement: React.FC = () => {
           onRowClick={handleRowClick}
           onDeleteClick={handleDeleteClick}
           onSortClick={handleSortClick}
-          onEditClick={(e) => handleNavigateEditUser()}
+          onEditClick={handleNavigateEditUser}
           sortBy={sortBy}
           sortOrder={sortOrder}
         />

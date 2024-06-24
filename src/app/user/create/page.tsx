@@ -142,7 +142,7 @@ interface FormData {
   gender: Gender;
   joinedDate: string;
   type: Type;
-location: Location
+  location: Location
 }
 
 const CreateUser = () => {
@@ -177,7 +177,7 @@ const CreateUser = () => {
       gender: Gender.Female,
       joinedDate: "",
       type: Type.Staff,
-            location: Location.HCM 
+      location: Location.HCM 
     },
   });
 
