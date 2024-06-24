@@ -116,8 +116,6 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
     setLoading(false);
   };
 
-  const onSubmit = async (data: FormData) => {};
-
   return (
     <>
       <div className="container mx-auto p-4">

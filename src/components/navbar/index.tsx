@@ -18,6 +18,7 @@ import { USER } from "../../constants";
 import { Button } from "@components/ui/button";
 import { changePassword, logout } from "@services/auth";
 import { useRouter } from "next/navigation";
+import { UserStoreType } from "../../types/user.type";
 
 // Define the User type based on your application's user structure
 const Navbar = () => {
@@ -31,10 +32,10 @@ const Navbar = () => {
   const [oldPassword, setOldPassword] = useState<string>();
   const [newPassword, setNewPassword] = useState<string>();
   const [errorMsg, setErrorMsg] = useState("");
-  const [userCurrent, setUserCurrent] = useState<User | null>(null);
+  const [userCurrent, setUserCurrent] = useState<UserStoreType | null>(null);
 
   useEffect(() => {
-    const storedUser = sessionStorage.getItem(USER);
+    const storedUser = localStorage.getItem(USER);
     if (storedUser) {
       setUserCurrent(JSON.parse(storedUser));
       setLoading(false);

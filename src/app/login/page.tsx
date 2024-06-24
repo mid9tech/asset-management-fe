@@ -6,15 +6,16 @@ import { Disclosure } from "@headlessui/react";
 import Image from "next/image";
 
 import { useLoading } from "@providers/loading";
-import { useAuth } from "@providers/auth";
 import { useRouter } from "next/navigation";
 import { login } from "@services/auth";
+import { useAuth } from "@providers/auth";
 
 export const dynamic = 'force-dynamic';
 
 export default function Index() {
   const router = useRouter();
   const { setLoading }: any = useLoading();
+  const {setUser, setToken}: any = useAuth();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -30,6 +31,10 @@ export default function Index() {
         setErrorMsg("Username or password is incorrect. Please try again");
         return;
       }
+      console.log('result', result);
+      const {accessToken, user} = result.data;
+      setUser(user);
+      setToken(accessToken);
       router.push("/home");
     } catch (error) {
       setErrorMsg("Username or password is incorrect. Please try again");

@@ -15,9 +15,10 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useLoading } from "./loading";
 import LoginPage from "../app/login/page";
 import ErrorPage from "../app/error/page";
-import { ACCESS_TOKEN, USER } from "../constants";
 import { USER_TYPE } from "../types/enum.type";
 import { changePasswordFirstTimeLogin, logout } from "@services/auth";
+import { UserStoreType } from "../types/user.type";
+import { USER } from "../constants";
 
 type menuItem = {
   name: string;
@@ -27,10 +28,11 @@ type menuItem = {
 export const AuthContext = createContext<{
   token: string;
   setToken: Dispatch<SetStateAction<string>>;
+  setUser: Dispatch<SetStateAction<UserStoreType | null>>;
   activeItem: menuItem | undefined;
   setActiveItem: (item: menuItem) => void;
-  menuItems: menuItem[];
-  user: User | null;
+  menuItems: menuItem[] | undefined;
+  user: UserStoreType | null;
 } | null>(null);
 
 const menuForAdmin: menuItem[] = [
@@ -52,56 +54,51 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [token, setToken] = useState("");
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [password, setPassword] = useState("");
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserStoreType | null>(null);
   const [errorMsg, setErrorMsg] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [menu, setMenu] = useState<menuItem[]>([]);
-  
 
-  useEffect(() => {
-    const storedToken = sessionStorage.getItem(ACCESS_TOKEN);
-    const storedUser = sessionStorage.getItem(USER);
-    if (storedToken && storedUser) {
-      setToken(storedToken);
-      setUser(JSON.parse(storedUser));
-      setLoading(false);
-    } else {
-      router.push("/login");
-    }
-  }, []);
+  const [menu, setMenu] = useState<menuItem[]>();
+  const [activeItem, setActiveItem] = useState<menuItem | undefined>(undefined);
 
   useEffect(() => {
     if (user) {
-      if (user.role === USER_TYPE.ADMIN) {
-        setMenu(menuForAdmin);
-      } else if (user.role === USER_TYPE.STAFF) {
-        setMenu(menuForUsers);
-      } else {
-        router.push("/error");
+      switch (user.role) {
+        case USER_TYPE.ADMIN:
+          setMenu(menuForAdmin);
+          break;
+        case USER_TYPE.STAFF:
+          setMenu(menuForUsers);
+          break;
+        default:
+          router.push("/error");
+          break;
       }
       if (!user.isActived) {
         setIsOpenModal(true);
       }
     }
-  }, [user]);
+  }, [user, activeItem]);
 
   useEffect(() => {
-    const currentItem = menu.find((item) => item.path === pathname);
+    const currentItem = menu?.find((item) => item.path === pathname);
+    const userStorage = localStorage.getItem(USER);
+    setUser(JSON.parse(userStorage as string));
     setActiveItem(currentItem);
-  }, [pathname, menu]);
-
-  const [activeItem, setActiveItem] = useState<menuItem | undefined>(undefined);
+  }, [pathname, menu, activeItem]);
 
   const handleSubmit = async () => {
     setLoading(true);
-    Promise.all([changePasswordFirstTimeLogin(password), logout]).then(() => {
+    try {
+      await changePasswordFirstTimeLogin(password);
+      await logout();
       setIsOpenModal(false);
-      setLoading(false);
       router.push("/login");
-    }).catch((error) => {
+    } catch (error: any) {
       setErrorMsg(error.message);
+    } finally {
       setLoading(false);
-    })
+    }
   };
 
   const toggleShowPassword = () => {
@@ -109,7 +106,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const excludedPaths = ["/login"];
-  if (excludedPaths.includes(pathname)) {
+  const errorPaths = ["/error"];
+  if (excludedPaths.includes(pathname) || errorPaths.includes(pathname)) {
     return (
       <AuthContext.Provider
         value={{
@@ -118,26 +116,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           setActiveItem,
           token,
           setToken,
+          setUser,
           user,
         }}>
-        <LoginPage />
-      </AuthContext.Provider>
-    );
-  }
-
-  const errorPath = ["/error"];
-  if (errorPath.includes(pathname)) {
-    return (
-      <AuthContext.Provider
-        value={{
-          menuItems: menu,
-          activeItem,
-          setActiveItem,
-          token,
-          setToken,
-          user,
-        }}>
-        <ErrorPage />
+        {excludedPaths.includes(pathname) ? <LoginPage /> : <ErrorPage />}
       </AuthContext.Provider>
     );
   }
@@ -150,6 +132,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setActiveItem,
         token,
         setToken,
+        setUser,
         user,
       }}>
       {children}
