@@ -153,7 +153,7 @@ interface FormData {
   location: Location
 }
 
-const CreateUser = ({ addUserToList }: { addUserToList: (user: User) => void }) => {
+const CreateUser = () => {
     const [createUserMutation] = useMutation(CREATE_USER_MUTATION);
     const { setLoading }: any = useLoading();
 

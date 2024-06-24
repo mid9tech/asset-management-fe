@@ -15,7 +15,20 @@ export const CREATE_USER_MUTATION = gql`
     }
   }
 `;
-
+const GET_USER_QUERY = gql`
+  query GetUser($id: ID!) {
+    user(id: $id) {
+      id
+      firstName
+      lastName
+      dateOfBirth
+      gender
+      joinedDate
+      type
+      location
+    }
+  }
+`;
 const EDIT_USER_MUTATION = `
   mutation UpdateUser($updateUserInput: UpdateUserInput!, $id: Number) {
     updateUser(updateUserInput: $updateUserInput) {
@@ -38,7 +51,7 @@ const DISABLE_USER_MUTATION = `
 
 const GET_LIST_USER_QUERY = `
   query FindUsers {
-    findUsers(request: FindUsersInput! 
+    findUsers(request: FindUsersInput!
     ) {
         id
         firstName
