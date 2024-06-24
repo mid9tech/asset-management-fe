@@ -9,15 +9,16 @@ import React, {
   Dispatch,
   SetStateAction,
 } from "react";
-import { restApiBase } from "@libs/restApi";
 import DetailModal from "@components/modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useLoading } from "./loading";
 import LoginPage from "../app/login/page";
 import ErrorPage from "../app/error/page";
-import { ACCESS_TOKEN, USER } from "../constants";
 import { USER_TYPE } from "../types/enum.type";
+import { changePasswordFirstTimeLogin, logout } from "@services/auth";
+import { UserStoreType } from "../types/user.type";
+import { USER } from "../constants";
 
 type menuItem = {
   name: string;
@@ -27,12 +28,11 @@ type menuItem = {
 export const AuthContext = createContext<{
   token: string;
   setToken: Dispatch<SetStateAction<string>>;
+  setUser: Dispatch<SetStateAction<UserStoreType | null>>;
   activeItem: menuItem | undefined;
   setActiveItem: (item: menuItem) => void;
-  menuItems: menuItem[];
-  logout: () => void;
-  handleLoginApi: (username: string, password: string) => void;
-  user: User | null;
+  menuItems: menuItem[] | undefined;
+  user: UserStoreType | null;
 } | null>(null);
 
 const menuForAdmin: menuItem[] = [
@@ -48,117 +48,55 @@ const menuForUsers: menuItem[] = [{ name: "Home", path: "/home" }];
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
-  const [token, setToken] = useState("");
-  const [isOpenModal, setIsOpenModal] = useState(false);
-  const [password, setPassword] = useState("");
-  const [user, setUser] = useState<User | null>(null);
-  const [errorMsg, setErrorMsg] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [menu, setMenu] = useState<menuItem[]>([]);
   const pathname = usePathname();
   const { setLoading }: any = useLoading();
 
-  useEffect(() => {
-    const storedToken = localStorage.getItem(ACCESS_TOKEN);
-    const storedUser = localStorage.getItem(USER);
-    if (storedToken && storedUser) {
-      setToken(storedToken);
-      setUser(JSON.parse(storedUser));
-      setLoading(false);
-    } else {
-      router.push("/login");
-    }
-  }, []);
+  const [token, setToken] = useState("");
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [password, setPassword] = useState("");
+  const [user, setUser] = useState<UserStoreType | null>(null);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const [menu, setMenu] = useState<menuItem[]>();
+  const [activeItem, setActiveItem] = useState<menuItem | undefined>(undefined);
 
   useEffect(() => {
     if (user) {
-      if (user.role === USER_TYPE.ADMIN) {
-        setMenu(menuForAdmin);
-      } else if (user.role === USER_TYPE.STAFF) {
-        setMenu(menuForUsers);
-      } else {
-        // Redirect or handle unauthorized access
-        router.push("/error");
+      switch (user.role) {
+        case USER_TYPE.ADMIN:
+          setMenu(menuForAdmin);
+          break;
+        case USER_TYPE.STAFF:
+          setMenu(menuForUsers);
+          break;
+        default:
+          router.push("/error");
+          break;
       }
       if (!user.isActived) {
         setIsOpenModal(true);
       }
     }
-  }, [user]);
+  }, [user, activeItem]);
 
   useEffect(() => {
-    const currentItem = menu.find((item) => item.path === pathname);
+    const currentItem = menu?.find((item) => item.path === pathname);
+    const userStorage = localStorage.getItem(USER);
+    setUser(JSON.parse(userStorage as string));
     setActiveItem(currentItem);
-  }, [pathname, menu]);
-
-  const [activeItem, setActiveItem] = useState<menuItem | undefined>(undefined);
-
-  const logout = async () => {
-    setLoading(true);
-    await handleLogoutApi();
-    setToken("");
-    router.push("/login");
-  };
-
-  const handleLoginApi = async (username: string, password: string) => {
-    try {
-      const result = await restApiBase(
-        { username, password },
-        "api/auth/login"
-      );
-      if (result) {
-        localStorage.setItem(ACCESS_TOKEN, result.data.accessToken);
-        localStorage.setItem(USER, JSON.stringify(result.data.user));
-        setToken(result.data.accessToken);
-        setUser(result.data.user);
-        return result;
-      }
-    } catch (error: any) {
-      console.log(error);
-      throw new Error(error);
-    }
-  };
+  }, [pathname, menu, activeItem]);
 
   const handleSubmit = async () => {
     setLoading(true);
-    await handleChangePasswordFirstLoginApi(password);
-    setIsOpenModal(false);
-    await handleLogoutApi();
-    router.push("/login");
-  };
-
-  const handleChangePasswordFirstLoginApi = async (password: string) => {
     try {
-      const response = await restApiBase(
-        { newPassword: password },
-        "api/auth/change-password"
-      );
-      if (!response) {
-        throw new Error();
-      }
-      setToken(response?.data.accessToken);
-      setUser(response?.data.user);
-      localStorage.setItem(ACCESS_TOKEN, response?.data.accessToken);
-      localStorage.setItem(USER, JSON.stringify(response?.data.user));
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
-  };
-
-  const handleLogoutApi = async () => {
-    try {
-      const result = await restApiBase({}, "api/auth/logout");
-      if (!result) {
-        throw new Error();
-      }
-      localStorage.removeItem(ACCESS_TOKEN);
-      localStorage.removeItem(USER);
-      setUser(null);
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
+      await changePasswordFirstTimeLogin(password);
+      await logout();
+      setIsOpenModal(false);
+      router.push("/login");
+    } catch (error: any) {
+      setErrorMsg(error.message);
+    } finally {
       setLoading(false);
     }
   };
@@ -168,7 +106,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const excludedPaths = ["/login"];
-  if (excludedPaths.includes(pathname)) {
+  const errorPaths = ["/error"];
+  if (excludedPaths.includes(pathname) || errorPaths.includes(pathname)) {
     return (
       <AuthContext.Provider
         value={{
@@ -177,30 +116,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           setActiveItem,
           token,
           setToken,
-          logout,
-          handleLoginApi,
+          setUser,
           user,
         }}>
-        <LoginPage />
-      </AuthContext.Provider>
-    );
-  }
-
-  const errorPath = ["/error"];
-  if (errorPath.includes(pathname)) {
-    return (
-      <AuthContext.Provider
-        value={{
-          menuItems: menu,
-          activeItem,
-          setActiveItem,
-          token,
-          setToken,
-          logout,
-          handleLoginApi,
-          user,
-        }}>
-        <ErrorPage />
+        {excludedPaths.includes(pathname) ? <LoginPage /> : <ErrorPage />}
       </AuthContext.Provider>
     );
   }
@@ -213,22 +132,25 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setActiveItem,
         token,
         setToken,
-        logout,
-        handleLoginApi,
+        setUser,
         user,
       }}>
       {children}
       <DetailModal
         isOpen={isOpenModal}
         onClose={() => setIsOpenModal(true)}
+        isShowCloseIcon={false}
         title="Change Password">
-        <div>
-          <div className="italic">This is the first time you logged in.</div>
-          <div className="italic">
-            You have to change your password to continue.
+        <div className="flex flex-col gap-10">
+          <div>
+            <div className="italic">This is the first time you logged in.</div>
+            <div className="italic">
+              You have to change your password to continue.
+            </div>
           </div>
+
           <form
-            className="w-full p-5"
+            className="w-full "
             onSubmit={(e) => {
               e.preventDefault();
               handleSubmit();
@@ -236,7 +158,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             <div className="md:flex md:items-center mb-3 relative">
               <div className="md:w-1/3">
                 <label className="block text-gray-700 mb-1 md:mb-0 pr-4">
-                  New Password
+                  New Password <span className="text-red-500">*</span>
                 </label>
               </div>
               <div className="md:w-2/3 relative">

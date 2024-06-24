@@ -39,11 +39,6 @@ const ReusableTable = <T extends {}>({
   sortBy,
   sortOrder,
 }: ReusableTableProps<T>) => {
-  if (sortBy === "lastName") {
-    sortBy = "fullName";
-  } else if (sortBy === "joinedDate") {
-    sortBy = "joinedAt";
-  }
 
   return (
     <Table>
