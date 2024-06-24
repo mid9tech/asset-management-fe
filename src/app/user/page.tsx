@@ -67,7 +67,7 @@ export default function Index() {
       })
     );
 
-    if (newestUserId !== "0") {
+    if (newestUserId !== "0" && newestUserId) {
       const newestUserIndex = listUserCustome.findIndex(
         (user: User) => user.id === newestUserId
       );
