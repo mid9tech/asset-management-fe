@@ -31,7 +31,6 @@ export default function Index() {
         setErrorMsg("Username or password is incorrect. Please try again");
         return;
       }
-      console.log('result', result);
       const {accessToken, user} = result.data;
       setUser(user);
       setToken(accessToken);

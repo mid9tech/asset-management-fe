@@ -152,11 +152,6 @@ const CreateUser = () => {
 
   const [showModalCancel, setShowModalCancel] = useState(false);
   const router = useRouter();
-  const {setActiveItem} = useAuth();
-
-  useEffect(() => {
-    setActiveItem({ name: "Manage User", path: "/user" });
-  }, []);
 
   const handleCloseCancelModal = () => {
     setShowModalCancel(false);
