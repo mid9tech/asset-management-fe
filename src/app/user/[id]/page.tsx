@@ -157,8 +157,8 @@ const EditUser = ({ params }: { params: { id: string } }) => {
         if (userData) {
             setDataUpdate(userData.user);
         }
-    }, [userData]);
-
+    }, [userData, setActiveItem]);
+    
     useEffect(() => {
         if (userData) {
             setDataUpdate({
@@ -168,6 +168,7 @@ const EditUser = ({ params }: { params: { id: string } }) => {
             });
         }
     }, [userData]);
+    
 
     const handleCloseCancelModal = () => {
         setShowModalCancel(false);
