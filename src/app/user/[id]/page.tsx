@@ -25,7 +25,7 @@ import { Input } from "@components/ui/input";
 import { differenceInYears, isAfter, isWeekend } from "date-fns";
 import { useEffect, useState } from "react";
 import DetailModal from "@components/modal";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { EDIT_USER_MUTATION, GET_USER_BY_ID_QUERY } from "@services/user";
 import { useMutation, useQuery } from "@apollo/client";
 import { useLoading } from "@providers/loading";
