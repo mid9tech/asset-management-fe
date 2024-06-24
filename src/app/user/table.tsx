@@ -55,13 +55,20 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
   const [showModalRemoveUser, setShowModalRemoveUser] = useState(false);
   const [showModalDetailUser, setShowModalDetailUser] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [listUser, setListUsers] = useState<User[] | []>();
+  const [dataUpdate, setDataUpdate] = useState<User | User[] | null>(null);
 
   const router = useRouter();
   const { setLoading }: any = useLoading();
 
-  const handleNavigateEditUser = () => {
-    router.push("user/edit");
-  };
+  
+  const handleNavigateEditUser = (user: User) => {
+    setDataUpdate(user);
+    console.log("user data update table: ", user);
+    router.push(`/user/${user.id}`);
+};
+
+
 
   const handleSortClick = (item: string) => {
     let defaultOrder = SORT_ORDER.ASC;
@@ -145,7 +152,7 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
           onRowClick={handleRowClick}
           onDeleteClick={handleDeleteClick}
           onSortClick={handleSortClick}
-          onEditClick={() => handleNavigateEditUser()}
+          onEditClick={ handleNavigateEditUser}
           sortBy={sortBy === "firstName" ? "fullName" : sortBy}
           sortOrder={sortOrder}
         />
