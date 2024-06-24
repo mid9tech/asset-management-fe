@@ -25,11 +25,12 @@ import { Input } from "@components/ui/input";
 import { differenceInYears, isAfter, isWeekend } from "date-fns";
 import { useEffect, useState } from "react";
 import DetailModal from "@components/modal";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { EDIT_USER_MUTATION, GET_USER_BY_ID_QUERY } from "@services/user";
 import { useMutation, useQuery } from "@apollo/client";
 import { useLoading } from "@providers/loading";
 import { useAuth } from "@providers/auth";
+import { menuItem } from "../../../types/menu.type";
 
 enum Gender {
   Male = "MALE",
@@ -141,7 +142,7 @@ const EditUser = ({ params }: { params: { id: string } }) => {
     const { setLoading }: any = useLoading();
     const [showModalCancel, setShowModalCancel] = useState(false);
     const router = useRouter();
-    const { setActiveItem } = useAuth();
+    const { setActiveItem, menuItems } = useAuth();
     console.log("param ::: ", params);
 
     const { data: userData } = useQuery(GET_USER_BY_ID_QUERY, {
@@ -152,12 +153,14 @@ const EditUser = ({ params }: { params: { id: string } }) => {
 
     const [dataUpdate, setDataUpdate] = useState<FormData | null>(null);
 
-    // useEffect(() => {
-    //     setActiveItem({ name: "Manage User", path: "/user" });
-    //     if (userData) {
-    //         setDataUpdate(userData.user);
-    //     }
-    // }, [userData, setActiveItem]);
+    useEffect(() => {
+        if(menuItems) {
+            setActiveItem(menuItems?.find(item => item.component === 'User') as menuItem);
+        }
+        if (userData) {
+            setDataUpdate(userData.user);
+        }
+    }, [userData, setActiveItem]);
     
     useEffect(() => {
         if (userData) {
@@ -230,6 +233,8 @@ const EditUser = ({ params }: { params: { id: string } }) => {
                     console.error(`GraphQL error message: ${error.message}`);
                 });
             } else {
+                const userId = response.data.updateUser.id;
+        localStorage.setItem("newUserId", '"' + userId.toString() + '"');
                 router.push('/user');
                 toast.success("Edit User Successfully");
                 console.log('User updated successfully:', response);

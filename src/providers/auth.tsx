@@ -35,7 +35,7 @@ const menuForAdmin: menuItem[] = [
   { name: "Home", path: ["/home"], component: "Home" },
   {
     name: "Manage User",
-    path: ["/user", "/user/create", "/user/edit"],
+    path: ["/user", "/user/create", "/user/:id"],
     component: "User",
   },
   { name: "Manage Asset", path: ["/asset"], component: "Asset" },

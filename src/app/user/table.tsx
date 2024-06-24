@@ -18,10 +18,6 @@ import Pagination from "@components/pagination";
 import { Button } from "@components/ui/button";
 import { toast } from "react-toastify";
 
-interface FormData {
-  id: string;
-}
-
 interface UserManagementProps {
   data: User[];
   totalPages: number;
