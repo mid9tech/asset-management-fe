@@ -26,31 +26,38 @@ export const restApiBase = async (
     const response = await axios(config);
     return response;
   } catch (error: any) {
-    if (
-      error.response.data.message === "Unauthorized" &&
-      error.response.data.statusCode === 401
-    ) {
-      axios({
-        baseURL: `${baseUrl}api/auth/refresh-access`,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-        withCredentials: true,
-      })
-        .then(async (rs) => {
-          const { accessToken } = rs.data;
-          localStorage.setItem(ACCESS_TOKEN, accessToken);
-          if (config.headers) {
-            config.headers.authorization = `Bearer ${data}`;
-          }
-          const retryResponse = await axios(config);
-          return retryResponse;
+    if (error.response) {
+      if (
+        error.response.data.message === "Unauthorized" &&
+        error.response.data.statusCode === 401
+      ) {
+        axios({
+          baseURL: `${baseUrl}api/auth/refresh-access`,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          method: "POST",
+          withCredentials: true,
         })
-        .catch((err) => {
-          console.log("error", err);
-          throw err;
-        });
+          .then(async (rs) => {
+            const { accessToken } = rs.data;
+            localStorage.setItem(ACCESS_TOKEN, accessToken);
+            if (config.headers) {
+              config.headers.authorization = `Bearer ${data}`;
+            }
+            const retryResponse = await axios(config);
+            return retryResponse;
+          })
+          .catch((err) => {
+            console.log("error at axios", err);
+            throw err;
+          });
+      } else {
+        throw error;
+      }
+    } else {
+      console.log("Network or other error", error);
+      throw error;
     }
   }
 };

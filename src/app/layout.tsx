@@ -8,7 +8,7 @@ import { LoadingProvider } from "@providers/loading";
 import ApolloCustomProvider from "@providers/apollo";
 
 import { ToastContainer, toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css'
+import "react-toastify/dist/ReactToastify.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,37 +22,36 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={inter.className}>
       <body>
         <LoadingProvider>
-        <AuthProvider>
-          <ApolloCustomProvider>
-
-            <Navbar />
-            <div className="grid grid-cols-10 gap-4">
-              <div className="col-start-2 col-span-8">
-                <div className="grid sm:grid-cols-1 md:grid-cols-5 lg:grid-cols-5 gap-10">
-                  <div>
-                    <Sidebar />
-                  </div>
-                  <div className="col-span-4 p-5">
-                    <div className="mt-20">{children}</div>
+          <AuthProvider>
+            <ApolloCustomProvider>
+              <Navbar />
+              <div className="grid grid-cols-10 gap-4">
+                <div className="col-start-2 col-span-8">
+                  <div className="grid sm:grid-cols-1 md:grid-cols-5 lg:grid-cols-5 gap-10">
+                    <div>
+                      <Sidebar />
+                    </div>
+                    <div className="col-span-4 p-5">
+                      <div className="mt-14">{children}</div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
             </ApolloCustomProvider>
             <ToastContainer
-                position="top-right"
-                autoClose={3000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="light"
+              position="top-right"
+              autoClose={3000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="light"
             />
           </AuthProvider>
         </LoadingProvider>

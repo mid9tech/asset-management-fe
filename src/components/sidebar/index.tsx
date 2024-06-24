@@ -2,10 +2,10 @@
 
 import { useAuth } from "@providers/auth";
 import Image from "next/image";
+import Link from "next/link";
 
 const Sidebar = () => {
   const { activeItem, setActiveItem, menuItems } = useAuth();
-  console.log('activeItem', activeItem);
   
   return (
     <div className="h-370 left-10 top-96 flex flex-col gap-1">
@@ -13,8 +13,8 @@ const Sidebar = () => {
         <Image src="/Logo_lk.png" alt="Logo" width={80} height={80} />
         <div className="text-nashtech font-bold">Online Asset Management</div>
       </div>
-      {menuItems.map((item) => (
-        <a
+      {menuItems?.map((item) => (
+        <Link
           href={item.path}
           key={item.name}
           onClick={() => setActiveItem(item)}
@@ -24,7 +24,7 @@ const Sidebar = () => {
               : "bg-bluegray hover:opacity-75"
           }`}>
           {item.name}
-        </a>
+        </Link>
       ))}
     </div>
   );
