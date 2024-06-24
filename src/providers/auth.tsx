@@ -39,7 +39,7 @@ const menuForAdmin: menuItem[] = [
     component: "User",
   },
   { name: "Manage Asset", path: ["/asset"], component: "Asset" },
-  { name: "Manage Assignment", path: ["/assignment"], component: "Assignment" },
+  { name: "Manage Assignment", path: ["/assignment", "/assignment/create", "/assignment/:id"], component: "Assignment" },
   {
     name: "Request For Return",
     path: ["/request-returning"],
