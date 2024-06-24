@@ -17,14 +17,16 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { USER } from "../../constants";
 import { Button } from "@components/ui/button";
 import { changePassword, logout } from "@services/auth";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { UserStoreType } from "../../types/user.type";
 
 // Define the User type based on your application's user structure
 const Navbar = () => {
-  const { activeItem, user } = useAuth();
+  const { activeItem, setActiveItem } = useAuth();
   const { setLoading }: any = useLoading();
   const route = useRouter();
+  const pathname = usePathname();
+
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [confirmLogout, setConformLogout] = useState(false);
   const [showOldPassword, setShowOldPassword] = useState(false);
@@ -87,6 +89,8 @@ const Navbar = () => {
       console.log(error);
     }
   };
+
+  console.log('activate', activeItem);
 
   return (
     <>
@@ -230,7 +234,9 @@ const Navbar = () => {
         <div>
           <div>Do you want to logout ?</div>
           <div className="flex flex-row justify-center gap-3 mt-10">
-            <Button onClick={handleLogout} className="bg-nashtech text-white hover:opacity-75">
+            <Button
+              onClick={handleLogout}
+              className="bg-nashtech text-white hover:opacity-75">
               Logout
             </Button>
             <Button
