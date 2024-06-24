@@ -233,6 +233,8 @@ const EditUser = ({ params }: { params: { id: string } }) => {
                     console.error(`GraphQL error message: ${error.message}`);
                 });
             } else {
+                const userId = response.data.updateUser.id;
+        localStorage.setItem("newUserId", '"' + userId.toString() + '"');
                 router.push('/user');
                 toast.success("Edit User Successfully");
                 console.log('User updated successfully:', response);

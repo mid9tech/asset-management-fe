@@ -28,6 +28,7 @@ export const EDIT_USER_MUTATION = gql`
   mutation UpdateUser($id: Float!, $updateUserInput: UpdateUserInput!) {
     updateUser(id: $id, 
       updateUserInput: $updateUserInput) {
+      id
       firstName
       lastName
       gender
@@ -48,7 +49,7 @@ const DISABLE_USER_MUTATION = `
 
 const GET_LIST_USER_QUERY = `
   query FindUsers {
-    findUsers(request: FindUsersInput! 
+    findUsers(request: FindUsersInput!
     ) {
         id
         firstName
