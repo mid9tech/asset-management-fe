@@ -1,7 +1,7 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
+import {Fragment} from 'react'
 import { useLoading } from "@providers/loading";
-import { Fragment, Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { SORT_ORDER, USER_TYPE } from "../../types/enum.type";
 import { formatDate } from "@utils/timeFormat";
 import { loadData, loadDetail } from "@services/user";
