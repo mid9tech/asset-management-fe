@@ -8,11 +8,11 @@ const nextConfig = {
     return [
       {
         source: `/api/:path*`,
-        destination: `${process.env.NEXT_PUBLIC_URL_SERVER}/api/:path*`,
+        destination: `${process.env.NEXT_PUBLIC_URL_SERVER === undefined ? 'http://localhost:8080' : process.env.NEXT_PUBLIC_URL_SERVER}/api/:path*`,
       },
       {
         source: `/graphql/:path*`,
-        destination: `${process.env.NEXT_PUBLIC_URL_SERVER}/graphql/:path*`,
+        destination: `${process.env.NEXT_PUBLIC_URL_SERVER === undefined ? 'http://localhost:8080' : process.env.NEXT_PUBLIC_URL_SERVER}/graphql/:path*`,
       },
     ];
   },
