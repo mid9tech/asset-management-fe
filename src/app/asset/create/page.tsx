@@ -18,6 +18,7 @@ import { useLoading } from "@providers/loading";
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import { CREATE_ASSET_MUTATION } from "@services/query/asset.query";
+import Category from "../category";
 
 enum State {
     AVAILABLE = "AVAILABLE",
@@ -38,7 +39,7 @@ const CreateAsset = () => {
     const { setLoading }: any = useLoading();
 
     const [showModalCancel, setShowModalCancel] = useState(false);
-    const [showNewCategoryInput, setShowNewCategoryInput] = useState(false);
+    // const [showNewCategoryInput, setShowNewCategoryInput] = useState(false);
     const [newCategory, setNewCategory] = useState("");
     const [abbreviation, setAbbreviation] = useState("");
     const router = useRouter();
@@ -53,41 +54,41 @@ const CreateAsset = () => {
         router.push("/asset");
     };
 
-    const handleAddNewCategory = () => {
-        setShowNewCategoryInput(true);
-    };
+    // const handleAddNewCategory = () => {
+    //     setShowNewCategoryInput(true);
+    // };
 
-    const { data,refetch } = useQuery(GET_CATEGORY_QUERY);
+    // const { data,refetch } = useQuery(GET_CATEGORY_QUERY);
 
-    const handleSaveNewCategory = async () => {
-        try {
-            const variables: any = {
-                createCategoryInput: {
-                    categoryCode: abbreviation,
-                    categoryName: newCategory
-                }
-            }
-            const response = await createCategoryMutation({ variables });
-            if (response.errors) {
-                response.errors.forEach((error: any) => {
-                    toast.error(error.message);
-                });
-            } else {
-                await refetch();
-                setShowNewCategoryInput(false);
-            }
-        } catch (error: any) {
-            toast.error(error.message || "Something went wrong! Please try again");
-            console.error("Error creating new category:", error);
-        }
-    };
+    // const handleSaveNewCategory = async () => {
+    //     try {
+    //         const variables: any = {
+    //             createCategoryInput: {
+    //                 categoryCode: abbreviation,
+    //                 categoryName: newCategory
+    //             }
+    //         }
+    //         const response = await createCategoryMutation({ variables });
+    //         if (response.errors) {
+    //             response.errors.forEach((error: any) => {
+    //                 toast.error(error.message);
+    //             });
+    //         } else {
+    //             await refetch();
+    //             setShowNewCategoryInput(false);
+    //         }
+    //     } catch (error: any) {
+    //         toast.error(error.message || "Something went wrong! Please try again");
+    //         console.error("Error creating new category:", error);
+    //     }
+    // };
     
 
-    const handleCancelNewCategory = () => {
-        setShowNewCategoryInput(false);
-        setNewCategory("");
-        setAbbreviation("");
-    };
+    // const handleCancelNewCategory = () => {
+    //     setShowNewCategoryInput(false);
+    //     setNewCategory("");
+    //     setAbbreviation("");
+    // };
 
     const form = useForm<FormData>({
         mode: "onChange",
@@ -192,7 +193,7 @@ const CreateAsset = () => {
                                                             ref={field.ref}
                                                         />
                                                     </SelectTrigger>
-                                                    <SelectContent className="bg-graycustom2 text-black w-full h-[250px] overflow-scroll">
+                                                    {/* <SelectContent className="bg-graycustom2 text-black w-full h-[250px] overflow-scroll">
                                                         {data?.getCategories.map((category: any) => (
                                                             <SelectItem key={category?.id} value={category?.id}>
                                                                 {category?.categoryName}
@@ -222,7 +223,8 @@ const CreateAsset = () => {
                                                                 Add New Category
                                                             </p>
                                                         )}
-                                                    </SelectContent>
+                                                    </SelectContent> */}
+                                                    <Category/>
                                                 </Select>
                                             </>
                                         </FormControl>

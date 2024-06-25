@@ -5,6 +5,7 @@ import { SORT_ORDER, USER_TYPE } from "../../types/enum.type";
 import { formatDate } from "@utils/timeFormat";
 import { loadData, loadDetail } from "@services/user";
 import { Asset, User } from "../../__generated__/graphql";
+import AssetManagement from "./table";
 // import AssetManagement from "./table";
 export const dynamic = "force-dynamic";
 
@@ -119,8 +120,8 @@ export default function Index({
   return (
     <Fragment>
     <Suspense >
-      {/* <UserManagement
-        data={listUser as User[]}
+      <AssetManagement
+        data={listAsset as Asset[]}
         totalPages={totlaPage as number}
         currentPage={currentPage}
         sortBy={sortBy}
@@ -128,7 +129,7 @@ export default function Index({
         setSortBy={setSortBy}
         setSortOder={setSortOder}
         setCurrentPage={setCurrentPage}
-      /> */}
+      />
     </Suspense>
   </Fragment>
   );
