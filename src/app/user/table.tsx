@@ -57,15 +57,11 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
   const router = useRouter();
   const { setLoading }: any = useLoading();
 
-  
   const handleNavigateEditUser = (user: User) => {
     setDataUpdate(user);
     console.log("user data update table: ", user);
     router.push(`/user/${user.id}`);
 };
-
-
-
   const handleSortClick = (item: string) => {
     let defaultOrder = SORT_ORDER.ASC;
     if (sortBy === item || (sortBy === "firstName" && item === "fullName")) {

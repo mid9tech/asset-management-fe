@@ -1,6 +1,5 @@
 import { ASSIGNMENT_STATUS } from "./enum.type";
-
-export type CreateAssignmentType = {
+export type AssignmentType = {
   assetCode: string;
   assetName: string;
   assetId: number;
