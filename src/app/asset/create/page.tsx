@@ -1,25 +1,12 @@
 "use client";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
-import { z, ZodSchema } from "zod";
 import { Button } from "@components/ui/button";
 import { Label } from "@components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@components/ui/radio-group";
 import { toast } from "react-toastify";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+import {Select,SelectContent,SelectItem,SelectTrigger,SelectValue,
 } from "@components/ui/select";
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage,
 } from "@components/ui/form";
 import { Input } from "@components/ui/input";
 import { useEffect, useState } from "react";
@@ -36,32 +23,6 @@ enum State {
     AVAILABLE = "AVAILABLE",
     NOT_AVAILABLE = "NOT_AVAILABLE"
 }
-
-const formSchema: ZodSchema = z
-    .object({
-        name: z
-            .string()
-            .min(1, { message: "Name is missing" })
-            .regex(/^[a-zA-Z0-9_ ]+$/, {
-                message: "Must contain alphabetic characters",
-            })
-            .max(128, {
-                message: "Name can't be more than 128 characters",
-            })
-            .refine((val) => /[a-zA-Z]/.test(val), {
-                message: "Name is invalid",
-            }),
-        categoryId: z
-            .string()
-            .min(1, { message: "Category is missing" }),
-        specification: z
-            .string()
-            .min(1, { message: "Specification is missing" }),
-        installedDate: z
-            .string()
-            .min(1, { message: "Installed Date is missing" }),
-        state: z.nativeEnum(State),
-    });
 
 interface FormData {
     name: string;
@@ -107,23 +68,20 @@ const CreateAsset = () => {
                 }
             }
             const response = await createCategoryMutation({ variables });
-            console.log("res: ", response);
-
             if (response.errors) {
                 response.errors.forEach((error: any) => {
-                    console.error(`GraphQL error message: ${error.message}`);
+                    toast.error(error.message);
                 });
-                toast.error("Error creating new category");
             } else {
-                toast.success("New category created successfully");
-                setShowNewCategoryInput(false);
                 await refetch();
+                setShowNewCategoryInput(false);
             }
-        } catch (error) {
+        } catch (error: any) {
+            toast.error(error.message || "Something went wrong! Please try again");
             console.error("Error creating new category:", error);
-            toast.error("Something went wrong! Please try again");
         }
     };
+    
 
     const handleCancelNewCategory = () => {
         setShowNewCategoryInput(false);
@@ -132,7 +90,6 @@ const CreateAsset = () => {
     };
 
     const form = useForm<FormData>({
-        resolver: zodResolver(formSchema),
         mode: "onChange",
         defaultValues: {
             name: "",
@@ -310,8 +267,7 @@ const CreateAsset = () => {
                                                 placeholder=""
                                                 {...field}
                                                 type="date"
-                                                className={`flex justify-end cursor-pointer flex-col ${fieldState.error ? "border-nashtech" : ""
-                                                    }`}
+                                                className={`flex justify-end cursor-pointer flex-col ${fieldState.error ? "border-nashtech" : ""}`}
                                             />
                                         </FormControl>
                                     </div>
@@ -400,5 +356,4 @@ const CreateAsset = () => {
         </>
     );
 };
-
 export default CreateAsset;
