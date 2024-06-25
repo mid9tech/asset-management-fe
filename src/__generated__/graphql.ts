@@ -49,6 +49,7 @@ export type CreateUserInput = {
   gender: Scalars['String']['input'];
   joinedDate: Scalars['String']['input'];
   lastName: Scalars['String']['input'];
+  location?: InputMaybe<Scalars['String']['input']>;
   type: Scalars['String']['input'];
 };
 
@@ -218,6 +219,7 @@ export type UpdateUserInput = {
   dateOfBirth?: InputMaybe<Scalars['String']['input']>;
   gender?: InputMaybe<Scalars['String']['input']>;
   joinedDate?: InputMaybe<Scalars['String']['input']>;
+  location?: InputMaybe<Scalars['String']['input']>;
   type?: InputMaybe<Scalars['String']['input']>;
 };
 

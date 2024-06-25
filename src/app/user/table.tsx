@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import DetailModal from "@components/modal";
 import ReusableTable from "@components/table";
@@ -17,10 +17,6 @@ import { formatDate } from "../../utils/timeFormat";
 import Pagination from "@components/pagination";
 import { Button } from "@components/ui/button";
 import { toast } from "react-toastify";
-
-interface FormData {
-  id: string;
-}
 
 interface UserManagementProps {
   data: User[];
@@ -61,15 +57,11 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
   const router = useRouter();
   const { setLoading }: any = useLoading();
 
-  
   const handleNavigateEditUser = (user: User) => {
+    setLoading(true);
     setDataUpdate(user);
-    console.log("user data update table: ", user);
     router.push(`/user/${user.id}`);
 };
-
-
-
   const handleSortClick = (item: string) => {
     let defaultOrder = SORT_ORDER.ASC;
     if (sortBy === item || (sortBy === "firstName" && item === "fullName")) {
@@ -97,7 +89,6 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
     try {
       setLoading(true);
       const response = await disableUser(parseInt(selectedUser?.id as string));
-      console.log("Response disable: ", response);
       if(response) {
         setShowModalRemoveUser(false);
         toast.success("Disable User Successfully");
@@ -120,7 +111,6 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
   const handleNavigateCreateUser = () => {
     setLoading(true);
     router.push("user/create");
-    setLoading(false);
   };
 
   return (

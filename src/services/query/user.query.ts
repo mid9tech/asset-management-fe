@@ -1,21 +1,21 @@
 import { gql } from "@apollo/client";
 
 export const fineOneUserQuery = gql`
-    query User($id: Int!) {
+  query User($id: Int!) {
     user(id: $id) {
-        id
-        firstName
-        staffCode
-        lastName
-        username
-        gender
-        joinedDate
-        dateOfBirth
-        type
-        state
-        location
+      id
+      firstName
+      staffCode
+      lastName
+      username
+      gender
+      joinedDate
+      dateOfBirth
+      type
+      state
+      location
     }
-}
+  }
 `;
 
 export const findUsersQuery = gql`

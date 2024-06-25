@@ -25,11 +25,12 @@ import { Input } from "@components/ui/input";
 import { differenceInYears, isAfter, isWeekend } from "date-fns";
 import { useEffect, useState } from "react";
 import DetailModal from "@components/modal";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { EDIT_USER_MUTATION, GET_USER_BY_ID_QUERY } from "@services/user";
 import { useMutation, useQuery } from "@apollo/client";
 import { useLoading } from "@providers/loading";
 import { useAuth } from "@providers/auth";
+import { menuItem } from "../../../types/menu.type";
 
 enum Gender {
   Male = "MALE",
@@ -103,7 +104,7 @@ const formSchema: ZodSchema = z
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message:
-          "Joined date is not later than Date of Birth. Please select a different date",
+          "Joined date is not later than 18 years. Please select a different date",
         path: ["joinedDate"],
       });
     }
@@ -141,19 +142,19 @@ const EditUser = ({ params }: { params: { id: string } }) => {
     const { setLoading }: any = useLoading();
     const [showModalCancel, setShowModalCancel] = useState(false);
     const router = useRouter();
-    const { setActiveItem } = useAuth();
-    console.log("param ::: ", params);
+    const { setActiveItem, menuItems } = useAuth();
+    setLoading(false);
 
     const { data: userData } = useQuery(GET_USER_BY_ID_QUERY, {
         variables: { id: parseInt(params.id, 10) }
     });
 
-    console.log("user data: ", userData);
-
     const [dataUpdate, setDataUpdate] = useState<FormData | null>(null);
 
     useEffect(() => {
-        setActiveItem({ name: "Manage User", path: "/user" });
+        if(menuItems) {
+            setActiveItem(menuItems?.find(item => item.component === 'User') as menuItem);
+        }
         if (userData) {
             setDataUpdate(userData.user);
         }
@@ -205,7 +206,6 @@ const EditUser = ({ params }: { params: { id: string } }) => {
     const onSubmit = async (data: FormData) => {
         setLoading(true);
         try {
-            console.log(data);
 
             const variables: any = {
                 id: parseFloat(params.id),
@@ -218,21 +218,20 @@ const EditUser = ({ params }: { params: { id: string } }) => {
             };
 
             if (data.type === Type.Admin) {
-                console.log("run here");
                 variables.updateUserInput.location = data.location;
             }
 
             const response = await editUserMutation({ variables });
-            console.log("Response from FE: ", response);
 
             if (response.errors) {
                 response.errors.forEach((error: any) => {
                     console.error(`GraphQL error message: ${error.message}`);
                 });
             } else {
+                const userId = response.data.updateUser.id;
+        localStorage.setItem("newUserId", '"' + userId.toString() + '"');
                 router.push('/user');
                 toast.success("Edit User Successfully");
-                console.log('User updated successfully:', response);
             }
         } catch (error) {
             toast.error("Something went wrong! Please try again");

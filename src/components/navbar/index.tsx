@@ -17,14 +17,17 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { USER } from "../../constants";
 import { Button } from "@components/ui/button";
 import { changePassword, logout } from "@services/auth";
-import { useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { UserStoreType } from "../../types/user.type";
 
 // Define the User type based on your application's user structure
 const Navbar = () => {
-  const { activeItem, user } = useAuth();
+  const { activeItem } = useAuth();
   const { setLoading }: any = useLoading();
   const route = useRouter();
+  const pathname = usePathname();
+  const params = useParams();
+
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [confirmLogout, setConformLogout] = useState(false);
   const [showOldPassword, setShowOldPassword] = useState(false);
@@ -88,12 +91,28 @@ const Navbar = () => {
     }
   };
 
+  const renderName = () => {
+    let result = activeItem?.name;
+    
+    if(pathname.includes("/create")){
+      result = `${activeItem?.name} > Create new ${activeItem?.component} `
+    }
+    if(Object.keys(params).length > 0){
+      result = `${activeItem?.name} > Edit ${activeItem?.component} `
+    }
+    return (
+      <>
+        {result}
+      </>
+    )
+  }
+
   return (
     <>
       <Disclosure as="nav" className="bg-nashtech text-white">
         <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
           <div className="relative flex h-16 items-center justify-between font-bold">
-            <div>{activeItem?.name}</div>
+            <div>{activeItem ? renderName() : ""}</div>
             <div className="relative">
               <Menu as="div" className="relative inline-block text-left">
                 <div>
@@ -230,7 +249,9 @@ const Navbar = () => {
         <div>
           <div>Do you want to logout ?</div>
           <div className="flex flex-row justify-center gap-3 mt-10">
-            <Button onClick={handleLogout} className="bg-nashtech text-white hover:opacity-75">
+            <Button
+              onClick={handleLogout}
+              className="bg-nashtech text-white hover:opacity-75">
               Logout
             </Button>
             <Button

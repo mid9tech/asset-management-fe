@@ -8,3 +8,9 @@ export enum SORT_ORDER {
     ASC = 'asc',
     DESC = 'desc',
 }
+
+export enum ASSIGNMENT_STATUS {
+    WAITING_FOR_ACCEPTANCE = "WAITING_FOR_ACCEPTANCE",
+    ACCEPTED = "ACCEPTED",
+    DECLINED = "DECLINED",
+}
