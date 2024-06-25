@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
@@ -23,15 +22,15 @@ import {
     FormMessage,
 } from "@components/ui/form";
 import { Input } from "@components/ui/input";
-import { differenceInYears, isAfter, isWeekend } from "date-fns";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import DetailModal from "@components/modal";
-import { CREATE_USER_MUTATION } from "@services/user";
-import { useMutation } from "@apollo/client";
+import { CREATE_CATEGORY_MUTATION, GET_CATEGORY_QUERY } from "@services/query/category.query";
+import { useMutation, useQuery } from "@apollo/client";
 import { useLoading } from "@providers/loading";
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
+import { CREATE_ASSET_MUTATION } from "@services/query/asset.query";
 
 enum State {
     AVAILABLE = "AVAILABLE",
@@ -40,90 +39,41 @@ enum State {
 
 const formSchema: ZodSchema = z
     .object({
-        firstName: z
+        name: z
             .string()
-            .min(1, { message: "First Name is missing" })
+            .min(1, { message: "Name is missing" })
             .regex(/^[a-zA-Z0-9_ ]+$/, {
                 message: "Must contain alphabetic characters",
             })
             .max(128, {
-                message: "First Name can't be more than 128 characters",
+                message: "Name can't be more than 128 characters",
             })
             .refine((val) => /[a-zA-Z]/.test(val), {
-                message: "First Name is invalid",
+                message: "Name is invalid",
             }),
-        lastName: z
+        categoryId: z
             .string()
-            .min(1, { message: "Last Name is missing" })
-            .regex(/^[a-zA-Z0-9_ ]+$/, {
-                message: "Must contain only alphabetic characters",
-            })
-            .max(128, {
-                message: "Last Name can't be more than 128 characters",
-            })
-            .refine((val) => /[a-zA-Z]/.test(val), {
-                message: "Last Name is invalid"
-            })
-        ,
-        dateOfBirth: z
+            .min(1, { message: "Category is missing" }),
+        specification: z
             .string()
-            .min(1, { message: "Date of birth is missing" })
-            .refine(
-                (val) => {
-                    const date = new Date(val);
-                    return differenceInYears(new Date(), date) >= 18;
-                },
-                { message: "User is under 18." }
-            ),
-        joinedDate: z
+            .min(1, { message: "Specification is missing" }),
+        installedDate: z
             .string()
-            .min(1, { message: "Joined Date is missing" })
-            .refine(
-                (val) => {
-                    const date = new Date(val);
-                    return !isWeekend(date);
-                },
-                {
-                    message:
-                        "Joined date cannot be Saturday or Sunday. Please select a different date",
-                }
-            ),
-        type: z.string().min(1, { message: "Type is missing" }),
-        location: z.string().optional()
-    })
-    .superRefine((values, ctx) => {
-        const dobDate = new Date(values.dateOfBirth);
-        const joinedDate = new Date(values.joinedDate);
-
-        if (differenceInYears(joinedDate, dobDate) < 18) {
-            ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                message:
-                    "Joined date is not later than Date of Birth. Please select a different date",
-                path: ["joinedDate"],
-            });
-        }
-
-        if (isAfter(dobDate, joinedDate)) {
-            ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                message:
-                    "Joined date is not later than Date of Birth. Please select a different date",
-                path: ["joinedDate"],
-            });
-        }
+            .min(1, { message: "Installed Date is missing" }),
+        state: z.nativeEnum(State),
     });
 
 interface FormData {
     name: string;
-    category: string;
+    categoryId: string;
     specification: string;
     installedDate: string;
     state: State;
 }
 
 const CreateAsset = () => {
-    const [createUserMutation] = useMutation(CREATE_USER_MUTATION);
+    const [createAssetMutation] = useMutation(CREATE_ASSET_MUTATION);
+    const [createCategoryMutation] = useMutation(CREATE_CATEGORY_MUTATION);
     const { setLoading }: any = useLoading();
 
     const [showModalCancel, setShowModalCancel] = useState(false);
@@ -139,15 +89,40 @@ const CreateAsset = () => {
     const handleDiscard = () => {
         form.reset();
         setShowModalCancel(false);
-        router.push("/user");
+        router.push("/asset");
     };
 
     const handleAddNewCategory = () => {
         setShowNewCategoryInput(true);
     };
 
-    const handleSaveNewCategory = () => {
-        setShowNewCategoryInput(false);
+    const { data,refetch } = useQuery(GET_CATEGORY_QUERY);
+
+    const handleSaveNewCategory = async () => {
+        try {
+            const variables: any = {
+                createCategoryInput: {
+                    categoryCode: abbreviation,
+                    categoryName: newCategory
+                }
+            }
+            const response = await createCategoryMutation({ variables });
+            console.log("res: ", response);
+
+            if (response.errors) {
+                response.errors.forEach((error: any) => {
+                    console.error(`GraphQL error message: ${error.message}`);
+                });
+                toast.error("Error creating new category");
+            } else {
+                toast.success("New category created successfully");
+                setShowNewCategoryInput(false);
+                await refetch();
+            }
+        } catch (error) {
+            console.error("Error creating new category:", error);
+            toast.error("Something went wrong! Please try again");
+        }
     };
 
     const handleCancelNewCategory = () => {
@@ -161,7 +136,7 @@ const CreateAsset = () => {
         mode: "onChange",
         defaultValues: {
             name: "",
-            category: "",
+            categoryId: "",
             specification: "",
             installedDate: "",
             state: State.AVAILABLE,
@@ -175,7 +150,7 @@ const CreateAsset = () => {
     }, [newCategory]);
 
     const allFieldsFilled = !!form.watch("name") &&
-        !!form.watch("category") &&
+        !!form.watch("categoryId") &&
         !!form.watch("specification") &&
         !!form.watch("installedDate") &&
         (!!form.watch("state"));
@@ -183,47 +158,31 @@ const CreateAsset = () => {
     const onSubmit = async (data: FormData) => {
         setLoading(true);
         try {
-            const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-            const capitalizedName = capitalize(data.name);
-            const capitalizedCategory = capitalize(data.category);
-
-            const variables: any = {
-                createUserInput: {
-                    name: capitalizedName,
-                    category: capitalizedCategory,
+            const variables = {
+                createAssetInput: {
+                    assetName: data.name,
+                    categoryId: parseInt(data.categoryId),
                     specification: data.specification,
                     installedDate: data.installedDate,
                     state: data.state,
-                }
+                },
             };
 
-            const response = await createUserMutation({ variables });
+            const response = await createAssetMutation({ variables });
             console.log("Response from FE: ", response);
 
             if (response.errors) {
                 response.errors.forEach((error: any) => {
                     console.error(`GraphQL error message: ${error.message}`);
                 });
+                toast.error("Error creating asset");
             } else {
-                // Save user ID to local storage
-                const userId = response.data.createUser.id;
-                localStorage.setItem('userId', userId);
-
-                toast.success("Create User Successfully");
-                console.log('User created successfully:', response);
-
-                const users = JSON.parse(localStorage.getItem('users') || '[]');
-                const newUser = {
-                    ...response.data.createUser,
-                    index: users.length + 1
-                };
-                users.push(newUser);
-                localStorage.setItem('users', JSON.stringify(users));
-                router.push('/user')
+                toast.success("Asset created successfully");
+                router.push('/asset');
             }
         } catch (error) {
             toast.error("Something went wrong! Please try again");
-            console.error('Error creating user:', error);
+            console.error('Error creating asset:', error);
         } finally {
             setLoading(false);
         }
@@ -259,7 +218,7 @@ const CreateAsset = () => {
                         />
                         <FormField
                             control={form.control}
-                            name="category"
+                            name="categoryId"
                             render={({ field, fieldState }) => (
                                 <FormItem>
                                     <div className="flex items-center gap-5">
@@ -276,10 +235,12 @@ const CreateAsset = () => {
                                                             ref={field.ref}
                                                         />
                                                     </SelectTrigger>
-                                                    <SelectContent className="bg-graycustom2 text-black w-full">
-                                                        <SelectItem value="laptop">Laptop</SelectItem>
-                                                        <SelectItem value="monitor">Monitor</SelectItem>
-                                                        <SelectItem value="personal-computer">Personal Computer</SelectItem>
+                                                    <SelectContent className="bg-graycustom2 text-black w-full h-[250px] overflow-scroll">
+                                                        {data?.getCategories.map((category: any) => (
+                                                            <SelectItem key={category?.id} value={category?.id}>
+                                                                {category?.categoryName}
+                                                            </SelectItem>
+                                                        ))}
                                                         {showNewCategoryInput ? (
                                                             <div className="relative text-black mt-4 border-t-2 border-black bg-input-gray flex flex-col items-center w-full">
                                                                 <div className="flex mr-10">
@@ -289,7 +250,7 @@ const CreateAsset = () => {
                                                                         className="h-fit w-full mt-1 bg-gray-50 border border-gray-100 text-gray-900 text-sm block dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black rounded-none"
                                                                     />
                                                                     <Input
-                                                                        value={abbreviation}  
+                                                                        value={abbreviation}
                                                                         readOnly
                                                                         className="h-fit mt-1 bg-gray-50 b-l-0 border border-gray-100 text-gray-900 text-sm block w-[60px] dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black rounded-none"
                                                                     />
@@ -327,7 +288,7 @@ const CreateAsset = () => {
                                                 {...field}
                                                 type="text"
                                                 className={`h-[100px] flex justify-end cursor-pointer flex-col ${fieldState.error ? "border-nashtech" : ""
-                                                }`}
+                                                    }`}
                                             />
                                         </FormControl>
                                     </div>
@@ -397,7 +358,8 @@ const CreateAsset = () => {
                             <Button
                                 type="submit"
                                 className="bg-nashtech text-white mr-4 cursor-pointer"
-                                disabled={!allFieldsFilled}>
+                                disabled={!allFieldsFilled}
+                            >
                                 Save
                             </Button>
                             <Button type="button" onClick={() => setShowModalCancel(true)}>

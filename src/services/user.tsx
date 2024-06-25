@@ -194,39 +194,6 @@ export const editUser = async (
     throw error;
   }
 };
-
-// export const editUser = async (id: number): Promise<any> => {
-//   const userData = {
-//     query: EDIT_USER_MUTATION,
-//     variables: {
-//       createUserInput: {
-//         id
-//         firstName,
-//         lastName,
-//         gender,
-//         joinedDate,
-//         dateOfBirth,
-//         type
-//       }
-//     }
-//   };
-
-//   const config = {
-//     headers: {
-//       'Content-Type': 'application/json',
-//       'Authorization': `Bearer ${process.env.REACT_APP_API_TOKEN}`,
-//     }
-//   };
-
-//   try {
-//     const response = await axios.post(process.env.NEXT_PUBLIC_URL_SERVER_GRAPHQL as string, userData, config);
-//     return response.data;
-//   } catch (error) {
-//     console.error("Error creating user:", error);
-//     throw error;
-//   }
-// };
-
 // CALL WITH GRAPHQL
 export const loadData = async (request: FindUsersInput) => {
   const result = await client.query({
