@@ -1,5 +1,5 @@
 "use client";
-import {Fragment} from 'react'
+import {Fragment} from "react"
 import { useLoading } from "@providers/loading";
 import { Suspense, useEffect, useState } from "react";
 import { SORT_ORDER, USER_TYPE } from "../../types/enum.type";
