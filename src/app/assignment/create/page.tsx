@@ -6,9 +6,10 @@ import ModalConfirmAssignment from "../components/modal/modalConfirm";
 import { useLoading } from "@providers/loading";
 
 const CreateAssignment = () => {
-  const {setLoading}: any = useLoading();
+  const { setLoading }: any = useLoading();
   const [showModalConfirm, setShowModalConfirm] = useState(false);
 
+  setLoading(false);
   return (
     <>
       <div className="ml-14 w-1/2 space-y-6">

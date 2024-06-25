@@ -1,22 +1,30 @@
-import React, { useEffect, useRef, useState } from "react";
+"use client";
+import React, { ReactNode, useEffect, useRef, useState } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 
-interface ModalPickerProps {
+type Column<T> = {
+  header: string;
+  accessor: keyof T;
+};
+
+interface ModalPickerProps<T> {
   isOpen: boolean;
   setOpenModal: (value: boolean) => void;
+  columns: Column<T>[];
+  data: T[];
+  title: string;
 }
 
-const users = [
-  { code: "SD1901", name: "An Nguyen Thuy", type: "Staff" },
-  { code: "SD1234", name: "An Tran Van", type: "Staff" },
-  { code: "SD0971", name: "Binh Nguyen Van", type: "Admin" },
-  // ... more users
-];
-
-const ModalPicker: React.FC<ModalPickerProps> = ({ isOpen, setOpenModal }) => {
+const ModalPicker = <T extends {}>({
+  columns,
+  data,
+  setOpenModal,
+  isOpen,
+  title
+}: ModalPickerProps<T>) => {
   const modalRef = useRef<HTMLDivElement>(null);
-  const [selectedUser, setSelectedUser] = useState<string | null>(null);
+  const [selected, setSelected] = useState<T>();
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
@@ -42,16 +50,20 @@ const ModalPicker: React.FC<ModalPickerProps> = ({ isOpen, setOpenModal }) => {
 
   if (!isOpen) return null;
 
-  const filteredUsers = users.filter((user) =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredData = data?.filter((item) =>
+    columns.some((column) =>
+      String(item[column.accessor])
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
+    )
   );
 
-  const handleSelectUser = (code: string) => {
-    setSelectedUser(code);
+  const handleSelected = (item: T) => {
+    setSelected(item);
   };
 
   const handleSave = () => {
-    console.log("Selected user:", selectedUser);
+    console.log("Selected:", selected);
   };
 
   return (
@@ -63,7 +75,7 @@ const ModalPicker: React.FC<ModalPickerProps> = ({ isOpen, setOpenModal }) => {
           <div className="flex flex-row justify-between items-center">
             <div className="px-4 py-5 sm:px-6">
               <h3 className="text-lg leading-6 font-medium text-gray-900">
-                Select User
+                {title}
               </h3>
             </div>
             <div className="px-4 sm:px-6">
@@ -75,57 +87,43 @@ const ModalPicker: React.FC<ModalPickerProps> = ({ isOpen, setOpenModal }) => {
               />
             </div>
           </div>
-
           <div className="p-3">
             <div className="grid grid-cols-8 gap-4">
               <div className=""></div>
-              <div className="col-span-2 border-b-2 border-black">
-                <span className="font-bold">Staff Code</span>
-              </div>
-              <div className="col-span-4 border-b-2 border-black">
-                <span className="font-bold">Full Name</span>
-              </div>
-              <div className="border-b-2 border-black">
-                <span className="font-bold">Type</span>
-              </div>
+              {columns.map((item, key) => (
+                <div key={key} className="col-span-2 border-b-2 border-black">
+                  <span className="font-bold">{item.header}</span>
+                </div>
+              ))}
               <div></div>
             </div>
-            <div className="grid grid-cols-8 gap-4 mt-3">
-              <div>
-                <input type="radio" />
-              </div>
-              <div className="col-span-2 border-b-2 border-gray">
-                <span>SD001</span>
-              </div>
-              <div className="col-span-4 border-b-2 border-gray">
-                <span>Nguyen Van Binh</span>
-              </div>
-              <div className="border-b-2 border-gray">
-                <span>ADMIN</span>
-              </div>
-              <div></div>
-            </div>
-            <div className="grid grid-cols-8 gap-4 mt-3">
-              <div>
-                <input type="radio" />
-              </div>
-              <div className="col-span-2 border-b-2 border-gray">
-                <span>SD001</span>
-              </div>
-              <div className="col-span-4 border-b-2 border-gray">
-                <span>Nguyen Van Binh</span>
-              </div>
-              <div className="border-b-2 border-gray">
-                <span>ADMIN</span>
-              </div>
-              <div></div>
+            <div className="grid grid-cols-8 gap-5 cursor-pointer">
+              {filteredData.map((item, key) => (
+                <React.Fragment key={key}>
+                  {columns.map((column, colIndex) => (
+                    <div
+                      key={colIndex}
+                      className="col-span-2 border-b-2 border-gray">
+                      <span>{item[column.accessor] as ReactNode}</span>
+                    </div>
+                  ))}
+                  <div className="flex justify-end items-center">
+                    <input
+                      type="radio"
+                      onChange={() => handleSelected(item)}
+                    />
+                  </div>
+                </React.Fragment>
+              ))}
             </div>
           </div>
           <div className="px-4 py-4 sm:px-6 flex justify-end gap-3">
             <Button className="bg-nashtech text-white" onClick={handleSave}>
               Save
             </Button>
-            <Button variant="outline">Cancel</Button>
+            <Button variant="outline" onClick={() => setOpenModal(false)}>
+              Cancel
+            </Button>
           </div>
         </div>
       </div>
