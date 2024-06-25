@@ -60,7 +60,7 @@ const ModalPicker: React.FC<ModalPickerProps> = ({ isOpen, setOpenModal }) => {
         ref={modalRef}
         className="bg-white border border-black shadow-lg w-auto h-auto">
         <div className="bg-white shadow overflow-hidden sm:rounded-lg p-5">
-          <div className="flex flex-row justify-center items-center">
+          <div className="flex flex-row justify-between items-center">
             <div className="px-4 py-5 sm:px-6">
               <h3 className="text-lg leading-6 font-medium text-gray-900">
                 Select User
@@ -77,40 +77,48 @@ const ModalPicker: React.FC<ModalPickerProps> = ({ isOpen, setOpenModal }) => {
           </div>
 
           <div className="p-3">
-            {/* <table className="min-w-full divide-y divide-gray-200 mt-4">
-              <thead className="bg-gray-50 it">
-                <tr>
-                  <th className="px-4 py-2"></th>
-                  <th className="px-4 py-2">Staff Code</th>
-                  <th className="px-4 py-2 w-60">Full Name</th>
-                  <th className="px-4 py-2">Type</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {filteredUsers.map((user) => (
-                  <tr key={user.code} className="hover:bg-gray-100">
-                    <td className="px-4 py-2">
-                      <input
-                        type="radio"
-                        name="selectedUser"
-                        value={user.code}
-                        checked={selectedUser === user.code}
-                        onChange={() => handleSelectUser(user.code)}
-                        className="h-4 w-4 text-red-600 border-gray-300 focus:ring-red-500"
-                      />
-                    </td>
-                    <td className="px-4 py-2">{user.code}</td>
-                    <td className="px-4 py-2">{user.name}</td>
-                    <td className="px-4 py-2">{user.type}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table> */}
-            <div className="grid grid-cols-6 gap-4">
+            <div className="grid grid-cols-8 gap-4">
+              <div className=""></div>
+              <div className="col-span-2 border-b-2 border-black">
+                <span className="font-bold">Staff Code</span>
+              </div>
+              <div className="col-span-4 border-b-2 border-black">
+                <span className="font-bold">Full Name</span>
+              </div>
+              <div className="border-b-2 border-black">
+                <span className="font-bold">Type</span>
+              </div>
               <div></div>
-              <div>Staff Code</div>
-              <div className="col-span-3">Full Name</div>
-              <div>Type</div>
+            </div>
+            <div className="grid grid-cols-8 gap-4 mt-3">
+              <div>
+                <input type="radio" />
+              </div>
+              <div className="col-span-2 border-b-2 border-gray">
+                <span>SD001</span>
+              </div>
+              <div className="col-span-4 border-b-2 border-gray">
+                <span>Nguyen Van Binh</span>
+              </div>
+              <div className="border-b-2 border-gray">
+                <span>ADMIN</span>
+              </div>
+              <div></div>
+            </div>
+            <div className="grid grid-cols-8 gap-4 mt-3">
+              <div>
+                <input type="radio" />
+              </div>
+              <div className="col-span-2 border-b-2 border-gray">
+                <span>SD001</span>
+              </div>
+              <div className="col-span-4 border-b-2 border-gray">
+                <span>Nguyen Van Binh</span>
+              </div>
+              <div className="border-b-2 border-gray">
+                <span>ADMIN</span>
+              </div>
+              <div></div>
             </div>
           </div>
           <div className="px-4 py-4 sm:px-6 flex justify-end gap-3">
