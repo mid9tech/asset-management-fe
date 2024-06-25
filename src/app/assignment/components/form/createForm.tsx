@@ -8,12 +8,14 @@ import {
   FormMessage,
 } from "@components/ui/form";
 import { Input } from "@components/ui/input";
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { useForm } from "react-hook-form";
 import { AssignmentType } from "../../../../types/assignment.type";
 import { ASSIGNMENT_STATUS } from "../../../../types/enum.type";
 import { useAuth } from "@providers/auth";
 import { TextArea } from "@components/ui/text-area";
+import { User } from "../../../../__generated__/graphql";
+import ModalPicker from "@components/modalPicker";
 
 interface CreateFormProps {
   setShowModalConfirm: (value: boolean) => void;
@@ -23,6 +25,8 @@ const CreateForm: FC<CreateFormProps> = (props) => {
   const { setShowModalConfirm } = props;
   const { user } = useAuth();
 
+  const [openModalUser, setOpenModalUser] = useState(false);
+
   const form = useForm<AssignmentType>({
     // resolver: zodResolver(formSchema),
     mode: "onChange",
@@ -30,14 +34,13 @@ const CreateForm: FC<CreateFormProps> = (props) => {
       assetCode: "",
       assetName: "",
       assetId: 0,
-      assignedToId: 0,
+      assignedToId: '',
       assignedById: user?.id,
       state: ASSIGNMENT_STATUS.WAITING_FOR_ACCEPTANCE,
       assignedDate: "",
       note: "",
     },
   });
-
   return (
     <Form {...form}>
       <FormField
@@ -49,6 +52,8 @@ const CreateForm: FC<CreateFormProps> = (props) => {
               <FormControl>
                 <Input
                   placeholder=""
+                  type="text"
+                  onClick={() => setOpenModalUser(true)}
                   {...field}
                   className={`cursor-pointer ${
                     fieldState.error ? "border-nashtech" : ""
@@ -56,6 +61,7 @@ const CreateForm: FC<CreateFormProps> = (props) => {
                 />
               </FormControl>
             </div>
+            <ModalPicker isOpen={openModalUser} setOpenModal={setOpenModalUser} />
             <FormMessage className="text-nashtech float-left ml-26">
               {fieldState.error?.message}
             </FormMessage>
@@ -71,6 +77,7 @@ const CreateForm: FC<CreateFormProps> = (props) => {
               <FormControl>
                 <Input
                   placeholder=""
+                  onClick={() => setOpenModalUser(true)}
                   {...field}
                   className={`cursor-pointer ${
                     fieldState.error ? "border-nashtech" : ""

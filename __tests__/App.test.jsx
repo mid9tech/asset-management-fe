@@ -1,15 +1,20 @@
-// Home.test.tsx (or Home.test.jsx)
+import { render } from "@testing-library/react";
+import Index from "../src/app/page"; // Adjust the path as necessary
+import * as nextNavigation from 'next/navigation';
 
-import { render, screen } from "@testing-library/react";
-import Home from "../src/app/page"; // Adjust the path as necessary
+jest.mock('next/navigation', () => ({
+  redirect: jest.fn(),
+}));
 
-describe("Home Component", () => {
-  it("renders the home page correctly", async () => {
-    render(<Home />);
+describe('Index', () => {
+  it('should call redirect with /login', () => {
+    render(<Index />);
+    expect(nextNavigation.redirect).toHaveBeenCalledWith('/login');
+  });
 
-    // Example test: Check if the paragraph with specific text is rendered
-    const paragraphElement = await screen.findByText(/Hello babe/i);
-    expect(paragraphElement).toBeInTheDocument();
+  it('should render fallback content', () => {
+    const { container, getByText } = render(<Index />);
+    expect(nextNavigation.redirect).toHaveBeenCalledWith('/login');
+    expect(getByText('404 Not Found')).toBeInTheDocument();
   });
 });
-

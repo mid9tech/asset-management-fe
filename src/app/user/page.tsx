@@ -2,11 +2,20 @@
 "use client";
 import UserManagement from "./table";
 import { useLoading } from "@providers/loading";
-import { Fragment, Suspense, useEffect, useState } from "react";
+import {
+  Fragment,
+  Suspense,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from "react";
 import { SORT_ORDER, USER_TYPE } from "../../types/enum.type";
 import { formatDate } from "@utils/timeFormat";
 import { loadData, loadDetail } from "@services/user";
 import { User } from "../../__generated__/graphql";
+import { useAuth } from "@providers/auth";
+import { redirect } from "next/navigation";
+import { ACCESS_TOKEN } from "../../constants";
 
 export const dynamic = "force-dynamic";
 
@@ -31,6 +40,13 @@ export default function Index({
   useEffect(() => {
     const newUserId = JSON.parse(localStorage.getItem("newUserId") || "0");
     setNewestUserId(newUserId);
+  }, []);
+
+  useLayoutEffect(() => {
+    const token = localStorage.getItem(ACCESS_TOKEN);
+    if(!token) {
+      redirect('/login');
+    }
   }, []);
 
   useEffect(() => {
@@ -119,7 +135,7 @@ export default function Index({
   };
   return (
     <Fragment>
-      <Suspense >
+      <Suspense>
         <UserManagement
           data={listUser as User[]}
           totalPages={totlaPage as number}

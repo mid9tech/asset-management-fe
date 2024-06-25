@@ -3,7 +3,7 @@ export type AssignmentType = {
   assetCode: string;
   assetName: string;
   assetId: number;
-  assignedToId: number;
+  assignedToId: string;
   assignedById: number;
   state: ASSIGNMENT_STATUS;
   assignedDate: string;
