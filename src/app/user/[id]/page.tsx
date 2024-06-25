@@ -144,6 +144,7 @@ const EditUser = ({ params }: { params: { id: string } }) => {
     const router = useRouter();
     const { setActiveItem, menuItems } = useAuth();
     console.log("param ::: ", params);
+    setLoading(false);
 
     const { data: userData } = useQuery(GET_USER_BY_ID_QUERY, {
         variables: { id: parseInt(params.id, 10) }

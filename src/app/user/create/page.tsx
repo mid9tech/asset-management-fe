@@ -156,6 +156,7 @@ interface FormData {
 const CreateUser = () => {
   const [createUserMutation] = useMutation(CREATE_USER_MUTATION);
   const { setLoading }: any = useLoading();
+  setLoading(false);
 
   const [showModalCancel, setShowModalCancel] = useState(false);
   const router = useRouter();

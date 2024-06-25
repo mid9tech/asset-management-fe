@@ -58,6 +58,7 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
   const { setLoading }: any = useLoading();
 
   const handleNavigateEditUser = (user: User) => {
+    setLoading(true);
     setDataUpdate(user);
     console.log("user data update table: ", user);
     router.push(`/user/${user.id}`);
@@ -112,7 +113,6 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
   const handleNavigateCreateUser = () => {
     setLoading(true);
     router.push("user/create");
-    setLoading(false);
   };
 
   return (
