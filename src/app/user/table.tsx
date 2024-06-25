@@ -113,6 +113,9 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
     router.push("user/create");
   };
 
+  console.log("data table: ",data);
+  
+
   return (
     <>
       <div className="container mx-auto p-4">
@@ -146,11 +149,12 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
           sortBy={sortBy === "firstName" ? "fullName" : sortBy}
           sortOrder={sortOrder}
         />
+        {data.length > 0 ? 
         <Pagination
-          totalPages={totalPages}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-        />
+        totalPages={totalPages}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+      /> : ''}
       </div>
       <DetailModal
         isOpen={showModalRemoveUser}
