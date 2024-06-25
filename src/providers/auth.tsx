@@ -20,6 +20,7 @@ import { changePasswordFirstTimeLogin, logout } from "@services/auth";
 import { UserStoreType } from "../types/user.type";
 import { USER } from "../constants";
 import { menuItem } from "../types/menu.type";
+import { findMenuItem } from "@utils/findMenuItem";
 
 export const AuthContext = createContext<{
   token: string;
@@ -39,7 +40,7 @@ const menuForAdmin: menuItem[] = [
     component: "User",
   },
   { name: "Manage Asset", path: ["/asset"], component: "Asset" },
-  { name: "Manage Assignment", path: ["/assignment"], component: "Assignment" },
+  { name: "Manage Assignment", path: ["/assignment", "/assignment/create", "/assignment/:id"], component: "Assignment" },
   {
     name: "Request For Return",
     path: ["/request-returning"],
@@ -87,10 +88,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, [user, activeItem]);
 
   useEffect(() => {
-    const currentItem = menu?.find((item) => item.path.includes(pathname));
+    if(menu) {
+      const currentItem = findMenuItem(menu, pathname);
+      setActiveItem(currentItem);
+    }
     const userStorage = localStorage.getItem(USER);
     setUser(JSON.parse(userStorage as string));
-    setActiveItem(currentItem);
+    
   }, [pathname, menu, activeItem]);
 
   const handleSubmit = async () => {
