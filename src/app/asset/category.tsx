@@ -4,7 +4,7 @@ import { CREATE_CATEGORY_MUTATION, GET_CATEGORY_QUERY } from "@services/query/ca
 import {Select,SelectContent,SelectItem,SelectTrigger,SelectValue,
 } from "@components/ui/select";
 import { Input } from "@components/ui/input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -13,7 +13,6 @@ const Category = () => {
     const [showNewCategoryInput, setShowNewCategoryInput] = useState(false);
     const { data, refetch } = useQuery(GET_CATEGORY_QUERY);
     const [createCategoryMutation] = useMutation(CREATE_CATEGORY_MUTATION);
-
     const [newCategory, setNewCategory] = useState("");
     const [abbreviation, setAbbreviation] = useState("");
 
@@ -26,6 +25,12 @@ const Category = () => {
     const handleAddNewCategory = () => {
         setShowNewCategoryInput(true);
     };
+
+    useEffect(() => {
+        const words = newCategory.split(" ");
+        const abbreviation = words.map(word => word.charAt(0)).join("").toUpperCase();
+        setAbbreviation(abbreviation);
+    }, [newCategory]);
 
     const handleSaveNewCategory = async () => {
         try {
