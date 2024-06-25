@@ -21,12 +21,6 @@ interface CreateFormProps {
   setShowModalConfirm: (value: boolean) => void;
 }
 
-const userColumns = [
-  { header: "Staff Code", accessor: "staffCode" as keyof User },
-  { header: "Full Name", accessor: "fullName" as keyof User },
-  { header: "Type", accessor: "type" as keyof User },
-];
-
 const CreateForm: FC<CreateFormProps> = (props) => {
   const { setShowModalConfirm } = props;
   const { user } = useAuth();
@@ -40,7 +34,7 @@ const CreateForm: FC<CreateFormProps> = (props) => {
       assetCode: "",
       assetName: "",
       assetId: 0,
-      assignedToId: "",
+      assignedToId: '',
       assignedById: user?.id,
       state: ASSIGNMENT_STATUS.WAITING_FOR_ACCEPTANCE,
       assignedDate: "",
@@ -67,13 +61,7 @@ const CreateForm: FC<CreateFormProps> = (props) => {
                 />
               </FormControl>
             </div>
-            <ModalPicker
-              title="Select User"
-              columns={userColumns}
-              data={[]}
-              isOpen={openModalUser}
-              setOpenModal={setOpenModalUser}
-            />
+            <ModalPicker isOpen={openModalUser} setOpenModal={setOpenModalUser} />
             <FormMessage className="text-nashtech float-left ml-26">
               {fieldState.error?.message}
             </FormMessage>
