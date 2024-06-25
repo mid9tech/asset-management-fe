@@ -120,7 +120,7 @@ export default function Index({
   return (
     <Fragment>
     <Suspense >
-      <AssetManagement
+      {/* <AssetManagement
         data={listAsset as Asset[]}
         totalPages={totlaPage as number}
         currentPage={currentPage}
@@ -129,7 +129,7 @@ export default function Index({
         setSortBy={setSortBy}
         setSortOder={setSortOder}
         setCurrentPage={setCurrentPage}
-      />
+      /> */}
     </Suspense>
   </Fragment>
   );

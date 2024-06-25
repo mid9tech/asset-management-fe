@@ -4,7 +4,7 @@ import { Button } from "@components/ui/button";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import DetailModal from "@components/modal";
-import FormCreateAsset from "../form";
+import FormCreateAsset from "./form";
 
 enum State {
     AVAILABLE = "AVAILABLE",
