@@ -61,7 +61,7 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
     setLoading(true);
     setDataUpdate(user);
     router.push(`/user/${user.id}`);
-};
+  };
   const handleSortClick = (item: string) => {
     let defaultOrder = SORT_ORDER.ASC;
     if (sortBy === item || (sortBy === "firstName" && item === "fullName")) {
@@ -89,7 +89,7 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
     try {
       setLoading(true);
       const response = await disableUser(parseInt(selectedUser?.id as string));
-      if(response) {
+      if (response) {
         setShowModalRemoveUser(false);
         toast.success("Disable User Successfully");
         setLoading(false);
@@ -113,8 +113,7 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
     router.push("user/create");
   };
 
-  console.log("data table: ",data);
-  
+  console.log("data table: ", data);
 
   return (
     <>
@@ -134,7 +133,8 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
             <Search setCurrentPage={setCurrentPage} />
             <button
               className="bg-red-600 text-white rounded px-4 py-1 cursor-pointer"
-              onClick={handleNavigateCreateUser}>
+              onClick={handleNavigateCreateUser}
+            >
               Create new user
             </button>
           </div>
@@ -145,7 +145,7 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
           onRowClick={handleRowClick}
           onDeleteClick={handleDeleteClick}
           onSortClick={handleSortClick}
-          onEditClick={ handleNavigateEditUser}
+          onEditClick={handleNavigateEditUser}
           sortBy={sortBy === "firstName" ? "fullName" : sortBy}
           sortOrder={sortOrder}
         />
@@ -160,7 +160,8 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
         isOpen={showModalRemoveUser}
         onClose={handleCloseModal}
         isShowCloseIcon={true}
-        title="Are you sure ?">
+        title="Are you sure ?"
+      >
         <div className="p-3">
           <div className="sm:flex sm:items-start">
             <p className="text-md text-gray-500">
@@ -172,13 +173,15 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
           <Button
             type="button"
             className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
-            onClick={handleConfirmDelete}>
+            onClick={handleConfirmDelete}
+          >
             Disable
           </Button>
           <Button
             variant="outline"
             type="button"
-            onClick={() => setShowModalRemoveUser(false)}>
+            onClick={() => setShowModalRemoveUser(false)}
+          >
             Cancel
           </Button>
         </div>
@@ -187,7 +190,8 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
         <DetailModal
           isOpen={showModalDetailUser}
           onClose={handleCloseDetailModal}
-          title="Detailed User Information">
+          title="Detailed User Information"
+        >
           <div className="text-gray">
             <div className="flex mb-2">
               <span className="text-sm w-40">Staff Code:</span>{" "}
