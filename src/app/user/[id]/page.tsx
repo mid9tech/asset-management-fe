@@ -104,7 +104,7 @@ const formSchema: ZodSchema = z
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message:
-          "Joined date is not later than Date of Birth. Please select a different date",
+          "Joined date is not later than 18 years. Please select a different date",
         path: ["joinedDate"],
       });
     }
