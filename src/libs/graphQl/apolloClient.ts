@@ -45,7 +45,7 @@ export const onErrorCustom = onError(
         return new Observable(observer => {
           (async () => {
             try {
-              const result = await refreshToken();
+              await refreshToken();
               const subscriber = {
                 next: observer.next.bind(observer),
                 error: observer.error.bind(observer),
@@ -55,8 +55,8 @@ export const onErrorCustom = onError(
             } catch (error) {
               observer.error(error);
               console.log(error);
-              // await logout();
-              // location.href = "/login"
+              await logout();
+              location.href = "/login"
             }
           })();
         });

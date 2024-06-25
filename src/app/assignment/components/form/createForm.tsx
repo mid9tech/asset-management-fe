@@ -16,6 +16,7 @@ import { useAuth } from "@providers/auth";
 import { TextArea } from "@components/ui/text-area";
 import { User } from "../../../../__generated__/graphql";
 import ModalPicker from "@components/modalPicker";
+import ModalUserPicker from "../modal/modalPickUser";
 
 interface CreateFormProps {
   setShowModalConfirm: (value: boolean) => void;
@@ -61,7 +62,7 @@ const CreateForm: FC<CreateFormProps> = (props) => {
                 />
               </FormControl>
             </div>
-            <ModalPicker isOpen={openModalUser} setOpenModal={setOpenModalUser} />
+            <ModalUserPicker isOpen={openModalUser} setOpenModal={setOpenModalUser} />
             <FormMessage className="text-nashtech float-left ml-26">
               {fieldState.error?.message}
             </FormMessage>
