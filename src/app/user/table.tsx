@@ -57,15 +57,11 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
   const router = useRouter();
   const { setLoading }: any = useLoading();
 
-  
   const handleNavigateEditUser = (user: User) => {
+    setLoading(true);
     setDataUpdate(user);
-    console.log("user data update table: ", user);
     router.push(`/user/${user.id}`);
 };
-
-
-
   const handleSortClick = (item: string) => {
     let defaultOrder = SORT_ORDER.ASC;
     if (sortBy === item || (sortBy === "firstName" && item === "fullName")) {
@@ -93,7 +89,6 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
     try {
       setLoading(true);
       const response = await disableUser(parseInt(selectedUser?.id as string));
-      console.log("Response disable: ", response);
       if(response) {
         setShowModalRemoveUser(false);
         toast.success("Disable User Successfully");
@@ -116,7 +111,6 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
   const handleNavigateCreateUser = () => {
     setLoading(true);
     router.push("user/create");
-    setLoading(false);
   };
 
   return (

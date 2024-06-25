@@ -153,9 +153,10 @@ interface FormData {
   location: Location;
 }
 
-const CreateUser = ({ addUserToList }: { addUserToList: (user: User) => void }) => {
-    const [createUserMutation] = useMutation(CREATE_USER_MUTATION);
-    const { setLoading }: any = useLoading();
+const CreateUser = () => {
+  const [createUserMutation] = useMutation(CREATE_USER_MUTATION);
+  const { setLoading }: any = useLoading();
+  setLoading(false);
 
   const [showModalCancel, setShowModalCancel] = useState(false);
   const router = useRouter();
@@ -218,7 +219,6 @@ const CreateUser = ({ addUserToList }: { addUserToList: (user: User) => void }) 
       }
 
       const response = await createUserMutation({ variables });
-      console.log("Response from FE: ", response);
 
       if (response.errors) {
         response.errors.forEach((error: any) => {
@@ -230,7 +230,6 @@ const CreateUser = ({ addUserToList }: { addUserToList: (user: User) => void }) 
         localStorage.setItem("newUserId", '"' + userId.toString() + '"');
 
         toast.success("Create User Successfully");
-        console.log("User created successfully:", response);
 
         router.push("/user");
       }
