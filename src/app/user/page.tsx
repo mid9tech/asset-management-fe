@@ -20,7 +20,6 @@ export default function Index({
 }) {
   const { setLoading }: any = useLoading();
   const [listUser, setListUsers] = useState<User[]>();
-  console.log('params', searchParams);
   const filterType = searchParams?.Type || "";
   const queryString = searchParams?.query || "";
   const [sortOrder, setSortOder] = useState(SORT_ORDER.ASC);

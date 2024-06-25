@@ -219,7 +219,6 @@ const CreateUser = () => {
       }
 
       const response = await createUserMutation({ variables });
-      console.log("Response from FE: ", response);
 
       if (response.errors) {
         response.errors.forEach((error: any) => {
@@ -231,7 +230,6 @@ const CreateUser = () => {
         localStorage.setItem("newUserId", '"' + userId.toString() + '"');
 
         toast.success("Create User Successfully");
-        console.log("User created successfully:", response);
 
         router.push("/user");
       }

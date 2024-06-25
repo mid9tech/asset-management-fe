@@ -143,14 +143,11 @@ const EditUser = ({ params }: { params: { id: string } }) => {
     const [showModalCancel, setShowModalCancel] = useState(false);
     const router = useRouter();
     const { setActiveItem, menuItems } = useAuth();
-    console.log("param ::: ", params);
     setLoading(false);
 
     const { data: userData } = useQuery(GET_USER_BY_ID_QUERY, {
         variables: { id: parseInt(params.id, 10) }
     });
-
-    console.log("user data: ", userData);
 
     const [dataUpdate, setDataUpdate] = useState<FormData | null>(null);
 
@@ -209,7 +206,6 @@ const EditUser = ({ params }: { params: { id: string } }) => {
     const onSubmit = async (data: FormData) => {
         setLoading(true);
         try {
-            console.log(data);
 
             const variables: any = {
                 id: parseFloat(params.id),
@@ -222,12 +218,10 @@ const EditUser = ({ params }: { params: { id: string } }) => {
             };
 
             if (data.type === Type.Admin) {
-                console.log("run here");
                 variables.updateUserInput.location = data.location;
             }
 
             const response = await editUserMutation({ variables });
-            console.log("Response from FE: ", response);
 
             if (response.errors) {
                 response.errors.forEach((error: any) => {
@@ -238,7 +232,6 @@ const EditUser = ({ params }: { params: { id: string } }) => {
         localStorage.setItem("newUserId", '"' + userId.toString() + '"');
                 router.push('/user');
                 toast.success("Edit User Successfully");
-                console.log('User updated successfully:', response);
             }
         } catch (error) {
             toast.error("Something went wrong! Please try again");

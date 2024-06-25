@@ -60,7 +60,6 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
   const handleNavigateEditUser = (user: User) => {
     setLoading(true);
     setDataUpdate(user);
-    console.log("user data update table: ", user);
     router.push(`/user/${user.id}`);
 };
   const handleSortClick = (item: string) => {
@@ -90,7 +89,6 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
     try {
       setLoading(true);
       const response = await disableUser(parseInt(selectedUser?.id as string));
-      console.log("Response disable: ", response);
       if(response) {
         setShowModalRemoveUser(false);
         toast.success("Disable User Successfully");
