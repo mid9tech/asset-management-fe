@@ -149,15 +149,12 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
           sortBy={sortBy === "firstName" ? "fullName" : sortBy}
           sortOrder={sortOrder}
         />
-        {data?.length > 0 ? (
-          <Pagination
-            totalPages={totalPages}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-          />
-        ) : (
-          ""
-        )}
+        {data?.length > 0 ? 
+        <Pagination
+        totalPages={totalPages}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+      /> : ''}
       </div>
       <DetailModal
         isOpen={showModalRemoveUser}
