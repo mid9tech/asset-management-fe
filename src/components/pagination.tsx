@@ -36,6 +36,8 @@ const Pagination: FC<PaginationProps> = (props) => {
       </li>
     );
   });
+  console.log(`current page ${currentPage} total page: ${totalPages}`);
+  
 
   return (
     <Fragment>
