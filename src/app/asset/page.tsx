@@ -119,17 +119,20 @@ export default function Index({
     setLoading(false);
   };
   return (
-      <Suspense >
-        {/* <AssetManagement
-          // data={listAsset as Asset[]}
-          totalPages={totlaPage as number}
-          currentPage={currentPage}
-          sortBy={sortBy}
-          sortOrder={sortOrder}
-          setSortBy={setSortBy}
-          setSortOder={setSortOder}
-          setCurrentPage={setCurrentPage}
-        /> */}
-      </Suspense>
+    <Fragment>
+      Asset
+    </Fragment>
+      // <Suspense >
+      //   <AssetManagement
+      //     // data={listAsset as Asset[]}
+      //     totalPages={totlaPage as number}
+      //     currentPage={currentPage}
+      //     sortBy={sortBy}
+      //     sortOrder={sortOrder}
+      //     setSortBy={setSortBy}
+      //     setSortOder={setSortOder}
+      //     setCurrentPage={setCurrentPage}
+      //   />
+      // </Suspense>
   );
 }
