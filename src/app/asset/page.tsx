@@ -1,13 +1,11 @@
 "use client";
-import {Fragment} from "react"
 import { useLoading } from "@providers/loading";
-import { Suspense, useEffect, useState } from "react";
+import { Fragment,Suspense, useEffect, useState } from "react";
 import { SORT_ORDER, USER_TYPE } from "../../types/enum.type";
 import { formatDate } from "@utils/timeFormat";
 import { loadData, loadDetail } from "@services/user";
 import { Asset, User } from "../../__generated__/graphql";
 // import AssetManagement from "./table";
-
 export const dynamic = "force-dynamic";
 
 export default function Index({
@@ -120,19 +118,18 @@ export default function Index({
   };
   return (
     <Fragment>
-      Asset
-    </Fragment>
-      // <Suspense >
-      //   <AssetManagement
-      //     // data={listAsset as Asset[]}
-      //     totalPages={totlaPage as number}
-      //     currentPage={currentPage}
-      //     sortBy={sortBy}
-      //     sortOrder={sortOrder}
-      //     setSortBy={setSortBy}
-      //     setSortOder={setSortOder}
-      //     setCurrentPage={setCurrentPage}
-      //   />
-      // </Suspense>
+    <Suspense >
+      {/* <UserManagement
+        data={listUser as User[]}
+        totalPages={totlaPage as number}
+        currentPage={currentPage}
+        sortBy={sortBy}
+        sortOrder={sortOrder}
+        setSortBy={setSortBy}
+        setSortOder={setSortOder}
+        setCurrentPage={setCurrentPage}
+      /> */}
+    </Suspense>
+  </Fragment>
   );
 }
