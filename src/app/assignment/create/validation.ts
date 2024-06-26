@@ -13,7 +13,7 @@ export const validateCreateSchema: ZodSchema = z
         },
         {
           message:
-            "Assigned date cannot be Saturday or Sunday. Please select a different date",
+            "Assigned date cannot be Saturday or Sunday.",
         }
       ),
   })
@@ -21,7 +21,18 @@ export const validateCreateSchema: ZodSchema = z
     const assignedDate = new Date(values.assignedDate);
     const currentDate = new Date();
 
-    if (assignedDate < currentDate) {
+    const assignedDateNormalized = new Date(
+      assignedDate.getFullYear(),
+      assignedDate.getMonth(),
+      assignedDate.getDate()
+    );
+    const currentDateNormalized = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      currentDate.getDate()
+    );
+
+    if (assignedDateNormalized < currentDateNormalized) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: "Assigned date is not sooner than current date",

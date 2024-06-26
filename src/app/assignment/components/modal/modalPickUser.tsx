@@ -3,14 +3,15 @@
 import { useDebouncedCallback } from "use-debounce";
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 
 import { Button } from "@components/ui/button";
-import { Input } from "@components/ui/input";
 import { loadData } from "@services/user";
 import SearchIcon from "@public/icon/search.svg";
 import { useLoading } from "@providers/loading";
 
-import { USER_TYPE } from "../../../../types/enum.type";
+import { SORT_ORDER, USER_TYPE } from "../../../../types/enum.type";
 import { FindUsersInput, User } from "../../../../__generated__/graphql";
 
 interface ModalPickerProps {
@@ -22,17 +23,29 @@ interface ModalPickerProps {
 const ModalUserPicker: React.FC<ModalPickerProps> = ({
   isOpen,
   setOpenModal,
-  setUserSelected
+  setUserSelected,
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
   const { setLoading }: any = useLoading();
   const [selected, setSelected] = useState<User>();
   const [listUser, setListUser] = useState<User[]>();
   const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("firstName");
+  const [sortOrder, setSortOrder] = useState<SORT_ORDER>(SORT_ORDER.ASC);
 
   const handleSearch = useDebouncedCallback((term: string) => {
     setSearchTerm(term);
   }, 300);
+
+  const handleSortClick = (item: any) => {
+    let defaultOrder = SORT_ORDER.ASC;
+    if (sortBy === item || (sortBy === "firstName" && item === "fullName")) {
+      defaultOrder =
+        sortOrder === SORT_ORDER.ASC ? SORT_ORDER.DESC : SORT_ORDER.ASC;
+    }
+    setSortOrder(defaultOrder);
+    setSortBy(item);
+  };
 
   const loadUserList = async (filter: FindUsersInput) => {
     setLoading(true);
@@ -62,6 +75,8 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
         page: 1,
         query: searchTerm,
         limit: 10,
+        sort: sortBy,
+        sortOrder: sortOrder,
       });
 
       document.addEventListener("mousedown", handleClickOutside);
@@ -70,7 +85,7 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isOpen, searchTerm]);
+  }, [isOpen, searchTerm, sortBy, sortOrder]);
 
   if (!isOpen) return null;
 
@@ -118,14 +133,41 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
           <div className="p-3">
             <div className="grid grid-cols-6 gap-4">
               <div></div>
-              <div className="col border-b-2 border-black">
-                <span className="font-bold">Staff Code</span>
+              <div
+                className="col border-b-2 border-black cursor-pointer"
+                onClick={() => handleSortClick("staffCode")}>
+                <span className="font-bold">
+                  Staff Code{" "}
+                  {sortBy === "staffCode" && sortOrder === SORT_ORDER.ASC ? (
+                    <ArrowDropUpIcon />
+                  ) : (
+                    <ArrowDropDownIcon />
+                  )}
+                </span>
               </div>
-              <div className="col-span-3 border-b-2 border-black">
-                <span className="font-bold">Full Name</span>
+              <div
+                className="col-span-3 border-b-2 border-black cursor-pointer"
+                onClick={() => handleSortClick("firstName")}>
+                <span className="font-bold">
+                  Full Name
+                  {sortBy === "firstName" && sortOrder === SORT_ORDER.ASC ? (
+                    <ArrowDropUpIcon />
+                  ) : (
+                    <ArrowDropDownIcon />
+                  )}
+                </span>
               </div>
-              <div className="border-b-2 border-black">
-                <span className="font-bold">Type</span>
+              <div
+                className="border-b-2 border-black cursor-pointer"
+                onClick={() => handleSortClick("type")}>
+                <span className="font-bold">
+                  Type{" "}
+                  {sortBy === "type" && sortOrder === SORT_ORDER.ASC ? (
+                    <ArrowDropUpIcon />
+                  ) : (
+                    <ArrowDropDownIcon />
+                  )}
+                </span>
               </div>
               <div></div>
             </div>
@@ -160,7 +202,10 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
             ))}
           </div>
           <div className="px-4 py-4 sm:px-6 flex justify-end gap-3">
-            <Button disabled={!selected} className="bg-nashtech text-white" onClick={handleSave}>
+            <Button
+              disabled={!selected}
+              className="bg-nashtech text-white"
+              onClick={handleSave}>
               Save
             </Button>
             <Button variant="outline" onClick={() => setOpenModal(false)}>

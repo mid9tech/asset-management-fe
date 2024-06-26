@@ -63,7 +63,6 @@ const CreateForm: FC<CreateFormProps> = (props) => {
 
   const onSubmit = async (value: IAssignmentForm) => {
     setLoading(true);
-    console.log("onSubmit", value);
     const variables: CreateAssignmentInput = {
       assetCode: assetSelected?.assetCode || "",
       assetName: assetSelected?.assetName || "",

@@ -54,6 +54,11 @@ export const GET_ALL_ASSET_QUERY = gql`
         state
         location
         specification
+        category {
+          id
+          categoryName
+          categoryCode
+        }
       }
     }
   }

@@ -20,6 +20,7 @@ export type Asset = {
   __typename?: 'Asset';
   assetCode: Scalars['String']['output'];
   assetName: Scalars['String']['output'];
+  category: Category;
   categoryId: Scalars['Int']['output'];
   id: Scalars['ID']['output'];
   installedDate: Scalars['String']['output'];
