@@ -12,6 +12,7 @@ pool:
 stages:
   - stage: Build
     displayName: "Build and Test"
+    condition: ne(variables['build.sourceBranch'], 'refs/heads/main')
     jobs:
       - job: Web_App_Asset_Management_NextJS
         displayName: "Lint, Test, and Audit NextJS"
@@ -41,7 +42,7 @@ stages:
           - script: |
               npm audit --audit-level=high
             displayName: "Run npm audit"
-            continueOnError: true
+            continueOnError: false
 
           - script: |
               npm run build
@@ -50,7 +51,7 @@ stages:
   - stage: Deploy
     displayName: "Deploy to Vercel Web App"
     dependsOn: Build
-    condition: succeeded()
+    condition: eq(variables['build.sourceBranch'], 'refs/heads/main')
     jobs:
       - job: Deploy
         displayName: "Deploy Job"
