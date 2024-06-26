@@ -114,6 +114,7 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
                                 setCurrentPage={setCurrentPage}
                                 label="State"
                                 data={convertEnumToMap(ASSET_TYPE)}
+                                height={170}
                             />
                             <FilterAltIcon className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none h-10" />
                             </div>
@@ -126,7 +127,7 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
                                         setCurrentPage={setCurrentPage}
                                         label="Category"
                                         data={convertToMap(categoryData?.getCategories)}
-                                        height={200}
+                                        height={300}
                                     />
                                 )}
                             </div>

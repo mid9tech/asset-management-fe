@@ -57,7 +57,7 @@ const Filter = ({ data, label, setCurrentPage, height = 150}: Props) => {
           <FilterAltIcon className="cursor-pointer"/>
         </div>
         {dropdownVisible && (
-          <div className={`absolute mt-2 bg-white border border-gray-300 rounded shadow-lg z-10 w-full -ml-2 overflow-scroll h-[${height}px]`}>
+          <div className={`absolute mt-2 bg-white border border-gray-300 rounded shadow-lg z-10 w-full -ml-2 overflow-scroll`} style={{height: height}}>
             <fieldset>
               <legend className="sr-only">{label}</legend>
               <div className="space-y-2 p-2">
