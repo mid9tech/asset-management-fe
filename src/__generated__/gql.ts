@@ -13,7 +13,9 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
-    "\n  mutation CreateUser($createUserInput: CreateUserInput!) {\n    createUser(createUserInput: $createUserInput) {\n      firstName\n      lastName\n      gender\n      joinedDate\n      dateOfBirth\n      type\n      location\n    }\n  }\n": types.CreateUserDocument,
+    "\n  mutation CreateUser($createUserInput: CreateUserInput!) {\n    createUser(createUserInput: $createUserInput) {\n      id\n      firstName\n      lastName\n      gender\n      joinedDate\n      dateOfBirth\n      type\n      location\n    }\n  }\n": types.CreateUserDocument,
+    "\n  mutation UpdateUser($id: Float!, $updateUserInput: UpdateUserInput!) {\n    updateUser(id: $id, \n      updateUserInput: $updateUserInput) {\n      id\n      firstName\n      lastName\n      gender\n      joinedDate\n      dateOfBirth\n      type\n      location\n    }\n  }\n": types.UpdateUserDocument,
+    "\n  query GetUserById($id: Int!) {\n    user(id: $id) {\n      id\n      firstName\n      lastName\n      gender\n      joinedDate\n      dateOfBirth\n      type\n      location\n      staffCode\n      username\n    }\n  }\n": types.GetUserByIdDocument,
 };
 
 /**
@@ -33,7 +35,15 @@ export function gql(source: string): unknown;
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  mutation CreateUser($createUserInput: CreateUserInput!) {\n    createUser(createUserInput: $createUserInput) {\n      firstName\n      lastName\n      gender\n      joinedDate\n      dateOfBirth\n      type\n      location\n    }\n  }\n"): (typeof documents)["\n  mutation CreateUser($createUserInput: CreateUserInput!) {\n    createUser(createUserInput: $createUserInput) {\n      firstName\n      lastName\n      gender\n      joinedDate\n      dateOfBirth\n      type\n      location\n    }\n  }\n"];
+export function gql(source: "\n  mutation CreateUser($createUserInput: CreateUserInput!) {\n    createUser(createUserInput: $createUserInput) {\n      id\n      firstName\n      lastName\n      gender\n      joinedDate\n      dateOfBirth\n      type\n      location\n    }\n  }\n"): (typeof documents)["\n  mutation CreateUser($createUserInput: CreateUserInput!) {\n    createUser(createUserInput: $createUserInput) {\n      id\n      firstName\n      lastName\n      gender\n      joinedDate\n      dateOfBirth\n      type\n      location\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation UpdateUser($id: Float!, $updateUserInput: UpdateUserInput!) {\n    updateUser(id: $id, \n      updateUserInput: $updateUserInput) {\n      id\n      firstName\n      lastName\n      gender\n      joinedDate\n      dateOfBirth\n      type\n      location\n    }\n  }\n"): (typeof documents)["\n  mutation UpdateUser($id: Float!, $updateUserInput: UpdateUserInput!) {\n    updateUser(id: $id, \n      updateUserInput: $updateUserInput) {\n      id\n      firstName\n      lastName\n      gender\n      joinedDate\n      dateOfBirth\n      type\n      location\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query GetUserById($id: Int!) {\n    user(id: $id) {\n      id\n      firstName\n      lastName\n      gender\n      joinedDate\n      dateOfBirth\n      type\n      location\n      staffCode\n      username\n    }\n  }\n"): (typeof documents)["\n  query GetUserById($id: Int!) {\n    user(id: $id) {\n      id\n      firstName\n      lastName\n      gender\n      joinedDate\n      dateOfBirth\n      type\n      location\n      staffCode\n      username\n    }\n  }\n"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};

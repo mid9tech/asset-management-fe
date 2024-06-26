@@ -19,10 +19,3 @@ query GetCategories {
   }
 }
 `
-
-
-
-
-
-
-

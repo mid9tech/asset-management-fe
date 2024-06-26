@@ -39,32 +39,34 @@ export const FIND_ASSETS_QUERY = gql`
     $page: Int
     $query: String
     $sortOrder: String
-    $type: String
-    $sort: String
+    $stateFilter: String
+    $sortField: String
+    $categoryFilter: Int
   ) {
-    findUsers(
+    findAssets(
       request: {
         page: $page
         query: $query
         sortOrder: $sortOrder
-        type: $type
-        sort: $sort
+        stateFilter: $stateFilter
+        sortField: $sortField
+        categoryFilter: $categoryFilter
       }
     ) {
       page
-        limit
-        total
-        totalPages
-        assets {
-            id
-            assetCode
-            assetName
-            categoryId
-            installedDate
-            state
-            location
-            specification
-        }
+      limit
+      total
+      totalPages
+      assets {
+          id
+          assetCode
+          assetName
+          categoryId
+          installedDate
+          state
+          location
+          specification
+      }
     }
   }
 `;
