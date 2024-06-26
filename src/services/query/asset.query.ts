@@ -18,16 +18,29 @@ export const CREATE_ASSET_MUTATION = gql`
       }
     }
   }
+`
+export const FIND_ONE_ASSET_QUERY = gql`
+  query FindOneAsset($id: Int!) {
+    findOneAsset(id: $id) {
+      id
+      assetCode
+      assetName
+      categoryId
+      installedDate
+      state
+      location
+      specification
+    }
+  }
 `;
 
-export const GET_ALL_ASSET_QUERY = gql`
+export const FIND_ASSETS_QUERY = gql`
   query FindAssets(
     $page: Int
     $query: String
     $sortOrder: String
-    $sortField: String
-    $limit: Int
     $stateFilter: String
+    $sortField: String
     $categoryFilter: Int
   ) {
     findAssets(
@@ -35,9 +48,8 @@ export const GET_ALL_ASSET_QUERY = gql`
         page: $page
         query: $query
         sortOrder: $sortOrder
-        sortField: $sortField
-        limit: $limit
         stateFilter: $stateFilter
+        sortField: $sortField
         categoryFilter: $categoryFilter
       }
     ) {
@@ -46,19 +58,14 @@ export const GET_ALL_ASSET_QUERY = gql`
       total
       totalPages
       assets {
-        id
-        assetCode
-        assetName
-        categoryId
-        installedDate
-        state
-        location
-        specification
-        category {
           id
-          categoryName
-          categoryCode
-        }
+          assetCode
+          assetName
+          categoryId
+          installedDate
+          state
+          location
+          specification
       }
     }
   }

@@ -1,3 +1,6 @@
+import { useQuery } from "@apollo/client";
+import { GET_CATEGORY_QUERY } from "@services/query/category.query";
+
 export enum USER_TYPE {
     ALL = 'ALL',
     ADMIN = 'ADMIN',
@@ -5,14 +8,31 @@ export enum USER_TYPE {
 }
 
 export enum ASSET_TYPE {
-    STATE = 'STATE',
-    ALL = 'ALL',
-    ASSIGNED = 'ASSIGNED',
-    AVAILABLE = 'AVAILABLE',
-    NOT_AVAILABLE = 'NOT_AVAILABLE',
-    WAITING_FOR_RECYCLING = 'WAITING_FOR_RECYCLING',
-    RECYCLED = 'RECYCLED'
+    State = 'STATE',
+    All = 'ALL',
+    Assigned = 'ASSIGNED',
+    Available = 'AVAILABLE',
+    Not_available = 'NOT_AVAILABLE',
+    Waiting_for_recycling = 'WAITING_FOR_RECYCLING',
+    Recycled = 'RECYCLED'
 }
+
+
+export const CATEGORY_TYPE = () => {
+    const { data, loading, error } = useQuery(GET_CATEGORY_QUERY);
+
+    if (loading) return { loading, categories: [] };
+    if (error) return { error, categories: [] };
+
+    const categories = [{ id: 'ALL', categoryName: 'ALL' }, ...data.getCategories];
+
+    return {
+        categories: categories.reduce((acc: { [key: string]: any }, category: any) => {
+            acc[category.id] = category.categoryName;
+            return acc;
+        }, {}),
+    };
+};
 
 export enum SORT_ORDER {
     ASC = 'asc',

@@ -12,7 +12,7 @@ import { useLoading } from "@providers/loading";
 
 import { SORT_ORDER } from "../../../../types/enum.type";
 import { Asset, FindAssetsInput } from "../../../../__generated__/graphql";
-import { loadListAsset } from "@services/asset";
+import { loadDataAsset } from "@services/asset";
 
 interface ModalPickerProps {
   isOpen: boolean;
@@ -49,7 +49,7 @@ const ModalPikcAsset: React.FC<ModalPickerProps> = ({
 
   const loadData = async (filter: FindAssetsInput) => {
     setLoading(true);
-    const { data }: any = await loadListAsset(filter);
+    const { data }: any = await loadDataAsset(filter);
 
     setList(data.assets);
     setLoading(false);

@@ -28,6 +28,7 @@ const Search: FC<SearchProps> = (props) => {
     <Fragment>
       <div className="relative w-52 h-full">
         <input
+          id=""
           defaultValue={searchParams.get("query")?.toString()}
           onChange={(e) => {
             handleSearch(e.target.value);
