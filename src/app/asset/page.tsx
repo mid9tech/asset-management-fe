@@ -3,7 +3,7 @@
 import { gql, useQuery } from "@apollo/client";
 import { useLoading } from "@providers/loading";
 import { Fragment, Suspense, useEffect, useState } from "react";
-import { ASSET_TYPE, CATEGORY_TYPE, SORT_ORDER } from "../../types/enum.type";
+import { ASSET_TYPE, SORT_ORDER } from "../../types/enum.type";
 import { formatDate } from "@utils/timeFormat";
 import { Asset } from "../../__generated__/graphql";
 import AssetManagement from "./table";
@@ -15,8 +15,8 @@ export default function Index({
   searchParams,
 }: {
   searchParams?: {
-    State?: string;
-    Category?: string;
+    State?: string[];
+    Category?: string[];
     query?: string;
   };
 }) {
@@ -55,25 +55,6 @@ export default function Index({
       if (queryString) {
         request.query = queryString;
       }
-  
-      if (filterState && filterState !== ASSET_TYPE.All) {
-        request.stateFilter = filterState;
-      }
-  
-      let categoryId;
-      if (filterCategory && filterCategory !== 'ALL') {
-        const category = categoryData?.getCategories.find(
-          (cat: any) => cat.categoryName === filterCategory
-        );
-        categoryId = category ? category.id : null;
-        if (categoryId) {
-          request.categoryFilter = parseInt(categoryId, 10);
-        }
-      }
-  
-      console.log("filterState:", filterState);
-      console.log("filterCategory:", filterCategory);
-      console.log("request object:", request);
   
       const { data }: any = await loadDataAsset(request);
       console.log("data table: ", data);

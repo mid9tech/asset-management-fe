@@ -124,6 +124,7 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
                 setCurrentPage={setCurrentPage}
                 label="Type"
                 data={convertEnumToMap(USER_TYPE)}
+                height={110}
               />
             </div>
           </div>

@@ -28,10 +28,11 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import DetailModal from "@components/modal";
 import { CREATE_USER_MUTATION } from "@services/user";
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { useLoading } from "@providers/loading";
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
+import { FIND_ONE_ASSET_QUERY } from "@services/query/asset.query";
 
 enum State {
     AVAILABLE = "AVAILABLE",
@@ -41,99 +42,35 @@ enum State {
     ASSIGNED = "ASSIGNED"
 }
 
-const formSchema: ZodSchema = z
-    .object({
-        firstName: z
-            .string()
-            .min(1, { message: "First Name is missing" })
-            .regex(/^[a-zA-Z0-9_ ]+$/, {
-                message: "Must contain alphabetic characters",
-            })
-            .max(128, {
-                message: "First Name can't be more than 128 characters",
-            })
-            .refine((val) => /[a-zA-Z]/.test(val), {
-                message: "First Name is invalid",
-            }),
-        lastName: z
-            .string()
-            .min(1, { message: "Last Name is missing" })
-            .regex(/^[a-zA-Z0-9_ ]+$/, {
-                message: "Must contain only alphabetic characters",
-            })
-            .max(128, {
-                message: "Last Name can't be more than 128 characters",
-            })
-            .refine((val) => /[a-zA-Z]/.test(val), {
-                message: "Last Name is invalid"
-            })
-        ,
-        dateOfBirth: z
-            .string()
-            .min(1, { message: "Date of birth is missing" })
-            .refine(
-                (val) => {
-                    const date = new Date(val);
-                    return differenceInYears(new Date(), date) >= 18;
-                },
-                { message: "User is under 18." }
-            ),
-        joinedDate: z
-            .string()
-            .min(1, { message: "Joined Date is missing" })
-            .refine(
-                (val) => {
-                    const date = new Date(val);
-                    return !isWeekend(date);
-                },
-                {
-                    message:
-                        "Joined date cannot be Saturday or Sunday. Please select a different date",
-                }
-            ),
-        type: z.string().min(1, { message: "Type is missing" }),
-        location: z.string().optional()
-    })
-    .superRefine((values, ctx) => {
-        const dobDate = new Date(values.dateOfBirth);
-        const joinedDate = new Date(values.joinedDate);
-
-        if (differenceInYears(joinedDate, dobDate) < 18) {
-            ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                message:
-                    "Joined date is not later than Date of Birth. Please select a different date",
-                path: ["joinedDate"],
-            });
-        }
-
-        if (isAfter(dobDate, joinedDate)) {
-            ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                message:
-                    "Joined date is not later than Date of Birth. Please select a different date",
-                path: ["joinedDate"],
-            });
-        }
-    });
-
 interface FormData {
-    name: string;
-    category: string;
-    specification: string;
+    assetName: string;
     installedDate: string;
     state: State;
+    specification: string;
+    category: {
+        categoryName : string
+        categoryCode: string
+    }
 }
 
 const EditAsset = ({ params }: { params: { id: string } }) => {
-    const [createUserMutation] = useMutation(CREATE_USER_MUTATION);
     const { setLoading }: any = useLoading();
-
     const [showModalCancel, setShowModalCancel] = useState(false);
     const [showNewCategoryInput, setShowNewCategoryInput] = useState(false);
     const [newCategory, setNewCategory] = useState("");
     const [abbreviation, setAbbreviation] = useState("");
     const router = useRouter();
+    const [dataUpdate, setDataUpdate] = useState<FormData | null>(null);
+
+    const { data: assetData, error } = useQuery(FIND_ONE_ASSET_QUERY, {
+        variables: { id: parseInt(params.id, 10) },
+    });
+
+    useEffect(() => {
+        if (assetData) {
+            setDataUpdate(assetData.asset);
+        }
+    }, [assetData]);
 
     const handleCloseCancelModal = () => {
         setShowModalCancel(false);
@@ -160,78 +97,42 @@ const EditAsset = ({ params }: { params: { id: string } }) => {
     };
 
     const form = useForm<FormData>({
-        resolver: zodResolver(formSchema),
         mode: "onChange",
         defaultValues: {
-            name: "",
-            category: "",
-            specification: "",
+            assetName: "",
             installedDate: "",
             state: State.AVAILABLE,
+            specification: "",
+            category: {
+                categoryName : "",
+                categoryCode: ""
+            }
         },
     });
 
     useEffect(() => {
-        const words = newCategory.split(" ");
-        const abbreviation = words.map(word => word.charAt(0)).join("").toUpperCase();
-        setAbbreviation(abbreviation);
-    }, [newCategory]);
+        if (assetData) {
+          setDataUpdate({
+            ...assetData.asset,
+            // installedDate: new Date(parseInt(assetData?.asset?.installedDate))?.toISOString()?.substring(0, 10),
+          });
+        }
+      }, [assetData]);
 
-    const allFieldsFilled = !!form.watch("name") &&
-        !!form.watch("category") &&
-        !!form.watch("specification") &&
+    const allFieldsFilled = 
+        !!form.watch("assetName") &&
         !!form.watch("installedDate") &&
-        (!!form.watch("state"));
+        !!form.watch("specification") &&
+        !!form.watch("state") &&
+        !!form.watch("category.categoryName") && // Chỉnh sửa kiểm tra
+        !!form.watch("category.categoryCode");  // Chỉnh sửa kiểm tra
 
     const onSubmit = async (data: FormData) => {
-        setLoading(true);
-        try {
-            const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-            const capitalizedName = capitalize(data.name);
-            const capitalizedCategory = capitalize(data.category);
-
-            const variables: any = {
-                createUserInput: {
-                    name: capitalizedName,
-                    category: capitalizedCategory,
-                    specification: data.specification,
-                    installedDate: data.installedDate,
-                    state: data.state,
-                }
-            };
-
-            const response = await createUserMutation({ variables });
-            console.log("Response from FE: ", response);
-
-            if (response.errors) {
-                response.errors.forEach((error: any) => {
-                    console.error(`GraphQL error message: ${error.message}`);
-                });
-            } else {
-                // Save user ID to local storage
-                const userId = response.data.createUser.id;
-                localStorage.setItem('userId', userId);
-
-                toast.success("Create User Successfully");
-                console.log('User created successfully:', response);
-
-                const users = JSON.parse(localStorage.getItem('users') || '[]');
-                const newUser = {
-                    ...response.data.createUser,
-                    index: users.length + 1
-                };
-                users.push(newUser);
-                localStorage.setItem('users', JSON.stringify(users));
-                router.push('/user')
-            }
-        } catch (error) {
-            toast.error("Something went wrong! Please try again");
-            console.error('Error creating user:', error);
-        } finally {
-            setLoading(false);
-        }
+        alert("Form submitted");
     };
 
+    console.log("asset edit data: ",assetData);
+    
     return (
         <>
             <div className="ml-14 w-1/2 space-y-6">
@@ -240,7 +141,7 @@ const EditAsset = ({ params }: { params: { id: string } }) => {
                     <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
                         <FormField
                             control={form.control}
-                            name="name"
+                            name="assetName"
                             render={({ field, fieldState }) => (
                                 <FormItem>
                                     <div className="flex items-center gap-5">
@@ -271,9 +172,9 @@ const EditAsset = ({ params }: { params: { id: string } }) => {
                                             <>
                                                 <Select
                                                     {...field}
-                                                    value={field.value}
-                                                    disabled
-                                                    onValueChange={field.onChange}>
+                                                    value={field.value.categoryName}
+                                                    onValueChange={(value) => field.onChange({ ...field.value, categoryName: value })}
+                                                >
                                                     <SelectTrigger className="bg-disable">
                                                         <SelectValue
                                                             className="cursor-pointer"
@@ -281,9 +182,6 @@ const EditAsset = ({ params }: { params: { id: string } }) => {
                                                         />
                                                     </SelectTrigger>
                                                     <SelectContent className="text-black w-full">
-                                                        <SelectItem value="laptop">Laptop</SelectItem>
-                                                        <SelectItem value="monitor">Monitor</SelectItem>
-                                                        <SelectItem value="personal-computer">Personal Computer</SelectItem>
                                                         {showNewCategoryInput ? (
                                                             <div className="relative text-black mt-4 border-t-2 border-black flex flex-col items-center w-full">
                                                                 <div className="flex mr-10">
@@ -293,7 +191,7 @@ const EditAsset = ({ params }: { params: { id: string } }) => {
                                                                         className="h-fit w-full mt-1 bg-gray-50 border border-gray-100 text-gray-900 text-sm block dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black rounded-none"
                                                                     />
                                                                     <Input
-                                                                        value={abbreviation}  
+                                                                        value={abbreviation}
                                                                         readOnly
                                                                         className="h-fit mt-1 bg-gray-50 b-l-0 border border-gray-100 text-gray-900 text-sm block w-[60px] dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black rounded-none"
                                                                     />
@@ -331,7 +229,7 @@ const EditAsset = ({ params }: { params: { id: string } }) => {
                                                 {...field}
                                                 type="text"
                                                 className={`h-[100px] flex justify-end cursor-pointer flex-col ${fieldState.error ? "border-nashtech" : ""
-                                                }`}
+                                                    }`}
                                             />
                                         </FormControl>
                                     </div>
@@ -383,19 +281,19 @@ const EditAsset = ({ params }: { params: { id: string } }) => {
                                                     <Label htmlFor="option-one" className="">Available</Label>
                                                 </div>
                                                 <div className="flex items-center space-x-2">
-                                                    <RadioGroupItem value={State.NOT_AVAILABLE} id="option-one" />
-                                                    <Label htmlFor="option-one" className="">Not Available</Label>
+                                                    <RadioGroupItem value={State.NOT_AVAILABLE} id="option-two" />
+                                                    <Label htmlFor="option-two" className="">Not Available</Label>
                                                 </div>
                                                 <div className="flex items-center space-x-2">
-                                                    <RadioGroupItem value={State.WAITING_FOR_RECYCLING} id="option-one" />
-                                                    <Label htmlFor="option-one" className="">Waiting for recycling</Label>
+                                                    <RadioGroupItem value={State.WAITING_FOR_RECYCLING} id="option-three" />
+                                                    <Label htmlFor="option-three" className="">Waiting for recycling</Label>
                                                 </div>
                                                 <div className="flex items-center space-x-2">
                                                     <RadioGroupItem
                                                         value={State.RECYCLED}
-                                                        id="option-two"
+                                                        id="option-four"
                                                     />
-                                                    <Label htmlFor="option-two">Recycled</Label>
+                                                    <Label htmlFor="option-four">Recycled</Label>
                                                 </div>
                                             </RadioGroup>
                                         </FormControl>
