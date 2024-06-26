@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import { useLoading } from "@providers/loading";
 import { Fragment,Suspense, useEffect, useState } from "react";

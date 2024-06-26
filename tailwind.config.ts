@@ -22,6 +22,7 @@ const config: Config = {
         'graycustom': '#949494',
         'graycustom2': '#f5f5f5',
         'gray': '#707070',
+        'disable' :'#F0F1F4',
         'header-modal': '#EFF1F5',
         'input-gray': '#EFF1F5',
         'border-gray': 'rgba(222, 226, 230, 1);'
