@@ -79,7 +79,6 @@ const CreateForm: FC<CreateFormProps> = (props) => {
               <FormControl>
                 <Input
                   placeholder=""
-                  onClick={() => setOpenModalAsset(true)}
                   {...field}
                   className={`cursor-pointer ${
                     fieldState.error ? "border-nashtech" : ""

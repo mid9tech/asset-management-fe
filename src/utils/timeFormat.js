@@ -5,5 +5,5 @@ const options = { year: "numeric", month: "2-digit", day: "2-digit" };
 const formatter = new Intl.DateTimeFormat(['ban', 'id'], options);
 
 export const formatDate = (date) => {
-  return formatter.format(date);
+  return formatter.format(date, {});
 };

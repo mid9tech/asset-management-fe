@@ -7,6 +7,13 @@ interface ModalPickerProps {
   setOpenModal: (value: boolean) => void;
 }
 
+const users = [
+  { code: "SD1901", name: "An Nguyen Thuy", type: "Staff" },
+  { code: "SD1234", name: "An Tran Van", type: "Staff" },
+  { code: "SD0971", name: "Binh Nguyen Van", type: "Admin" },
+  // ... more users
+];
+
 const ModalPicker: React.FC<ModalPickerProps> = ({ isOpen, setOpenModal }) => {
   const modalRef = useRef<HTMLDivElement>(null);
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
@@ -34,6 +41,10 @@ const ModalPicker: React.FC<ModalPickerProps> = ({ isOpen, setOpenModal }) => {
   }, [isOpen, setOpenModal]);
 
   if (!isOpen) return null;
+
+  const filteredUsers = users.filter((user) =>
+    user.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const handleSelectUser = (code: string) => {
     setSelectedUser(code);

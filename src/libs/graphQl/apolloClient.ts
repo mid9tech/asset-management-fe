@@ -45,7 +45,7 @@ export const onErrorCustom = onError(
         return new Observable(observer => {
           (async () => {
             try {
-              await refreshToken();
+              const result = await refreshToken();
               const subscriber = {
                 next: observer.next.bind(observer),
                 error: observer.error.bind(observer),
