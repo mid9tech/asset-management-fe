@@ -78,6 +78,7 @@ const CreateForm: FC<CreateFormProps> = (props) => {
               <FormLabel className="w-[120px]">Asset</FormLabel>
               <FormControl>
                 <Input
+                onClick={() => setOpenModalAsset(true)}
                   placeholder=""
                   {...field}
                   className={`cursor-pointer ${
