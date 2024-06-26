@@ -16,11 +16,13 @@ import { FindUsersInput, User } from "../../../../__generated__/graphql";
 interface ModalPickerProps {
   isOpen: boolean;
   setOpenModal: (value: boolean) => void;
+  setUserSelected: (value: User) => void;
 }
 
 const ModalUserPicker: React.FC<ModalPickerProps> = ({
   isOpen,
   setOpenModal,
+  setUserSelected
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
   const { setLoading }: any = useLoading();
@@ -78,6 +80,7 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
 
   const handleSave = () => {
     console.log("Selected:", selected);
+    setUserSelected(selected as User);
     setOpenModal(false);
   };
 

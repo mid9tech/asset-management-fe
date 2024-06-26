@@ -17,11 +17,13 @@ import { loadListAsset } from "@services/asset";
 interface ModalPickerProps {
   isOpen: boolean;
   setOpenModal: (value: boolean) => void;
+  setAssetSelected: (value: Asset) => void;
 }
 
 const ModalPikcAsset: React.FC<ModalPickerProps> = ({
   isOpen,
   setOpenModal,
+  setAssetSelected
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
   const { setLoading }: any = useLoading();
@@ -73,6 +75,7 @@ const ModalPikcAsset: React.FC<ModalPickerProps> = ({
 
   const handleSave = () => {
     console.log("Selected:", selected);
+    setAssetSelected(selected as Asset);
     setOpenModal(false);
   };
 
