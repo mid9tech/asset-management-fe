@@ -71,6 +71,7 @@ export default function Index({
           installedDate: formatDate(new Date(item.installedDate)),
           category: categoryMap[item.categoryId] || item.categoryId,
           state: item.state === ASSET_TYPE.Available ? "AVAILABLE" : item.state,
+          isEditDisabled: item.state === 'ASSIGNED'
         }));
   
         if (newestAssetId !== "0" && newestAssetId) {
