@@ -24,7 +24,7 @@ export default function Index() {
       </Disclosure>
       <div className="w-full h-screen flex justify-center items-start mt-28">
         <div className="text-nashtech font-bold italic flex justify-end flex-col gap-5">
-          <h1>ACCESS DENIEND!</h1>
+          <h1>ACCESS DENIED!</h1>
           <button className="bg-nashtech text-white" onClick={bancToHomeButton}>
             Back to Home
           </button>

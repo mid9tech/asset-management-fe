@@ -25,6 +25,7 @@ export const findUsersQuery = gql`
     $sortOrder: String
     $type: String
     $sort: String
+    $limit: Int
   ) {
     findUsers(
       request: {
@@ -33,6 +34,7 @@ export const findUsersQuery = gql`
         sortOrder: $sortOrder
         type: $type
         sort: $sort
+        limit: $limit
       }
     ) {
       page

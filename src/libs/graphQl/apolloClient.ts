@@ -37,6 +37,8 @@ const authLink = setContext((_, { headers }) => {
 
 export const onErrorCustom = onError(
   ({ graphQLErrors, networkError, operation, forward }) => {
+  console.log(graphQLErrors)
+
     if (graphQLErrors) {
       if (graphQLErrors[0].message === "Forbidden resource") {
         location.href = "/error"
@@ -55,8 +57,8 @@ export const onErrorCustom = onError(
             } catch (error) {
               observer.error(error);
               console.log(error);
-              // await logout();
-              // location.href = "/login"
+              await logout();
+              location.href = "/login"
             }
           })();
         });

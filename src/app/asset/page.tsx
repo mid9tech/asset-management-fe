@@ -1,137 +1,163 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-"use client";
+'use client'
+import { gql, useQuery } from "@apollo/client";
 import { useLoading } from "@providers/loading";
-import { Fragment,Suspense, useEffect, useState } from "react";
-import { SORT_ORDER, USER_TYPE } from "../../types/enum.type";
+import { Fragment, Suspense, useEffect, useState } from "react";
+import { ASSET_TYPE, CATEGORY_TYPE, SORT_ORDER } from "../../types/enum.type";
 import { formatDate } from "@utils/timeFormat";
-import { loadData, loadDetail } from "@services/user";
-import { Asset, User } from "../../__generated__/graphql";
+import { Asset } from "../../__generated__/graphql";
 import AssetManagement from "./table";
-// import AssetManagement from "./table";
-export const dynamic = "force-dynamic";
+import { loadDataAsset, loadDetailAsset } from "@services/asset";
+import { GET_CATEGORY_QUERY } from "@services/query/category.query";
 
+export const dynamic = "force-dynamic";
 export default function Index({
   searchParams,
 }: {
   searchParams?: {
-    Type?: string;
+    State?: string;
+    Category?: string;
     query?: string;
   };
 }) {
   const { setLoading }: any = useLoading();
-  const [listAsset, setListAssets] = useState<User[]>();
-  console.log('params', searchParams);
-  const filterType = searchParams?.Type || "";
+  const [listAsset, setListAssets] = useState<Asset[]>([]);
+  const filterState = searchParams?.State || "All"; 
+  const filterCategory = searchParams?.Category || "All"; 
   const queryString = searchParams?.query || "";
-  const [sortOrder, setSortOder] = useState(SORT_ORDER.ASC);
-  const [sortBy, setSortBy] = useState("firstName");
+  const [sortOrder, setSortOrder] = useState(SORT_ORDER.ASC);
+  const [sortBy, setSortBy] = useState("assetCode");
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [totlaPage, setTotalPages] = useState<number>();
-  const [newestUserId, setNewestUserId] = useState<string>("0");
+  const [totalPage, setTotalPages] = useState<number>(0);
+  const [newestAssetId, setNewestAssetId] = useState<string>("0");
+
+  const { data: categoryData, loading: categoryLoading } = useQuery(GET_CATEGORY_QUERY);
 
   useEffect(() => {
-    const newUserId = JSON.parse(localStorage.getItem("newUserId") || "0");
-    setNewestUserId(newUserId);
+    const newAssetId = JSON.parse(localStorage.getItem("newAssetId") || "0");
+    setNewestAssetId(newAssetId);
   }, []);
 
   useEffect(() => {
     setLoading(true);
-    loadUserList();
-  }, [queryString, filterType, sortBy, sortOrder, currentPage, newestUserId]);
+    loadAssetList();
+  }, [queryString, filterState, filterCategory, sortBy, sortOrder, currentPage, newestAssetId, categoryData]);
 
-  const loadUserList = async () => {
-    let request: { [k: string]: any } = {};
-    request.page = currentPage;
-    request.sort = sortBy;
-    request.sortOrder = sortOrder;
-    if (queryString) {
-      request.query = queryString;
-    }
-    if (filterType) {
-      if (filterType === USER_TYPE.ALL) {
-        delete request.type;
-      } else {
-        request.type = filterType;
+  const loadAssetList = async () => {
+    try {
+      setLoading(true);
+  
+      let request: { [k: string]: any } = {};
+      request.page = currentPage;
+      request.sortField = sortBy;
+      request.sortOrder = sortOrder;
+  
+      if (queryString) {
+        request.query = queryString;
       }
-    }
-    const { data }: any = await loadData(request);
-
-    const listUserCustome = data?.users.map(
-      (item: {
-        type: USER_TYPE;
-        lastName: any;
-        firstName: any;
-        joinedDate: any;
-        dateOfBirth: any;
-      }) => ({
-        ...item,
-        fullName: `${item.lastName} ${item.firstName}`,
-        dateOfBirth: formatDate(new Date(item.dateOfBirth)),
-        joinedDate: formatDate(new Date(item.joinedDate)),
-        type: item.type === USER_TYPE.STAFF ? "STAFF" : item.type,
-      })
-    );
-
-    if (newestUserId !== "0" && newestUserId) {
-      const newestUserIndex = listUserCustome.findIndex(
-        (user: User) => user.id === newestUserId
-      );
-
-      if (newestUserIndex !== -1) {
-        const [newestUser] = listUserCustome.splice(newestUserIndex, 1);
-        listUserCustome.unshift(newestUser);
-      } else {
-        const currentAdmin = JSON.parse(localStorage.getItem("user") || "{}");
-        const { data: newUserDetail } = await loadDetail(Number(newestUserId));
-        const { data: currentAdminDetail } = await loadDetail(
-          Number(currentAdmin.id)
+  
+      if (filterState && filterState !== ASSET_TYPE.All) {
+        request.stateFilter = filterState;
+      }
+  
+      let categoryId;
+      if (filterCategory && filterCategory !== 'ALL') {
+        const category = categoryData?.getCategories.find(
+          (cat: any) => cat.categoryName === filterCategory
         );
-        if (
-          newUserDetail &&
-          currentAdminDetail.location == newUserDetail.location
-        ) {
-          listUserCustome.unshift({
-            ...newUserDetail,
-            fullName: `${newUserDetail.lastName} ${newUserDetail.firstName}`,
-            dateOfBirth: formatDate(
-              new Date(parseInt(newUserDetail.dateOfBirth))
-            ),
-            joinedDate: formatDate(
-              new Date(parseInt(newUserDetail.joinedDate))
-            ),
-            type:
-              newUserDetail.type === USER_TYPE.STAFF
-                ? "STAFF"
-                : newUserDetail.type,
-          });
-          if (listUserCustome.length > 20) {
-            listUserCustome.pop();
-          }
+        categoryId = category ? category.id : null;
+        if (categoryId) {
+          request.categoryFilter = parseInt(categoryId, 10);
         }
       }
-
-      localStorage.setItem("newUserId", JSON.stringify("0"));
+  
+      console.log("filterState:", filterState);
+      console.log("filterCategory:", filterCategory);
+      console.log("request object:", request);
+  
+      const { data }: any = await loadDataAsset(request);
+      console.log("data table: ", data);
+  
+      if (data && data.assets) {
+        const categoryMap = categoryData?.getCategories.reduce((map: any, category: any) => {
+          map[category.id] = category.categoryName;
+          return map;
+        }, {});
+  
+        const listAssetCustom = data.assets.map((item: Asset) => ({
+          ...item,
+          assetName: `${item.assetName}`,
+          installedDate: formatDate(new Date(item.installedDate)),
+          category: categoryMap[item.categoryId] || item.categoryId,
+          state: item.state === ASSET_TYPE.Available ? "AVAILABLE" : item.state,
+        }));
+  
+        if (newestAssetId !== "0" && newestAssetId) {
+          const newestAssetIndex = listAssetCustom.findIndex(
+            (asset: Asset) => asset.id === newestAssetId
+          );
+  
+          if (newestAssetIndex !== -1) {
+            const [newestAsset] = listAssetCustom.splice(newestAssetIndex, 1);
+            listAssetCustom.unshift(newestAsset);
+          } else {
+            const currentAdmin = JSON.parse(localStorage.getItem("asset") || "{}");
+            const { data: newAssetDetail } = await loadDetailAsset(Number(newestAssetId));
+            const { data: currentAdminDetail } = await loadDetailAsset(
+              Number(currentAdmin.id)
+            );
+            if (
+              newAssetDetail &&
+              currentAdminDetail.location === newAssetDetail.location
+            ) {
+              listAssetCustom.unshift({
+                ...newAssetDetail,
+                assetName: `${newAssetDetail.assetName}`,
+                category: categoryMap[newAssetDetail.categoryId] || newAssetDetail.categoryId,
+                installedDate: newAssetDetail.installedDate,
+                state:
+                  newAssetDetail.state === ASSET_TYPE.Available
+                    ? "AVAILABLE"
+                    : newAssetDetail.state,
+              });
+              if (listAssetCustom.length > 20) {
+                listAssetCustom.pop();
+              }
+            }
+          }
+  
+          localStorage.setItem("newAssetId", JSON.stringify("0"));
+        }
+  
+        setCurrentPage(data.page ?? 1);
+        setTotalPages(data.totalPages ?? 1);
+        setListAssets(listAssetCustom);
+      } else {
+        console.error("Failed to load assets: ", data);
+      }
+    } catch (error) {
+      console.error("Error loading assets: ", error);
+    } finally {
+      setLoading(false);
     }
-
-    setCurrentPage(data.page);
-    setTotalPages(data.totalPages);
-    setListAssets(listUserCustome);
-    setLoading(false);
   };
+
+  console.log("categoryData: ", categoryData);
+
   return (
     <Fragment>
-    <Suspense >
-      {/* <AssetManagement
-        data={listAsset as Asset[]}
-        totalPages={totlaPage as number}
-        currentPage={currentPage}
-        sortBy={sortBy}
-        sortOrder={sortOrder}
-        setSortBy={setSortBy}
-        setSortOder={setSortOder}
-        setCurrentPage={setCurrentPage}
-      /> */}
-    </Suspense>
-  </Fragment>
+      <Suspense>
+        <AssetManagement
+          data={listAsset}
+          totalPages={totalPage}
+          currentPage={currentPage}
+          sortBy={sortBy}
+          sortOrder={sortOrder}
+          setSortBy={setSortBy}
+          setSortOrder={setSortOrder}
+          setCurrentPage={setCurrentPage}
+        />
+      </Suspense>
+    </Fragment>
   );
 }
