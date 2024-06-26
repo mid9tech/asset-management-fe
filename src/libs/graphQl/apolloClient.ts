@@ -55,8 +55,8 @@ export const onErrorCustom = onError(
             } catch (error) {
               observer.error(error);
               console.log(error);
-              // await logout();
-              // location.href = "/login"
+              await logout();
+              location.href = "/login"
             }
           })();
         });

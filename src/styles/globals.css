@@ -58,3 +58,52 @@
     animation:l4 1s infinite steps(10);
   }
   @keyframes l4 {to{transform: rotate(1turn)}}
+
+/* Custome radio button*/
+  .custom-radio input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+  }
+  
+  .custom-radio {
+    position: relative;
+    padding-left: 30px;
+    cursor: pointer;
+    font-size: 20px;
+    user-select: none;
+  }
+  
+  .custom-radio .checkmark {
+    position: absolute;
+    top: -11px;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    background-color: #eee;
+    border-radius: 50%;
+  }
+  
+  .custom-radio input:checked ~ .checkmark {
+    background-color: #cf2338;
+  }
+  
+  .custom-radio .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+  
+  .custom-radio input:checked ~ .checkmark:after {
+    display: block;
+  }
+  
+  .custom-radio .checkmark:after {
+    top: 7px;
+    left: 7px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: white;
+  }
+  

@@ -1,6 +1,7 @@
 "use client";
 import axios, { AxiosRequestConfig } from "axios";
 import { ACCESS_TOKEN, USER } from "../../constants";
+import { redirect } from "next/navigation";
 
 export const restApiBase = async (
   data: any,
