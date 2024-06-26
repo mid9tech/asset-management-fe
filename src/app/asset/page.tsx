@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 import { gql, useQuery } from "@apollo/client";
 import { useLoading } from "@providers/loading";
