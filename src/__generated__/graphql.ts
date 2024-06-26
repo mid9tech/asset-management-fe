@@ -18,24 +18,64 @@ export type Scalars = {
 
 export type Asset = {
   __typename?: 'Asset';
-  /** Example field (placeholder) */
-  exampleField: Scalars['Int']['output'];
+  assetCode: Scalars['String']['output'];
+  assetName: Scalars['String']['output'];
+  categoryId: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
+  installedDate: Scalars['String']['output'];
+  location: Scalars['String']['output'];
+  specification?: Maybe<Scalars['String']['output']>;
+  state: Scalars['String']['output'];
 };
 
 export type Assignment = {
   __typename?: 'Assignment';
-  /** Example field (placeholder) */
-  exampleField: Scalars['Int']['output'];
+  assetCode: Scalars['String']['output'];
+  assetId: Scalars['Int']['output'];
+  assetName: Scalars['String']['output'];
+  assignedDate: Scalars['String']['output'];
+  assignee: User;
+  assigner: User;
+  id: Scalars['Int']['output'];
+  note: Scalars['String']['output'];
+  state: Scalars['String']['output'];
+};
+
+export type Category = {
+  __typename?: 'Category';
+  categoryCode: Scalars['String']['output'];
+  categoryName: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
 };
 
 export type CreateAssetInput = {
-  /** Example field (placeholder) */
-  exampleField: Scalars['Int']['input'];
+  /** Name of the asset */
+  assetName: Scalars['String']['input'];
+  /** ID of the category */
+  categoryId: Scalars['Int']['input'];
+  /** Date the asset was installed */
+  installedDate: Scalars['String']['input'];
+  /** Specification of the asset */
+  specification?: InputMaybe<Scalars['String']['input']>;
+  /** State of the asset */
+  state: Scalars['String']['input'];
 };
 
 export type CreateAssignmentInput = {
-  /** Example field (placeholder) */
-  exampleField: Scalars['Int']['input'];
+  assetCode: Scalars['String']['input'];
+  assetId: Scalars['Int']['input'];
+  assetName: Scalars['String']['input'];
+  assignedById: Scalars['Int']['input'];
+  assignedDate: Scalars['String']['input'];
+  assignedToId: Scalars['Int']['input'];
+  assignedToUsername: Scalars['String']['input'];
+  note: Scalars['String']['input'];
+  state: Scalars['String']['input'];
+};
+
+export type CreateCategoryInput = {
+  categoryCode: Scalars['String']['input'];
+  categoryName: Scalars['String']['input'];
 };
 
 export type CreateRequestReturnInput = {
@@ -51,6 +91,43 @@ export type CreateUserInput = {
   lastName: Scalars['String']['input'];
   location?: InputMaybe<Scalars['String']['input']>;
   type: Scalars['String']['input'];
+};
+
+export type FindAssetsInput = {
+  categoryFilter?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  query?: InputMaybe<Scalars['String']['input']>;
+  sortField?: InputMaybe<Scalars['String']['input']>;
+  sortOrder?: InputMaybe<Scalars['String']['input']>;
+  stateFilter?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type FindAssetsOutput = {
+  __typename?: 'FindAssetsOutput';
+  assets: Array<Asset>;
+  limit?: Maybe<Scalars['Int']['output']>;
+  page?: Maybe<Scalars['Int']['output']>;
+  total?: Maybe<Scalars['Int']['output']>;
+  totalPages?: Maybe<Scalars['Int']['output']>;
+};
+
+export type FindAssignmentsInput = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  query?: InputMaybe<Scalars['String']['input']>;
+  sort?: InputMaybe<Scalars['String']['input']>;
+  sortOrder?: InputMaybe<Scalars['String']['input']>;
+  state?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type FindAssignmentsOutput = {
+  __typename?: 'FindAssignmentsOutput';
+  assignments: Array<Assignment>;
+  limit?: Maybe<Scalars['Int']['output']>;
+  page?: Maybe<Scalars['Int']['output']>;
+  total?: Maybe<Scalars['Int']['output']>;
+  totalPages?: Maybe<Scalars['Int']['output']>;
 };
 
 export type FindUsersInput = {
@@ -75,14 +152,13 @@ export type Mutation = {
   __typename?: 'Mutation';
   createAsset: Asset;
   createAssignment: Assignment;
+  createCategory: Category;
   createRequestReturn: RequestReturn;
   createUser: User;
   disableUser: Scalars['Boolean']['output'];
-  removeAsset: Asset;
   removeAssignment: Assignment;
   removeRequestReturn: RequestReturn;
   removeUser: User;
-  updateAsset: Asset;
   updateAssignment: Assignment;
   updateRequestReturn: RequestReturn;
   updateUser: User;
@@ -96,6 +172,11 @@ export type MutationCreateAssetArgs = {
 
 export type MutationCreateAssignmentArgs = {
   createAssignmentInput: CreateAssignmentInput;
+};
+
+
+export type MutationCreateCategoryArgs = {
+  createCategoryInput: CreateCategoryInput;
 };
 
 
@@ -114,11 +195,6 @@ export type MutationDisableUserArgs = {
 };
 
 
-export type MutationRemoveAssetArgs = {
-  id: Scalars['Int']['input'];
-};
-
-
 export type MutationRemoveAssignmentArgs = {
   id: Scalars['Int']['input'];
 };
@@ -131,11 +207,6 @@ export type MutationRemoveRequestReturnArgs = {
 
 export type MutationRemoveUserArgs = {
   id: Scalars['Int']['input'];
-};
-
-
-export type MutationUpdateAssetArgs = {
-  updateAssetInput: UpdateAssetInput;
 };
 
 
@@ -156,23 +227,34 @@ export type MutationUpdateUserArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  asset: Asset;
-  assets: Array<Asset>;
   assignment: Assignment;
-  assignments: Array<Assignment>;
+  findAssets: FindAssetsOutput;
+  findAssignments: FindAssignmentsOutput;
+  findOneAsset: Asset;
   findUsers: FindUsersOutput;
+  getCategories: Array<Category>;
   requestReturn: RequestReturn;
   requestReturns: Array<RequestReturn>;
   user: User;
 };
 
 
-export type QueryAssetArgs = {
+export type QueryAssignmentArgs = {
   id: Scalars['Int']['input'];
 };
 
 
-export type QueryAssignmentArgs = {
+export type QueryFindAssetsArgs = {
+  request: FindAssetsInput;
+};
+
+
+export type QueryFindAssignmentsArgs = {
+  findAssignmentsInput: FindAssignmentsInput;
+};
+
+
+export type QueryFindOneAssetArgs = {
   id: Scalars['Int']['input'];
 };
 
@@ -197,16 +279,17 @@ export type RequestReturn = {
   exampleField: Scalars['Int']['output'];
 };
 
-export type UpdateAssetInput = {
-  /** Example field (placeholder) */
-  exampleField?: InputMaybe<Scalars['Int']['input']>;
-  id: Scalars['Int']['input'];
-};
-
 export type UpdateAssignmentInput = {
-  /** Example field (placeholder) */
-  exampleField?: InputMaybe<Scalars['Int']['input']>;
+  assetCode?: InputMaybe<Scalars['String']['input']>;
+  assetId?: InputMaybe<Scalars['Int']['input']>;
+  assetName?: InputMaybe<Scalars['String']['input']>;
+  assignedById?: InputMaybe<Scalars['Int']['input']>;
+  assignedDate?: InputMaybe<Scalars['String']['input']>;
+  assignedToId?: InputMaybe<Scalars['Int']['input']>;
+  assignedToUsername?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['Int']['input'];
+  note?: InputMaybe<Scalars['String']['input']>;
+  state?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateRequestReturnInput = {
@@ -243,7 +326,24 @@ export type CreateUserMutationVariables = Exact<{
 }>;
 
 
-export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'User', firstName: string, lastName: string, gender: string, joinedDate: string, dateOfBirth: string, type: string, location: string } };
+export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'User', id: string, firstName: string, lastName: string, gender: string, joinedDate: string, dateOfBirth: string, type: string, location: string } };
+
+export type UpdateUserMutationVariables = Exact<{
+  id: Scalars['Float']['input'];
+  updateUserInput: UpdateUserInput;
+}>;
 
 
-export const CreateUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateUser"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"createUserInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateUserInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"createUserInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"createUserInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"gender"}},{"kind":"Field","name":{"kind":"Name","value":"joinedDate"}},{"kind":"Field","name":{"kind":"Name","value":"dateOfBirth"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"location"}}]}}]}}]} as unknown as DocumentNode<CreateUserMutation, CreateUserMutationVariables>;
+export type UpdateUserMutation = { __typename?: 'Mutation', updateUser: { __typename?: 'User', id: string, firstName: string, lastName: string, gender: string, joinedDate: string, dateOfBirth: string, type: string, location: string } };
+
+export type GetUserByIdQueryVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
+
+
+export type GetUserByIdQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, firstName: string, lastName: string, gender: string, joinedDate: string, dateOfBirth: string, type: string, location: string, staffCode: string, username: string } };
+
+
+export const CreateUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateUser"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"createUserInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateUserInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"createUserInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"createUserInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"gender"}},{"kind":"Field","name":{"kind":"Name","value":"joinedDate"}},{"kind":"Field","name":{"kind":"Name","value":"dateOfBirth"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"location"}}]}}]}}]} as unknown as DocumentNode<CreateUserMutation, CreateUserMutationVariables>;
+export const UpdateUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateUser"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Float"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"updateUserInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateUserInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"updateUserInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"updateUserInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"gender"}},{"kind":"Field","name":{"kind":"Name","value":"joinedDate"}},{"kind":"Field","name":{"kind":"Name","value":"dateOfBirth"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"location"}}]}}]}}]} as unknown as DocumentNode<UpdateUserMutation, UpdateUserMutationVariables>;
+export const GetUserByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetUserById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"gender"}},{"kind":"Field","name":{"kind":"Name","value":"joinedDate"}},{"kind":"Field","name":{"kind":"Name","value":"dateOfBirth"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"location"}},{"kind":"Field","name":{"kind":"Name","value":"staffCode"}},{"kind":"Field","name":{"kind":"Name","value":"username"}}]}}]}}]} as unknown as DocumentNode<GetUserByIdQuery, GetUserByIdQueryVariables>;

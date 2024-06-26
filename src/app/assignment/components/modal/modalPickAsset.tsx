@@ -11,38 +11,33 @@ import SearchIcon from "@public/icon/search.svg";
 import { useLoading } from "@providers/loading";
 
 import { USER_TYPE } from "../../../../types/enum.type";
-import { FindUsersInput, User } from "../../../../__generated__/graphql";
+import { Asset, FindAssetsInput, FindUsersInput, User } from "../../../../__generated__/graphql";
+import { loadListAsset } from "@services/asset";
 
 interface ModalPickerProps {
   isOpen: boolean;
   setOpenModal: (value: boolean) => void;
 }
 
-const ModalUserPicker: React.FC<ModalPickerProps> = ({
+const ModalPikcAsset: React.FC<ModalPickerProps> = ({
   isOpen,
   setOpenModal,
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
   const { setLoading }: any = useLoading();
-  const [selected, setSelected] = useState<User>();
-  const [listUser, setListUser] = useState<User[]>();
+  const [selected, setSelected] = useState<Asset>();
+  const [list, setList] = useState<Asset[]>();
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearch = useDebouncedCallback((term: string) => {
     setSearchTerm(term);
   }, 300);
 
-  const loadUserList = async (filter: FindUsersInput) => {
+  const loadData = async (filter: FindAssetsInput) => {
     setLoading(true);
-    const { data }: any = await loadData(filter);
-    const listUserCustom = data?.users.map(
-      (item: { type: USER_TYPE; lastName: any; firstName: any }) => ({
-        ...item,
-        fullName: `${item.lastName} ${item.firstName}`,
-        type: item.type === USER_TYPE.STAFF ? "STAFF" : item.type,
-      })
-    );
-    setListUser(listUserCustom);
+    const { data }: any = await loadListAsset(filter);
+
+    setList(data.assets);
     setLoading(false);
   };
 
@@ -56,7 +51,7 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
       }
     };
     if (isOpen) {
-      loadUserList({
+        loadData({
         page: 1,
         query: searchTerm,
         limit: 10,
@@ -72,7 +67,7 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
 
   if (!isOpen) return null;
 
-  const handleSelected = (item: User) => {
+  const handleSelected = (item: Asset) => {
     setSelected(item);
   };
 
@@ -90,7 +85,7 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
           <div className="flex flex-row justify-between items-center">
             <div className="px-4 py-5 sm:px-6">
               <h3 className="text-lg leading-6 font-medium text-gray-900">
-                Select User
+                Select Asset
               </h3>
             </div>
             <div className="px-4 sm:px-6">
@@ -116,17 +111,17 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
             <div className="grid grid-cols-6 gap-4">
               <div></div>
               <div className="col border-b-2 border-black">
-                <span className="font-bold">Staff Code</span>
+                <span className="font-bold">Asset Code</span>
               </div>
               <div className="col-span-3 border-b-2 border-black">
-                <span className="font-bold">Full Name</span>
+                <span className="font-bold">Asset Name</span>
               </div>
               <div className="border-b-2 border-black">
-                <span className="font-bold">Type</span>
+                <span className="font-bold">Category</span>
               </div>
               <div></div>
             </div>
-            {listUser?.map((item, key) => (
+            {list?.map((item, key) => (
               <div
                 key={key}
                 className="grid grid-cols-6 gap-4 cursor-pointer"
@@ -135,22 +130,22 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
                   <label className="custom-radio">
                     <input
                       type="radio"
-                      checked={selected?.staffCode === item.staffCode}
+                      checked={selected?.id === item.id}
                       onChange={() => handleSelected(item)}
                     />
                     <span className="checkmark"></span>
                   </label>
                 </div>
                 <div className="col border-b-2 border-graycustom">
-                  <span>{item.staffCode}</span>
+                  <span>{item.assetCode}</span>
                 </div>
                 <div className="col-span-3 border-b-2 border-graycustom">
                   <span>
-                    {item.lastName} {item.firstName}
+                    {item.assetName}
                   </span>
                 </div>
                 <div className="border-b-2 border-graycustom">
-                  <span>{item.type}</span>
+                  <span>{item.categoryId}</span>
                 </div>
                 <div></div>
               </div>
@@ -170,4 +165,4 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
   );
 };
 
-export default ModalUserPicker;
+export default ModalPikcAsset;

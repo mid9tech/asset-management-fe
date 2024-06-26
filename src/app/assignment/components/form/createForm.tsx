@@ -15,8 +15,8 @@ import { ASSIGNMENT_STATUS } from "../../../../types/enum.type";
 import { useAuth } from "@providers/auth";
 import { TextArea } from "@components/ui/text-area";
 import { User } from "../../../../__generated__/graphql";
-import ModalPicker from "@components/modalPicker";
 import ModalUserPicker from "../modal/modalPickUser";
+import ModalPikcAsset from "../modal/modalPickAsset";
 
 interface CreateFormProps {
   setShowModalConfirm: (value: boolean) => void;
@@ -27,6 +27,7 @@ const CreateForm: FC<CreateFormProps> = (props) => {
   const { user } = useAuth();
 
   const [openModalUser, setOpenModalUser] = useState(false);
+  const [openModalAsset, setOpenModalAsset] = useState(false);
 
   const form = useForm<AssignmentType>({
     // resolver: zodResolver(formSchema),
@@ -78,7 +79,7 @@ const CreateForm: FC<CreateFormProps> = (props) => {
               <FormControl>
                 <Input
                   placeholder=""
-                  onClick={() => setOpenModalUser(true)}
+                  onClick={() => setOpenModalAsset(true)}
                   {...field}
                   className={`cursor-pointer ${
                     fieldState.error ? "border-nashtech" : ""
@@ -86,6 +87,7 @@ const CreateForm: FC<CreateFormProps> = (props) => {
                 />
               </FormControl>
             </div>
+            <ModalPikcAsset isOpen={openModalAsset} setOpenModal={setOpenModalAsset}/>
             <FormMessage className="text-nashtech float-left ml-26">
               {fieldState.error?.message}
             </FormMessage>
