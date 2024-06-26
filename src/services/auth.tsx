@@ -54,7 +54,7 @@ export const logout = async () => {
 
 export const refreshToken = async () => {
   try {
-    const result = await restApiBase({}, "api/auth/logout");
+    const result = await restApiBase({}, "api/auth/refresh-access");
     const { accessToken } = result?.data;
     localStorage.setItem(ACCESS_TOKEN, accessToken);
     return result;

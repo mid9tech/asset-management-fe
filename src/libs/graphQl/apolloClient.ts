@@ -13,7 +13,7 @@ import { ACCESS_TOKEN } from "../../constants";
 import { logout, refreshToken } from "@services/auth";
 
 const httpLink = new HttpLink({
-  uri: `${process.env.NEXT_PUBLIC_URL_SERVER}graphql`,
+  uri: `/graphql`,
   fetchOptions: { cache: "no-store" },
 });
 
@@ -45,7 +45,7 @@ export const onErrorCustom = onError(
         return new Observable(observer => {
           (async () => {
             try {
-              await refreshToken();
+              const result = await refreshToken();
               const subscriber = {
                 next: observer.next.bind(observer),
                 error: observer.error.bind(observer),
@@ -54,8 +54,9 @@ export const onErrorCustom = onError(
               forward(operation).subscribe(subscriber);
             } catch (error) {
               observer.error(error);
-              await logout();
-              location.href = "/login"
+              console.log(error);
+              // await logout();
+              // location.href = "/login"
             }
           })();
         });

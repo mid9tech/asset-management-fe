@@ -1,7 +1,11 @@
-import { render } from '@testing-library/react'
-import Page from '../src/app/page'
- 
+import { render } from '@testing-library/react';
+import Index from '../src/app/page';
+
+jest.mock('next/navigation', () => ({
+  redirect: jest.fn(),
+}));
+
 it('renders homepage unchanged', () => {
-  const { container } = render(<Page />)
-  expect(container).toMatchSnapshot()
-})
+  const { asFragment } = render(<Index />);
+  expect(asFragment()).toMatchSnapshot();
+});

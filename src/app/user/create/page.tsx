@@ -156,6 +156,10 @@ interface FormData {
 const CreateUser = () => {
   const [createUserMutation] = useMutation(CREATE_USER_MUTATION);
   const { setLoading }: any = useLoading();
+<<<<<<< HEAD
+=======
+  setLoading(false);
+>>>>>>> dev
 
   const [showModalCancel, setShowModalCancel] = useState(false);
   const router = useRouter();
@@ -218,7 +222,10 @@ const CreateUser = () => {
       }
 
       const response = await createUserMutation({ variables });
+<<<<<<< HEAD
       console.log("Response from FE: ", response);
+=======
+>>>>>>> dev
 
       if (response.errors) {
         response.errors.forEach((error: any) => {
@@ -230,7 +237,10 @@ const CreateUser = () => {
         localStorage.setItem("newUserId", '"' + userId.toString() + '"');
 
         toast.success("Create User Successfully");
+<<<<<<< HEAD
         console.log("User created successfully:", response);
+=======
+>>>>>>> dev
 
         router.push("/user");
       }
