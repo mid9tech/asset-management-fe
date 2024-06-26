@@ -7,7 +7,6 @@ export const restApiBase = async (
   endPoint: string,
   method?: string
 ) => {
-  const baseUrl: string = process.env.NEXT_PUBLIC_URL_SERVER as string;
   const token = localStorage.getItem(ACCESS_TOKEN);
   const headers = {
     "Content-Type": "application/json",
@@ -15,7 +14,7 @@ export const restApiBase = async (
   };
 
   const config: AxiosRequestConfig = {
-    url: `${baseUrl}${endPoint}`,
+    url: `/${endPoint}`,
     method: method ? method : "POST",
     data: data,
     withCredentials: true,
@@ -32,7 +31,7 @@ export const restApiBase = async (
         error.response.data.statusCode === 401
       ) {
         axios({
-          baseURL: `${baseUrl}api/auth/refresh-access`,
+          baseURL: `api/auth/refresh-access`,
           headers: {
             "Content-Type": "application/json",
           },
