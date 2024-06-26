@@ -175,13 +175,13 @@ const ModalPikcAsset: React.FC<ModalPickerProps> = ({
                   </label>
                 </div>
                 <div className="col border-b-2 border-graycustom">
-                  <span>{item.assetCode}</span>
+                  <span>{item?.assetCode}</span>
                 </div>
                 <div className="col-span-3 border-b-2 border-graycustom">
-                  <span>{item.assetName}</span>
+                  <span>{item?.assetName}</span>
                 </div>
                 <div className="border-b-2 border-graycustom">
-                  <span>{item.category.categoryName}</span>
+                  <span>{item.category?.categoryName}</span>
                 </div>
                 <div></div>
               </div>

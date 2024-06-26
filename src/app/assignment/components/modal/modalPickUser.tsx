@@ -187,15 +187,15 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
                   </label>
                 </div>
                 <div className="col border-b-2 border-graycustom">
-                  <span>{item.staffCode}</span>
+                  <span>{item?.staffCode}</span>
                 </div>
                 <div className="col-span-3 border-b-2 border-graycustom">
                   <span>
-                    {item.lastName} {item.firstName}
+                    {item?.lastName} {item?.firstName}
                   </span>
                 </div>
                 <div className="border-b-2 border-graycustom">
-                  <span>{item.type}</span>
+                  <span>{item?.type}</span>
                 </div>
                 <div></div>
               </div>
