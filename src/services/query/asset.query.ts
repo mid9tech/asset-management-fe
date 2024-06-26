@@ -30,6 +30,11 @@ export const FIND_ONE_ASSET_QUERY = gql`
       state
       location
       specification
+      category {
+        id
+        categoryName
+        categoryCode
+      }
     }
   }
 `;
