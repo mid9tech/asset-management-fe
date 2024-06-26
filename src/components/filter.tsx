@@ -69,7 +69,7 @@ const Filter = ({ data, label, setCurrentPage, height = 150}: Props) => {
                       checked={isChecked("all")} 
                       value="all"
                       onChange={(e) => handleChange(event, "all")}
-                      className="h-4 w-4 text-nashtech border-gray-300 rounded bg-nashtech"
+                      className="h-4 w-4"
                     />
                     <label htmlFor="" className="ml-3 block text-sm text-gray-700">
                       All
@@ -84,7 +84,7 @@ const Filter = ({ data, label, setCurrentPage, height = 150}: Props) => {
                       checked={isChecked(value)}
                       value={value}
                       onChange={(e) => handleChange(event, value)}
-                      className="h-4 w-4 text-nashtech border-gray-300 rounded bg-nashtech"
+                      className="h-4 w-4 border-gray-300 rounded"
                     />
                     <label htmlFor={key} className="ml-3 block text-sm text-gray-700">
                       {key}

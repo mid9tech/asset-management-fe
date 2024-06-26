@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { Asset } from "../../__generated__/graphql";
 import { useState } from "react";
 import DetailModal from "@components/modal";
@@ -17,9 +17,9 @@ const ViewDetail = () => {
         map[category.id] = category.categoryName;
         return map;
     }, {}) || {};
-  return (
-    <>
-    {selectedAsset && (
+    return (
+        <Fragment>
+            {selectedAsset && (
                 <DetailModal
                     isOpen={showModalDetailAsset}
                     onClose={handleCloseDetailModal}
@@ -52,7 +52,7 @@ const ViewDetail = () => {
                         <div className="flex mb-2">
                             <span className="text-sm w-40">Specification</span>{" "}
                             <span className="text-sm">
-                               {selectedAsset.specification}
+                                {selectedAsset.specification}
                             </span>
                         </div>
                         <div className="flex mb-2">
@@ -64,8 +64,8 @@ const ViewDetail = () => {
                     </div>
                 </DetailModal>
             )}
-    </>
-  )
+        </Fragment>
+    )
 }
 
 export default ViewDetail

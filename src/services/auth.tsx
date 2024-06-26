@@ -59,6 +59,7 @@ export const refreshToken = async () => {
     localStorage.setItem(ACCESS_TOKEN, accessToken);
     return result;
   } catch (error: any) {
+    await logout()
     throw error.response.data;
   }
 };

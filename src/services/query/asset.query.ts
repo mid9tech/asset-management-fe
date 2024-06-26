@@ -18,7 +18,7 @@ export const CREATE_ASSET_MUTATION = gql`
       }
     }
   }
-`
+`;
 export const FIND_ONE_ASSET_QUERY = gql`
   query FindOneAsset($id: Int!) {
     findOneAsset(id: $id) {
@@ -63,14 +63,19 @@ export const FIND_ASSETS_QUERY = gql`
       total
       totalPages
       assets {
+        id
+        assetCode
+        assetName
+        categoryId
+        installedDate
+        state
+        location
+        specification
+        category {
           id
-          assetCode
-          assetName
-          categoryId
-          installedDate
-          state
-          location
-          specification
+          categoryName
+          categoryCode
+        }
       }
     }
   }

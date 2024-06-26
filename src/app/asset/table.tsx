@@ -144,10 +144,7 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
                 </div>
                 <ReusableTable
                     columns={assetColumns}
-                    data={data.map(asset => ({
-                        ...asset,
-                        category: asset.category.categoryName
-                    })) ?? []}
+                    data={data}
                     onRowClick={handleRowClick}
                     onDeleteClick={handleDeleteClick}
                     onSortClick={handleSortClick}

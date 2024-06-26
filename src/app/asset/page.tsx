@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 import { gql, useQuery } from "@apollo/client";
 import { useLoading } from "@providers/loading";
@@ -54,21 +55,6 @@ export default function Index({
       if (queryString) {
         request.query = queryString;
       }
-  
-      // if (filterState && filterState !== ASSET_TYPE.All) {
-      //   request.stateFilter = filterState;
-      // }
-  
-      let categoryId;
-      // if (filterCategory && filterCategory !== 'ALL') {
-      //   const category = categoryData?.getCategories.find(
-      //     (cat: any) => cat.categoryName === filterCategory
-      //   );
-      //   categoryId = category ? category.id : null;
-      //   if (categoryId) {
-      //     request.categoryFilter = parseInt(categoryId, 10);
-      //   }
-      // }
   
       const { data }: any = await loadDataAsset(request);
       console.log("data table: ", data);
