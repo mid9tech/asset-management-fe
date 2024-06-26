@@ -1,12 +1,14 @@
+import { redirect } from "next/navigation";
 import { Fragment } from "react";
 
 export default function Index() {
-
+  
+  redirect('/login')
   return (
     <Fragment>
-      <div>
-        Hello babe
-      </div>
+      <h1>
+        404 Not Found
+      </h1>
     </Fragment>
   );
 }
