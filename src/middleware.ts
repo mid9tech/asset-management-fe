@@ -4,13 +4,13 @@ import type { NextRequest } from "next/server";
 export function middleware(request: NextRequest) {
   let refreshToken = request.cookies.get("refreshToken");
   const pathname = request.nextUrl.pathname;
-  if (pathname === "/") {
-    if (refreshToken) {
-      return NextResponse.redirect(new URL("/home", request.url));
-    }
+  if (!refreshToken) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
-  
+  if (pathname === "/") {
+    return NextResponse.redirect(new URL("/home", request.url));
+  }
+
 }
 export const config = {
   matcher: [
