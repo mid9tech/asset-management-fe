@@ -13,10 +13,10 @@ import Search from "@components/search";
 
 import { SORT_ORDER, USER_TYPE } from "../../types/enum.type";
 import { User } from "../../__generated__/graphql";
-import { formatDate } from "../../utils/timeFormat";
 import Pagination from "@components/pagination";
 import { Button } from "@components/ui/button";
 import { toast } from "react-toastify";
+import DetailUser from "./detail";
 
 interface UserManagementProps {
   data: User[];
@@ -113,8 +113,6 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
     router.push("user/create");
   };
 
-  console.log("data table: ", data);
-
   return (
     <>
       <div className="container mx-auto p-4">
@@ -187,52 +185,7 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
         </div>
       </DetailModal>
       {selectedUser && (
-        <DetailModal
-          isOpen={showModalDetailUser}
-          onClose={handleCloseDetailModal}
-          title="Detailed User Information"
-        >
-          <div className="text-gray">
-            <div className="flex mb-2">
-              <span className="text-sm w-40">Staff Code:</span>{" "}
-              <span className="text-sm">{selectedUser.staffCode}</span>
-            </div>
-            <div className="flex mb-2">
-              <span className="text-sm w-40">Full Name:</span>{" "}
-              <span className="text-sm">
-                {selectedUser.lastName} {selectedUser.firstName}
-              </span>
-            </div>
-            <div className="flex mb-2">
-              <span className="text-sm w-40">Username:</span>{" "}
-              <span className="text-sm">{selectedUser.username}</span>
-            </div>
-            <div className="flex mb-2">
-              <span className="text-sm w-40">Date of Birth:</span>{" "}
-              <span className="text-sm">
-                {formatDate(new Date(selectedUser.dateOfBirth))}
-              </span>
-            </div>
-            <div className="flex mb-2">
-              <span className="text-sm w-40">Gender:</span>{" "}
-              <span className="text-sm">{selectedUser.gender}</span>
-            </div>
-            <div className="flex mb-2">
-              <span className="text-sm w-40">Joined Date:</span>{" "}
-              <span className="text-sm">
-                {formatDate(new Date(selectedUser.joinedDate))}
-              </span>
-            </div>
-            <div className="flex mb-2">
-              <span className="text-sm w-40">Type:</span>{" "}
-              <span className="text-sm">{selectedUser.type}</span>
-            </div>
-            <div className="flex mb-2">
-              <span className="text-sm w-40">Location:</span>{" "}
-              <span className="text-sm">{selectedUser.location}</span>
-            </div>
-          </div>
-        </DetailModal>
+        <DetailUser showModalDetailUser={showModalDetailUser} handleCloseDetailModal={handleCloseDetailModal} user={selectedUser}/>
       )}
     </>
   );

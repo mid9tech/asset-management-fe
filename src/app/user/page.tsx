@@ -16,6 +16,7 @@ import { User } from "../../__generated__/graphql";
 import { useAuth } from "@providers/auth";
 import { redirect } from "next/navigation";
 import { ACCESS_TOKEN } from "../../constants";
+import { formatText } from "@utils/formatText";
 
 export const dynamic = "force-dynamic";
 
@@ -72,18 +73,12 @@ export default function Index({
     const { data }: any = await loadData(request);
 
     const listUserCustome = data?.users.map(
-      (item: {
-        type: USER_TYPE;
-        lastName: any;
-        firstName: any;
-        joinedDate: any;
-        dateOfBirth: any;
-      }) => ({
+      (item: User) => ({
         ...item,
-        fullName: `${item.lastName} ${item.firstName}`,
+        fullName: formatText(`${item.firstName} ${item.lastName}`),
         dateOfBirth: formatDate(new Date(item.dateOfBirth)),
         joinedDate: formatDate(new Date(item.joinedDate)),
-        type: item.type === USER_TYPE.STAFF ? "STAFF" : item.type,
+        type: formatText(item.type === USER_TYPE.STAFF ? "STAFF" : item.type),
       })
     );
 
@@ -107,7 +102,7 @@ export default function Index({
         ) {
           listUserCustome.unshift({
             ...newUserDetail,
-            fullName: `${newUserDetail.lastName} ${newUserDetail.firstName}`,
+            fullName: formatText(`${newUserDetail.firstName} ${newUserDetail.lastName}`),
             dateOfBirth: formatDate(
               new Date(parseInt(newUserDetail.dateOfBirth))
             ),
@@ -115,9 +110,9 @@ export default function Index({
               new Date(parseInt(newUserDetail.joinedDate))
             ),
             type:
-              newUserDetail.type === USER_TYPE.STAFF
+             formatText(newUserDetail.type === USER_TYPE.STAFF
                 ? "STAFF"
-                : newUserDetail.type,
+                : newUserDetail.type,)
           });
           if (listUserCustome.length > 20) {
             listUserCustome.pop();

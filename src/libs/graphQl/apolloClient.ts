@@ -37,6 +37,8 @@ const authLink = setContext((_, { headers }) => {
 
 export const onErrorCustom = onError(
   ({ graphQLErrors, networkError, operation, forward }) => {
+  console.log(graphQLErrors)
+
     if (graphQLErrors) {
       if (graphQLErrors[0].message === "Forbidden resource") {
         location.href = "/error"
