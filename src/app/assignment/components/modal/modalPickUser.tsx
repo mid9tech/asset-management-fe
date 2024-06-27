@@ -107,7 +107,7 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
         <div className="bg-white shadow overflow-hidden sm:rounded-lg p-5">
           <div className="flex flex-row justify-between items-center">
             <div className="px-4 py-5 sm:px-6">
-              <h3 className="text-lg leading-6 font-medium text-gray-900">
+              <h3 className="text-lg leading-6 text-nashtech font-bold">
                 Select User
               </h3>
             </div>

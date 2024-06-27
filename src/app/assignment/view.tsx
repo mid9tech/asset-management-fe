@@ -66,7 +66,7 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
 
   return (
     <div className="container mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4 text-nashtech">Asignment List</h2>
+      <h2 className="text-2xl font-bold mb-4 text-nashtech">Assignment List</h2>
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center space-x-2">
           <div className="relative w-32">
