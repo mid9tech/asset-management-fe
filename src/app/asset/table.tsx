@@ -43,7 +43,7 @@ const historyColumns = [
 ];
 
 const AssetManagement: React.FC<AssetManagementProps> = (props) => {
-    const {data,totalPages,currentPage,sortOrder,sortBy,setSortBy,setSortOrder,setCurrentPage,} = props;
+    const { data, totalPages, currentPage, sortOrder, sortBy, setSortBy, setSortOrder, setCurrentPage, } = props;
     const [showModalRemoveAsset, setShowModalRemoveAsset] = useState(false);
     const [showModalDetailAsset, setShowModalDetailAsset] = useState(false);
     const [selectedAsset, setSelectedAsset] = useState<Asset | null>(null);
@@ -66,7 +66,7 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
         setSortOrder(defaultOrder);
         if (item === "assetName") {
             setSortBy("assetName");
-        } 
+        }
         else {
             setSortBy(item);
         }
@@ -92,9 +92,9 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
         setLoading(false);
     };
 
-    const convertToMap =  (data : any) : Map<string, string> => {
+    const convertToMap = (data: any): Map<string, string> => {
         const map = new Map<string, string>()
-        for(let i = 0; i < data.length; i++){
+        for (let i = 0; i < data.length; i++) {
             map.set(data[i]?.categoryName, data[i]?.id)
         }
         return map
@@ -107,13 +107,13 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
                     <div className="flex items-center space-x-2">
                         <div className="relative w-70 flex">
                             <div className="relative">
-                            <Filter
-                                setCurrentPage={setCurrentPage}
-                                label="State"
-                                data={convertEnumToMap(ASSET_TYPE)}
-                                height={170}
-                            />
-                            <FilterAltIcon className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none h-10" />
+                                <Filter
+                                    setCurrentPage={setCurrentPage}
+                                    label="State"
+                                    data={convertEnumToMap(ASSET_TYPE)}
+                                    height={170}
+                                />
+                                <FilterAltIcon className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none h-10" />
                             </div>
 
                             <div className="ml-4">
@@ -131,7 +131,7 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
                         </div>
                     </div>
                     <div className="flex gap-10">
-                        <Search setCurrentPage={setCurrentPage}/>
+                        <Search setCurrentPage={setCurrentPage} />
                         <button
                             className="bg-red-600 text-white rounded px-4 py-1 cursor-pointer"
                             onClick={handleNavigateCreateAsset}>
@@ -149,11 +149,13 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
                     sortBy={sortBy === "assetName" ? "assetCode" : sortBy}
                     sortOrder={sortOrder}
                 />
-                <Pagination
-                    totalPages={totalPages}
-                    currentPage={currentPage}
-                    setCurrentPage={setCurrentPage}
-                />
+                {data.length > 0 ?
+                    <Pagination
+                        totalPages={totalPages}
+                        currentPage={currentPage}
+                        setCurrentPage={setCurrentPage}
+                    /> : ''
+                }
             </div>
             <DetailModal
                 isOpen={showModalRemoveAsset}
@@ -176,7 +178,7 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
                     </Button>
                 </div>
             </DetailModal>
-            <ViewDetail/>
+            <ViewDetail />
         </>
     );
 };
