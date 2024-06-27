@@ -30,7 +30,7 @@ interface ReusableTableProps<T> {
   sortOrder: string;
 }
 
-const ReusableTable = <T extends { type?: string}>({
+const ReusableTable = <T extends {}>({
   columns,
   data,
   onRowClick,
@@ -40,7 +40,7 @@ const ReusableTable = <T extends { type?: string}>({
   sortBy,
   sortOrder,
 }: ReusableTableProps<T>) => {
-  const maxLength = 30; 
+  const maxLength = 30;
 
   return (
     <Table>
@@ -76,7 +76,7 @@ const ReusableTable = <T extends { type?: string}>({
             {onEditClick && onDeleteClick ? (
               <TableCell onClick={(e) => e.stopPropagation()}>
                 <CreateIcon
-                  className={`text-gray-500 ${row.type === "Admin" ? "text-gray" : ""}`}
+                  className={`text-gray-500`}
                   onClick={(e) => {
                     e.stopPropagation();
                     onEditClick(row);

@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { Fragment, ReactNode } from "react";
 import {
   Table,
   TableBody,
@@ -49,8 +49,8 @@ const ReusableList = <T extends {}>({
               {columns.map((item, key) => (
                 <>
                   {item.header !== "icon" ? (
+                    <Fragment key={key}>
                     <div
-                      key={key}
                       className="col border-b-2 border-black cursor-pointer text-sm"
                       onClick={() => onSortClick(item.accessor as string)}>
                       <span className="font-bold">
@@ -63,6 +63,7 @@ const ReusableList = <T extends {}>({
                         )}
                       </span>
                     </div>
+                    </Fragment>
                   ) : (
                     <></>
                   )}
