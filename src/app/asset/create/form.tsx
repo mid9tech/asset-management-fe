@@ -17,6 +17,7 @@ import Category from './category';
 import { Button } from "@components/ui/button";
 import { Label } from "@components/ui/label";
 import DetailModal from '@components/modal';
+import { usePushUp } from '../pushUp';
 
 
 enum State {
@@ -36,6 +37,7 @@ const FormCreateAsset = () => {
     const [showModalCancel, setShowModalCancel] = useState(false);
     const { setLoading }: any = useLoading();
     const router = useRouter();
+    const {pushUp}: any = usePushUp()
 
     const form = useForm<FormData>({
         mode: "onChange",
@@ -84,6 +86,8 @@ const FormCreateAsset = () => {
                 });
                 toast.error("Error creating asset");
             } else {
+                const assetId = response.data.createAsset.id;
+                pushUp(parseInt(assetId))
                 toast.success("Asset created successfully");
                 router.push('/asset');
             }

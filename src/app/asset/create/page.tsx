@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import DetailModal from "@components/modal";
 import FormCreateAsset from "./form";
+import { usePushUp } from "../pushUp";
 
 enum State {
     AVAILABLE = "AVAILABLE",
@@ -22,7 +23,7 @@ interface FormData {
 const CreateAsset = () => {
     const [showModalCancel, setShowModalCancel] = useState(false);
     const router = useRouter();
-
+    const {pushUp}: any = usePushUp()
     const handleCloseCancelModal = () => {
         setShowModalCancel(false);
     };
