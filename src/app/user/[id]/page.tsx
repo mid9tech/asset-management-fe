@@ -32,6 +32,7 @@ import { useMutation, useQuery } from "@apollo/client";
 import { useLoading } from "@providers/loading";
 import { useAuth } from "@providers/auth";
 import { menuItem } from "../../../types/menu.type";
+import { User } from "../../../__generated__/graphql";
 
 enum Gender {
   Male = "MALE",
@@ -142,6 +143,7 @@ const EditUser = ({ params }: { params: { id: string } }) => {
   const [editUserMutation] = useMutation(EDIT_USER_MUTATION);
   const { setLoading }: any = useLoading();
   const [showModalCancel, setShowModalCancel] = useState(false);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const router = useRouter();
   const { setActiveItem, menuItems } = useAuth();
   setLoading(false);
@@ -161,9 +163,19 @@ const EditUser = ({ params }: { params: { id: string } }) => {
       );
     }
     if (userData) {
+      if (userData?.user?.type == 'Admin') {
+        alert("me")
+      }
       setDataUpdate(userData.user);
     }
   }, [userData, setActiveItem]);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setCurrentUser(JSON.parse(storedUser));
+    }
+  }, []);
 
   useEffect(() => {
     if (userData) {
@@ -176,8 +188,12 @@ const EditUser = ({ params }: { params: { id: string } }) => {
           .toISOString()
           .substring(0, 10),
       });
+      if (userData.user.type == Type.Admin) {
+        router.push("/user");
+      }
     }
   }, [userData]);
+
 
   const handleCloseCancelModal = () => {
     setShowModalCancel(false);
@@ -254,6 +270,9 @@ const EditUser = ({ params }: { params: { id: string } }) => {
     }
   };
 
+  console.log("user: ",userData);
+  
+
   return (
     <>
       <div className="-mt-8 ml-14 w-1/2">
@@ -272,9 +291,8 @@ const EditUser = ({ params }: { params: { id: string } }) => {
                         placeholder=""
                         {...field}
                         disabled
-                        className={`cursor-pointer bg-input-gray ${
-                          fieldState.error ? "border-nashtech" : ""
-                        }`}
+                        className={`cursor-pointer bg-input-gray ${fieldState.error ? "border-nashtech" : ""
+                          }`}
                       />
                     </FormControl>
                   </div>
@@ -296,9 +314,8 @@ const EditUser = ({ params }: { params: { id: string } }) => {
                         placeholder=""
                         {...field}
                         disabled
-                        className={`cursor-pointer bg-input-gray ${
-                          fieldState.error ? "border-nashtech" : ""
-                        }`}
+                        className={`cursor-pointer bg-input-gray ${fieldState.error ? "border-nashtech" : ""
+                          }`}
                       />
                     </FormControl>
                   </div>
@@ -320,9 +337,8 @@ const EditUser = ({ params }: { params: { id: string } }) => {
                         placeholder="Select a date"
                         {...field}
                         type="date"
-                        className={`flex justify-end cursor-pointer flex-col ${
-                          fieldState.error ? "border-nashtech" : ""
-                        }`}
+                        className={`flex justify-end cursor-pointer flex-col ${fieldState.error ? "border-nashtech" : ""
+                          }`}
                       />
                     </FormControl>
                   </div>
@@ -385,9 +401,8 @@ const EditUser = ({ params }: { params: { id: string } }) => {
                         placeholder=""
                         {...field}
                         type="date"
-                        className={`flex justify-end cursor-pointer flex-col ${
-                          fieldState.error ? "border-nashtech" : ""
-                        }`}
+                        className={`flex justify-end cursor-pointer flex-col ${fieldState.error ? "border-nashtech" : ""
+                          }`}
                       />
                     </FormControl>
                   </div>

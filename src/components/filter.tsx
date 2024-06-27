@@ -63,7 +63,7 @@ const Filter = ({ data, label, height = 150 }: Props) => {
                     checked={isChecked(`${defaultChoice}`)}
                     value={`${defaultChoice}`}
                     onChange={(e) => handleChange(event, `${defaultChoice}`)}
-                    className="input-checkbox h-4 w-4 text-nashtech rounded custom-checkbox accent-red-500"
+                    className="input-checkbox h-4 w-4 text-nashtech rounded accent-red-500"
                   />
                   <label htmlFor="" className="ml-3 block text-sm text-gray-700">
                     All
@@ -78,7 +78,7 @@ const Filter = ({ data, label, height = 150 }: Props) => {
                       checked={isChecked(value)}
                       value={value}
                       onChange={(e) => handleChange(e, value)}
-                      className="h-4 w-4 text-nashtech focus:ring rounded custom-checkbox"
+                      className="h-4 w-4 text-nashtech focus:ring rounded bg-transparent"
                     />
                     <label htmlFor={key} className="ml-3 block text-sm text-gray-700">
                       {formatStateText(key)}
