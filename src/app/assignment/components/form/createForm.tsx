@@ -76,7 +76,7 @@ const CreateForm: FC<CreateFormProps> = (props) => {
     const { data }: any = await createAssignment(variables);
     if (data) {
       setLoading(false);
-      toast.success("Created assignment");
+      toast.success("Assignment created success");
       route.push("/assignment");
     }
   };

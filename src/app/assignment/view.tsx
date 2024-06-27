@@ -12,6 +12,8 @@ import { ASSIGNMENT_STATUS, SORT_ORDER } from "../../types/enum.type";
 import Paginate from "@components/paginate";
 import Filter from "@components/filter";
 import { convertEnumToMap } from "@utils/enumToMap";
+import Search from "@components/search";
+import DatePicker from "@components/datepicker";
 
 interface ViewAssignmentProps {
   listData: Assignment[];
@@ -69,14 +71,15 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
   return (
     <div className="container mx-auto p-4">
       <h2 className="text-2xl font-bold mb-4 text-nashtech">Assignment List</h2>
-      <div className="flex justify-between items-center mb-4">
-        <div className="flex items-center space-x-2">
-          <div className="relative w-32">
-            <Filter label="State" data={convertEnumToMap(ASSIGNMENT_STATUS)} />
+      <div className="flex justify-between items-start mb-4">
+        <div className="flex items-start space-x-2">
+          <div className="relative w-auto flex flex-row items-center justify-start gap-3">
+            <Filter label="State" data={convertEnumToMap(ASSIGNMENT_STATUS)}  />
+            <DatePicker label="Assigned Date"/>
           </div>
         </div>
         <div className="flex gap-10">
-          {/* <Search setCurrentPage={setCurrentPage} /> */}
+          <Search />
           <button
             className="bg-red-600 text-white rounded px-4 py-1 cursor-pointer hover:opacity-75"
             onClick={handleNavigateCreate}>
