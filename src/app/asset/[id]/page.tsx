@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import DetailModal from "@components/modal";
 import FormEdit from "./form";
+import { usePushUp } from "../pushUp";
 
 enum State {
     AVAILABLE = "AVAILABLE",
@@ -29,7 +30,7 @@ const EditAsset = ({ params }: { params: { id: string } }) => {
     const [showModalCancel, setShowModalCancel] = useState(false);
     const router = useRouter();
     const [dataUpdate, setDataUpdate] = useState<FormData | null>(null);
-
+    const {pushUp}: any = usePushUp()
 
     const handleCloseCancelModal = () => {
         setShowModalCancel(false);

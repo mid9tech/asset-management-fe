@@ -4,21 +4,27 @@ import client from "@libs/graphQl/apolloClient";
 
 
 export const loadDataAsset = async (request: FindAssetsInput) => {
-    const result = await client.query({
-      query: FIND_ASSETS_QUERY,
-      variables: request,
-    });
-    return {
-      data: result.data.findAssets,
-    };
+  const result = await client.query({
+    query: FIND_ASSETS_QUERY,
+    variables: request,
+  });
+  return {
+    data: result.data.findAssets,
   };
-  
-  export const loadDetailAsset = async (id: number) => {
+};
+
+export const loadDetailAsset = async (id: number) => {
+  try {
     const result = await client.query({
       query: FIND_ONE_ASSET_QUERY,
       variables: { id },
     });
-    return {
-      data: result.data.asset,
-    };
-  };
+    console.log("result.data",result.data);
+    
+    return result.data.findOneAsset
+  }
+  catch (error) {
+    console.log(error)
+    return null
+  }
+};

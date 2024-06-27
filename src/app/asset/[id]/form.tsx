@@ -28,6 +28,8 @@ import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
+import { usePushUp } from '../pushUp';
+
 enum State {
     AVAILABLE = "AVAILABLE",
     NOT_AVAILABLE = "NOT_AVAILABLE",
@@ -57,6 +59,7 @@ const FormEdit = ({ params }: { params: { id: string } }) => {
     const [abbreviation, setAbbreviation] = useState("");
     const [dataUpdate, setDataUpdate] = useState<FormData | null>(null);
     const router = useRouter();
+    const {pushUp}: any = usePushUp()
     const form = useForm<FormData>({
         mode: "onChange",
         defaultValues: dataUpdate || {
@@ -104,7 +107,8 @@ const FormEdit = ({ params }: { params: { id: string } }) => {
                 });
             } else {
                 const assetId = response.data.updateAsset.id;
-                localStorage.setItem("newAssetId", '"' + assetId.toString() + '"');
+                pushUp(parseInt(assetId))
+                // localStorage.setItem("newAssetId", '"' + assetId.toString() + '"');
                 router.push("/asset");
                 toast.success("Edit Asset Successfully");
             }

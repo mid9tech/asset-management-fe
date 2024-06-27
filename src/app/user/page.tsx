@@ -44,7 +44,6 @@ export default function Index({
   const { pushUpId, pushUp }: any = usePushUp()
 
   useEffect(() => {
-
     const newUserId = JSON.parse(localStorage.getItem("newUserId") || "0");
     setNewestUserId(newUserId);
   }, []);
