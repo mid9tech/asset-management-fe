@@ -1,4 +1,6 @@
 "use client";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useRouter } from "next/router";
 import { FC, Fragment } from "react";
 
 interface PaginationProps {
@@ -10,8 +12,20 @@ interface PaginationProps {
 const Pagination: FC<PaginationProps> = (props) => {
   const { totalPages, currentPage, setCurrentPage } = props;
 
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const {replace} = useRouter();
+
   const handleChangePage = (value: number) => {
     setCurrentPage(value);
+    const params = new URLSearchParams(searchParams.toString());
+    if (value) {
+      params.set(`page`, value.toString());
+    } else {
+      params.delete(`page`, value.toString());
+    }
+    setCurrentPage(1);
+    replace(`${pathname}?${params.toString()}`);
   };
 
   const onClickNext = () => {
@@ -30,9 +44,9 @@ const Pagination: FC<PaginationProps> = (props) => {
 
     return (
       <li key={index} onClick={() => handleChangePage(index + 1)}>
-        <a href="#" className={classNames}>
+        <i className={classNames}>
           {index + 1}
-        </a>
+        </i>
       </li>
     );
   });

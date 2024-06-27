@@ -7,24 +7,24 @@ import Pagination from "@components/pagination";
 import ReusableTable from "@components/table";
 import { useLoading } from "@providers/loading";
 
-import { AssignmentType } from "../../types/assignment.type";
+import { Assignment } from "../../__generated__/graphql";
 
 interface ViewAssignmentProps {
+  listData: Assignment[];
   setCurrentPage: (value: number) => void;
 }
 
 const tableColumns = [
-  { header: "No.", accessor: "" },
-  { header: "Asset Code", accessor: "assetCode" as keyof AssignmentType },
-  { header: "Asset Name", accessor: "assetName" as keyof AssignmentType },
-  { header: "Assigned To", accessor: "assignedToId" as keyof AssignmentType },
-  { header: "Assigned By", accessor: "assignedById" as keyof AssignmentType },
-  { header: "Assigned Date", accessor: "assignedDate" as keyof AssignmentType },
-  { header: "State", accessor: "state" as keyof AssignmentType },
+  { header: "Asset Code", accessor: "assetCode" as keyof Assignment },
+  { header: "Asset Name", accessor: "assetName" as keyof Assignment },
+  { header: "Assigned To", accessor: "assignedToId" as keyof Assignment },
+  { header: "Assigned By", accessor: "assignedById" as keyof Assignment },
+  { header: "Assigned Date", accessor: "assignedDate" as keyof Assignment },
+  { header: "State", accessor: "state" as keyof Assignment },
 ];
 
 const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
-  const { setCurrentPage } = props;
+  const { setCurrentPage, listData } = props;
   const route = useRouter();
   const { setLoading }: any = useLoading();
 
@@ -58,7 +58,7 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
       </div>
       <ReusableTable
         columns={tableColumns}
-        data={[]}
+        data={listData}
         onRowClick={() => {}}
         onDeleteClick={() => {}}
         onSortClick={() => {}}

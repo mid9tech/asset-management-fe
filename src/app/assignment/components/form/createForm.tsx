@@ -74,7 +74,7 @@ const CreateForm: FC<CreateFormProps> = (props) => {
       assignedDate: value.assignedDate,
       note: value.note || "",
     };
-
+    console.log('value: ', variables);
     const { data }: any = await createAssignment(variables);
     if (data) {
       setLoading(false);

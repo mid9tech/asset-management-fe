@@ -41,3 +41,49 @@ export const CREATE_ASSIGNMENT_MUTATION = gql`
     }
   }
 `;
+
+export const GET_ALL_ASSIGNMENT_QUERY = gql`
+  query FindAssignments($findAssignmentsInput: FindAssignmentsInput!) {
+    findAssignments(findAssignmentsInput: $findAssignmentsInput) {
+      page
+      limit
+      total
+      totalPages
+      assignments {
+        id
+        assetCode
+        assetName
+        state
+        note
+        assignedDate
+        assetId
+        assigner {
+          id
+          firstName
+          staffCode
+          lastName
+          username
+          gender
+          joinedDate
+          dateOfBirth
+          type
+          state
+          location
+        }
+        assignee {
+          id
+          firstName
+          staffCode
+          lastName
+          username
+          gender
+          joinedDate
+          dateOfBirth
+          type
+          state
+          location
+        }
+      }
+    }
+  }
+`;
