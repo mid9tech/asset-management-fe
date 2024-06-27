@@ -10,7 +10,6 @@ import { convertEnumToMap } from "@utils/enumToMap";
 import Filter from "@components/filter";
 import { useLoading } from "@providers/loading";
 import Search from "@components/search";
-import { jwtDecode } from 'jwt-decode';
 import { SORT_ORDER, USER_TYPE } from "../../types/enum.type";
 import { User } from "../../__generated__/graphql";
 import { Button } from "@components/ui/button";

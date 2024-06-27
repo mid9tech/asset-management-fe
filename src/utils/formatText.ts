@@ -1,5 +1,6 @@
 export const formatText = (str: string) => {
   if (!str) return str;
+  str = str.replace(/_/g, ' ');
   return str
     .split(" ")
     .map((word) => {

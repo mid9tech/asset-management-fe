@@ -64,7 +64,7 @@ const ViewDetail = (props :any) => {
                         <div className="flex mb-2">
                             <span className="text-sm w-40">Specification</span>{" "}
                             <span className="text-sm">
-                                {truncateParagraph(selectedAsset.specification,25)}
+                               {selectedAsset.specification}
                             </span>
                         </div>
                         <div className="flex mb-2">

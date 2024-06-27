@@ -16,9 +16,10 @@ import { User } from "../../__generated__/graphql";
 import { redirect } from "next/navigation";
 import { ACCESS_TOKEN } from "../../constants";
 import { formatText } from "@utils/formatText";
-import { defaultChoice } from "@components/filter";
 import { usePushUp } from "./pushUp";
 import { formatUser } from "./formatUser";
+
+import { defaultChoice } from "@components/filter";
 
 
 export const dynamic = "force-dynamic";
@@ -75,6 +76,7 @@ export default function Index({
       request.limit = 19
       detailUser = await loadDetail(newUserId);
     }
+
     const { data }: any = await loadData(request);
     const listUserCustome = data?.users.map(
       (item: User) => (formatUser(item))
