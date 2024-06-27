@@ -23,7 +23,6 @@ const Pagination: FC<PaginationProps> = (props) => {
     } else {
       params.delete(`page`, value.toString());
     }
-    setCurrentPage(1);
     replace(`${pathname}?${params.toString()}`);
   };
 
