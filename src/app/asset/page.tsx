@@ -44,7 +44,7 @@ export default function Index({
   useEffect(() => {
     setLoading(true);
     loadAssetList();
-  }, [searchParams]);
+  }, [searchParams, sortOrder]);
 
   const loadAssetList = async () => {
     try {
@@ -66,9 +66,9 @@ export default function Index({
           request.categoryFilter = filterCategory;
         }
       }
-      console.log(request)
-
       const { data }: any = await loadDataAsset(request);
+
+      setTotalPages(data?.totalPages);
       if (data && data.assets) {
         const listAssetCustom = data.assets.map((item: Asset) => ({
           ...item,

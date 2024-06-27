@@ -94,7 +94,6 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
   };
 
   const handleSave = () => {
-    console.log("Selected:", selected);
     setUserSelected(selected as User);
     setOpenModal(false);
   };
