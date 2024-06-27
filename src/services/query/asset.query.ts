@@ -60,9 +60,9 @@ export const FIND_ASSETS_QUERY = gql`
     $page: Int
     $query: String
     $sortOrder: String
-    $stateFilter: String
+    $stateFilter: [String!]
     $sortField: String
-    $categoryFilter: Int
+    $categoryFilter: [String!]
   ) {
     findAssets(
       request: {

@@ -16,6 +16,7 @@ import { useQuery } from "@apollo/client";
 import { GET_CATEGORY_QUERY } from "@services/query/category.query";
 import ViewDetail from "./viewDetail";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
+import Paginate from "@components/paginate";
 
 interface AssetManagementProps {
     data: Asset[];
@@ -25,7 +26,6 @@ interface AssetManagementProps {
     sortBy: string;
     setSortBy: (value: any) => void;
     setSortOrder: (value: any) => void;
-    setCurrentPage: (value: number) => void;
 }
 
 const assetColumns = [
@@ -43,7 +43,9 @@ const historyColumns = [
 ];
 
 const AssetManagement: React.FC<AssetManagementProps> = (props) => {
-    const { data, totalPages, currentPage, sortOrder, sortBy, setSortBy, setSortOrder, setCurrentPage, } = props;
+
+    const { data, totalPages, currentPage, sortOrder, sortBy, setSortBy, setSortOrder } = props;
+
     const [showModalRemoveAsset, setShowModalRemoveAsset] = useState(false);
     const [showModalDetailAsset, setShowModalDetailAsset] = useState(false);
     const [selectedAsset, setSelectedAsset] = useState<Asset | null>(null);
@@ -108,7 +110,6 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
                         <div className="relative w-70 flex">
                             <div className="relative">
                                 <Filter
-                                    setCurrentPage={setCurrentPage}
                                     label="State"
                                     data={convertEnumToMap(ASSET_TYPE)}
                                     height={170}
@@ -121,7 +122,6 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
                                     <div>Loading...</div>
                                 ) : (
                                     <Filter
-                                        setCurrentPage={setCurrentPage}
                                         label="Category"
                                         data={convertToMap(categoryData?.getCategories)}
                                         height={300}
@@ -131,7 +131,7 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
                         </div>
                     </div>
                     <div className="flex gap-10">
-                        <Search setCurrentPage={setCurrentPage} />
+                        <Search />
                         <button
                             className="bg-red-600 text-white rounded px-4 py-1 cursor-pointer"
                             onClick={handleNavigateCreateAsset}>
@@ -149,13 +149,10 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
                     sortBy={sortBy === "assetName" ? "assetCode" : sortBy}
                     sortOrder={sortOrder}
                 />
-                {data.length > 0 ?
-                    <Pagination
-                        totalPages={totalPages}
-                        currentPage={currentPage}
-                        setCurrentPage={setCurrentPage}
-                    /> : ''
-                }
+                {totalPages !== 0 && <Paginate
+                    totalPages={totalPages}
+                    currentPage={currentPage}
+                />}
             </div>
             <DetailModal
                 isOpen={showModalRemoveAsset}
