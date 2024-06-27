@@ -30,7 +30,7 @@ interface ReusableTableProps<T> {
   sortOrder: string;
 }
 
-const ReusableTable = <T extends {}>({
+const ReusableTable = <T extends { type?: string}>({
   columns,
   data,
   onRowClick,
@@ -76,7 +76,7 @@ const ReusableTable = <T extends {}>({
             {onEditClick && onDeleteClick ? (
               <TableCell onClick={(e) => e.stopPropagation()}>
                 <CreateIcon
-                  className="text-gray-500 cursor-pointer"
+                  className={`text-gray-500 ${row.type === "Admin" ? "text-gray" : ""}`}
                   onClick={(e) => {
                     e.stopPropagation();
                     onEditClick(row);
