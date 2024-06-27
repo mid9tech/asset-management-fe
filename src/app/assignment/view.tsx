@@ -9,6 +9,7 @@ import { useLoading } from "@providers/loading";
 
 import { Assignment } from "../../__generated__/graphql";
 import { SORT_ORDER } from "../../types/enum.type";
+import Paginate from "@components/paginate";
 
 interface ViewAssignmentProps {
   listData: Assignment[];
@@ -18,21 +19,20 @@ interface ViewAssignmentProps {
   setSortBy: (value: any) => void;
   setSortOder: (value: any) => void;
   totalPages: number;
-  currentPage: number
+  currentPage: number;
 }
 
 const tableColumns = [
   { header: "Asset Code", accessor: "assetCode" as keyof Assignment },
   { header: "Asset Name", accessor: "assetName" as keyof Assignment },
-  { header: "Assigned To", accessor: "assignedTo" as keyof Assignment },
-  { header: "Assigned By", accessor: "assignedBy" as keyof Assignment },
+  { header: "Assigned To", accessor: "assignedToUsername" as keyof Assignment },
+  { header: "Assigned By", accessor: "assignedByUsername" as keyof Assignment },
   { header: "Assigned Date", accessor: "assignedDate" as keyof Assignment },
   { header: "State", accessor: "state" as keyof Assignment },
 ];
 
 const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
   const {
-    setCurrentPage,
     listData,
     totalPages,
     currentPage,
@@ -96,11 +96,7 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
         sortBy={sortBy}
         sortOrder={sortOrder}
       />
-      <Pagination
-        totalPages={totalPages}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-      />
+      <Paginate currentPage={currentPage} totalPages={totalPages} />
     </div>
   );
 };

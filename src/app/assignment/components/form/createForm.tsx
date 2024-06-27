@@ -68,9 +68,7 @@ const CreateForm: FC<CreateFormProps> = (props) => {
       assetName: assetSelected?.assetName || "",
       assetId: parseInt(assetSelected?.id as string),
       assignedToId: parseInt(userSelected?.id as string),
-      assignedById: user?.id as number,
       assignedToUsername: userSelected?.username || "",
-      state: ASSIGNMENT_STATUS.WAITING_FOR_ACCEPTANCE,
       assignedDate: value.assignedDate,
       note: value.note || "",
     };

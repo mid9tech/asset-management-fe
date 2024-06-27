@@ -6,8 +6,6 @@ export const CREATE_ASSIGNMENT_MUTATION = gql`
     $assetName: String!
     $assignedToId: Int!
     $assignedToUsername: String!
-    $assignedById: Int!
-    $state: String!
     $assignedDate: String!
     $note: String!
     $assetId: Int!
@@ -18,8 +16,6 @@ export const CREATE_ASSIGNMENT_MUTATION = gql`
         assetName: $assetName
         assignedToId: $assignedToId
         assignedToUsername: $assignedToUsername
-        assignedById: $assignedById
-        state: $state
         assignedDate: $assignedDate
         note: $note
         assetId: $assetId
@@ -49,6 +45,8 @@ export const GET_ALL_ASSIGNMENT_QUERY = gql`
     $sortOrder: String
     $sort: String
     $limit: Int
+    $assignedDate: String
+    $state: String
   ) {
     findAssignments(
       findAssignmentsInput: {
@@ -56,7 +54,9 @@ export const GET_ALL_ASSIGNMENT_QUERY = gql`
         limit: $limit
         query: $query
         sortOrder: $sortOrder
+        state: $state
         sort: $sort
+        assignedDate: $assignedDate
       }
     ) {
       page
@@ -71,20 +71,18 @@ export const GET_ALL_ASSIGNMENT_QUERY = gql`
         note
         assignedDate
         assetId
+        assignedByUsername
+        assignedToUsername
         assigner {
           id
-          firstName
           staffCode
-          lastName
           username
           type
           location
         }
         assignee {
           id
-          firstName
           staffCode
-          lastName
           username
           type
           location

@@ -58,16 +58,18 @@ export const FIND_ONE_ASSET_QUERY = gql`
 export const FIND_ASSETS_QUERY = gql`
   query FindAssets(
     $page: Int
+    $limit: Int
     $query: String
     $sortOrder: String
-    $stateFilter: String
+    $stateFilter: [String!]
     $sortField: String
-    $categoryFilter: Int
+    $categoryFilter: [String!]
   ) {
     findAssets(
       request: {
         page: $page
         query: $query
+        limit: $limit
         sortOrder: $sortOrder
         stateFilter: $stateFilter
         sortField: $sortField

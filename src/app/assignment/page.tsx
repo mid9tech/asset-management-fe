@@ -46,8 +46,6 @@ export default function Index({
       const lsitCustome = data?.assignments.map((item: Assignment) => ({
         ...item,
         state: formatStateText(item.state),
-        assignedTo: item.assignee.username,
-        assignedBy: item.assigner.username,
         assignedDate: formatDate(item.assignedDate),
       }));
       setListData(lsitCustome);
