@@ -14,12 +14,16 @@ export default function Index({
 }: {
   searchParams?: {
     query?: string;
+    State?: string;
+    assignedDate?: string;
   };
 }) {
   const { setLoading }: any = useLoading();
   const [listData, setListData] = useState<Assignment[]>();
 
   const queryString = searchParams?.query || "";
+  const state = searchParams?.State || "";
+  const assignedDate = searchParams?.assignedDate || "";
   const [sortOrder, setSortOder] = useState(SORT_ORDER.ASC);
   const [totlaPage, setTotalPages] = useState<number>();
   const [sortBy, setSortBy] = useState("assetName");
@@ -27,7 +31,7 @@ export default function Index({
 
   useEffect(() => {
     handleGetAllAssignment();
-  }, [sortBy, sortOrder, queryString]);
+  }, [sortBy, sortOrder, queryString, state, assignedDate]);
 
   const handleGetAllAssignment = async () => {
     setLoading(true);
@@ -39,6 +43,14 @@ export default function Index({
 
     if (queryString) {
       request.query = queryString;
+    }
+
+    if (assignedDate) {
+      request.assignedDate = assignedDate;
+    }
+
+    if (state) {
+      request.state = state;
     }
 
     const { data }: any = await gettAllAssignment(request);

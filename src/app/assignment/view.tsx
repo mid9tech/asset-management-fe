@@ -1,9 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import Pagination from "@components/pagination";
 import ReusableTable from "@components/table";
 import { useLoading } from "@providers/loading";
 
@@ -13,7 +12,9 @@ import Paginate from "@components/paginate";
 import Filter from "@components/filter";
 import { convertEnumToMap } from "@utils/enumToMap";
 import Search from "@components/search";
-import DatePicker from "@components/datepicker";
+import CustomDatePicker from "@components/datepicker";
+import ReusableList from "@components/list";
+import DetailAssignment from "./detail";
 
 interface ViewAssignmentProps {
   listData: Assignment[];
@@ -27,12 +28,14 @@ interface ViewAssignmentProps {
 }
 
 const tableColumns = [
+  { header: "No.", accessor: "id" as keyof Assignment },
   { header: "Asset Code", accessor: "assetCode" as keyof Assignment },
   { header: "Asset Name", accessor: "assetName" as keyof Assignment },
   { header: "Assigned To", accessor: "assignedToUsername" as keyof Assignment },
   { header: "Assigned By", accessor: "assignedByUsername" as keyof Assignment },
   { header: "Assigned Date", accessor: "assignedDate" as keyof Assignment },
   { header: "State", accessor: "state" as keyof Assignment },
+  { header: "icon", accessor: "" as keyof Assignment },
 ];
 
 const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
@@ -48,6 +51,9 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
   const route = useRouter();
   const { setLoading }: any = useLoading();
 
+  const [selected, setSelected] = useState<Assignment>();
+  const [showModalDetail, setShowModalDetail] = useState(false);
+
   const handleNavigateCreate = () => {
     setLoading(true);
     route.push("assignment/create");
@@ -56,16 +62,21 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
 
   const handleSortClick = (item: string) => {
     let defaultOrder = SORT_ORDER.ASC;
-    if (sortBy === item || (sortBy === "firstName" && item === "fullName")) {
+    if (sortBy === item) {
       defaultOrder =
         sortOrder === SORT_ORDER.ASC ? SORT_ORDER.DESC : SORT_ORDER.ASC;
     }
     setSortOder(defaultOrder);
-    if (item === "fullName") {
-      setSortBy("firstName");
-    } else {
-      setSortBy(item);
-    }
+    setSortBy(item);
+  };
+
+  const handleRowClick = (ass: Assignment) => {
+    setSelected(ass);
+    setShowModalDetail(true);
+  };
+
+  const handleCloseDetailModal = () => {
+    setShowModalDetail(false);
   };
 
   return (
@@ -74,11 +85,11 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
       <div className="flex justify-between items-start mb-4">
         <div className="flex items-start space-x-2">
           <div className="relative w-auto flex flex-row items-center justify-start gap-3">
-            <Filter label="State" data={convertEnumToMap(ASSIGNMENT_STATUS)}  />
-            <DatePicker label="Assigned Date"/>
+            <Filter label="State" data={convertEnumToMap(ASSIGNMENT_STATUS)} />
+            <CustomDatePicker name="assignedDate" label="Assignd date" />
           </div>
         </div>
-        <div className="flex gap-10">
+        <div className="flex gap-3">
           <Search />
           <button
             className="bg-red-600 text-white rounded px-4 py-1 cursor-pointer hover:opacity-75"
@@ -87,10 +98,10 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
           </button>
         </div>
       </div>
-      <ReusableTable
+      <ReusableList
         columns={tableColumns}
         data={listData}
-        onRowClick={() => {}}
+        onRowClick={handleRowClick}
         onDeleteClick={() => {}}
         onSortClick={handleSortClick}
         onEditClick={() => {}}
@@ -98,6 +109,13 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
         sortOrder={sortOrder}
       />
       <Paginate currentPage={currentPage} totalPages={totalPages} />
+      {selected && (
+        <DetailAssignment
+          showModalDetailUser={showModalDetail}
+          handleCloseDetailModal={handleCloseDetailModal}
+          data={selected}
+        />
+      )}
     </div>
   );
 };

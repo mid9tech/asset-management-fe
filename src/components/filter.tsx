@@ -1,10 +1,13 @@
+'use client'
 import { Fragment, useState } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
-import FilterAltIcon from "@mui/icons-material/FilterAlt";
-import { formatStateText, formatText } from "@utils/formatText";
+import { formatStateText } from "@utils/formatText";
 import { truncateParagraph } from "@utils/truncate";
+import FilterIcon from "@public/icon/filter.svg";
+import Image from "next/image";
 
-export const defaultChoice = 'all'
+export const defaultChoice = 'all';
+
 interface Props {
   label: string;
   data: Map<string, string>;
@@ -21,7 +24,7 @@ const Filter = ({ data, label, height = 150 }: Props) => {
   const handleChange = (event: any, value: string) => {
     const params = new URLSearchParams(searchParams.toString());
     const isChecked = event.target.checked;
-    params.set('page', '1')
+    params.set('page', '1');
     if (isChecked) {
       params.append(`${label}`, value);
     } else {
@@ -46,13 +49,28 @@ const Filter = ({ data, label, height = 150 }: Props) => {
 
   return (
     <Fragment>
-      <div className="relative border border-gray rounded py-1 px-1 w-40 h-8">
-        <div className="flex items-center justify-between cursor-pointer divide-x" onClick={toggleDropdown}>
-          <span className="">{label}</span>
-          <FilterAltIcon className="cursor-pointer" style={{height: 17}} />
+      <div className="relative w-40 h-full">
+        <div className="relative w-full h-full">
+          <input
+            type="text"
+            placeholder={label}
+            readOnly
+            value={searchParams.get(label) || ""}
+            onClick={toggleDropdown}
+            className="w-full pr-9 rounded border-solid border outline-none px-2 py-1 border-graycustom cursor-pointer"
+          />
+          <button
+            className="absolute top-0 px-2 py-1 h-full right-0 border-l-graycustom border-l"
+            onClick={toggleDropdown}
+          >
+            <Image src={FilterIcon} width={15} alt={""} />
+          </button>
         </div>
         {dropdownVisible && (
-          <div className={`absolute mt-2 bg-white border border-gray-300 rounded shadow-lg z-10 w-full -ml-1 overflow-scroll`} style={{ height: height }}>
+          <div
+            className={`absolute mt-2 bg-white border border-gray-300 rounded shadow-lg z-10 w-full overflow-scroll`}
+            style={{ height: height }}
+          >
             <fieldset>
               <legend className="sr-only">{label}</legend>
               <div className="space-y-2 p-2">
@@ -63,10 +81,10 @@ const Filter = ({ data, label, height = 150 }: Props) => {
                     type="checkbox"
                     checked={isChecked(`${defaultChoice}`)}
                     value={`${defaultChoice}`}
-                    onChange={(e) => handleChange(event, `${defaultChoice}`)}
-                    className="input-checkbox h-4 w-4 text-nashtech rounded accent-red-500"
+                    onChange={(e) => handleChange(e, `${defaultChoice}`)}
+                    className="input-checkbox h-4 w-4 text-nashtech rounded custom-checkbox accent-red-500"
                   />
-                  <label htmlFor="" className="ml-3 block text-sm text-gray-700">
+                  <label htmlFor={defaultChoice} className="ml-3 block text-sm text-gray-700">
                     All
                   </label>
                 </div>

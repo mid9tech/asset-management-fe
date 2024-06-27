@@ -72,7 +72,7 @@ const CreateForm: FC<CreateFormProps> = (props) => {
       assignedDate: value.assignedDate,
       note: value.note || "",
     };
-    console.log('value: ', variables);
+    console.log("value: ", variables);
     const { data }: any = await createAssignment(variables);
     if (data) {
       setLoading(false);
@@ -92,6 +92,7 @@ const CreateForm: FC<CreateFormProps> = (props) => {
                 <FormLabel className="w-[120px]">User</FormLabel>
                 <FormControl>
                   <Button
+                    id="select-user-assignment"
                     type="button"
                     variant="outline"
                     className="w-full flex justify-start"
@@ -122,6 +123,7 @@ const CreateForm: FC<CreateFormProps> = (props) => {
                 <FormLabel className="w-[120px]">Asset</FormLabel>
                 <FormControl>
                   <Button
+                    id="select-asset-assignment"
                     type="button"
                     variant="outline"
                     className="w-full flex justify-start"
@@ -150,6 +152,7 @@ const CreateForm: FC<CreateFormProps> = (props) => {
                 <FormLabel className="w-[150px]">Assigned Date</FormLabel>
                 <FormControl>
                   <Input
+                    id="assigned-date-assignment"
                     placeholder="Select a date"
                     {...field}
                     type="date"
@@ -173,7 +176,7 @@ const CreateForm: FC<CreateFormProps> = (props) => {
               <div className="flex items-start gap-5">
                 <FormLabel className="w-[120px]">Note</FormLabel>
                 <FormControl>
-                  <TextArea {...field} />
+                  <TextArea id="note-assignment" {...field} />
                 </FormControl>
               </div>
               <FormMessage className="text-nashtech float-left ml-26">
@@ -184,12 +187,14 @@ const CreateForm: FC<CreateFormProps> = (props) => {
         />
         <div className="float-right">
           <Button
+            id="save-btn-assignment"
             type="submit"
             className="bg-nashtech text-white mr-4 cursor-pointer"
             disabled={!allFieldsFilled}>
             Save
           </Button>
           <Button
+            id="cancel-btn-assignment"
             onClick={() => setShowModalConfirm(true)}
             type="button"
             variant="outline">
