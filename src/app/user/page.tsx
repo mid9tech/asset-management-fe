@@ -37,7 +37,6 @@ export default function Index({
   const currentPage = searchParams?.page || '1';
   const [sortOrder, setSortOder] = useState(SORT_ORDER.ASC);
   const [sortBy, setSortBy] = useState("firstName");
-  // const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>();
   const [newestUserId, setNewestUserId] = useState<string>("0");
 
@@ -67,7 +66,6 @@ export default function Index({
     }
 
     const { data }: any = await loadData(request);
-    console.log(data)
 
     const listUserCustome = data?.users.map(
       (item: User) => ({

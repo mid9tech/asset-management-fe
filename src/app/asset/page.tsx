@@ -8,7 +8,8 @@ import { formatDate } from "@utils/timeFormat";
 import { Asset } from "../../__generated__/graphql";
 import AssetManagement from "./table";
 import { loadDataAsset, loadDetailAsset } from "@services/asset";
-import { GET_CATEGORY_QUERY } from "@services/query/category.query";
+import { formatText } from "@utils/formatText";
+import { defaultChoice } from "@components/filter";
 
 export const dynamic = "force-dynamic";
 export default function Index({
@@ -18,20 +19,22 @@ export default function Index({
     State?: string[];
     Category?: string[];
     query?: string;
+    page?: string;
+
   };
 }) {
   const { setLoading }: any = useLoading();
   const [listAsset, setListAssets] = useState<Asset[]>([]);
-  const filterState = searchParams?.State || "All";
-  const filterCategory = searchParams?.Category || "All";
+  const filterState = searchParams?.State || null;
+  const filterCategory = searchParams?.Category || null;
+  const currentPage = searchParams?.page || '1';
+
   const queryString = searchParams?.query || "";
   const [sortOrder, setSortOrder] = useState(SORT_ORDER.ASC);
   const [sortBy, setSortBy] = useState("assetCode");
-  const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPage, setTotalPages] = useState<number>(0);
   const [newestAssetId, setNewestAssetId] = useState<string>("0");
 
-  const { data: categoryData, loading: categoryLoading } = useQuery(GET_CATEGORY_QUERY);
 
   useEffect(() => {
     const newAssetId = JSON.parse(localStorage.getItem("newAssetId") || "0");
@@ -41,77 +44,40 @@ export default function Index({
   useEffect(() => {
     setLoading(true);
     loadAssetList();
-  }, [queryString, filterState, filterCategory, sortBy, sortOrder, currentPage, newestAssetId, categoryData]);
+  }, [searchParams]);
 
   const loadAssetList = async () => {
     try {
       setLoading(true);
 
       let request: { [k: string]: any } = {};
-      request.page = currentPage;
+      request.page = parseInt(currentPage);
       request.sortField = sortBy;
       request.sortOrder = sortOrder;
+      request.stateFilter = filterState;
 
       if (queryString) {
         request.query = queryString;
       }
+      if (filterCategory) {
+        if (filterCategory.includes(defaultChoice)) {
+          delete request.categoryFilter;
+        } else {
+          request.categoryFilter = filterCategory;
+        }
+      }
+      console.log(request)
 
       const { data }: any = await loadDataAsset(request);
-
       if (data && data.assets) {
-        const categoryMap = categoryData?.getCategories.reduce((map: any, category: any) => {
-          map[category.id] = category.categoryName;
-          return map;
-        }, {});
-
         const listAssetCustom = data.assets.map((item: Asset) => ({
           ...item,
-          assetName: `${item.assetName}`,
+          assetName: formatText(`${item.assetName}`),
           installedDate: formatDate(new Date(item.installedDate)),
-          category: categoryMap[item.categoryId] || item.categoryId,
-          state: item.state === ASSET_TYPE.Available ? "AVAILABLE" : item.state,
+           category: formatText(item?.category?.categoryName),
+          state: formatText(item.state === ASSET_TYPE.Available ? "AVAILABLE" : item.state),
           isEditDisabled: item.state === 'ASSIGNED'
         }));
-
-        if (newestAssetId !== "0" && newestAssetId) {
-          const newestAssetIndex = listAssetCustom.findIndex(
-            (asset: Asset) => asset.id === newestAssetId
-          );
-
-          if (newestAssetIndex !== -1) {
-            const [newestAsset] = listAssetCustom.splice(newestAssetIndex, 1);
-            listAssetCustom.unshift(newestAsset);
-          } else {
-            const currentAdmin = JSON.parse(localStorage.getItem("asset") || "{}");
-            const { data: newAssetDetail } = await loadDetailAsset(Number(newestAssetId));
-            const { data: currentAdminDetail } = await loadDetailAsset(
-              Number(currentAdmin.id)
-            );
-            if (
-              newAssetDetail &&
-              currentAdminDetail.location === newAssetDetail.location
-            ) {
-              listAssetCustom.unshift({
-                ...newAssetDetail,
-                assetName: `${newAssetDetail.assetName}`,
-                category: categoryMap[newAssetDetail.categoryId] || newAssetDetail.categoryId,
-                installedDate: newAssetDetail.installedDate,
-                state:
-                  newAssetDetail.state === ASSET_TYPE.Available
-                    ? "AVAILABLE"
-                    : newAssetDetail.state,
-              });
-              if (listAssetCustom.length > 20) {
-                listAssetCustom.pop();
-              }
-            }
-          }
-
-          localStorage.setItem("newAssetId", JSON.stringify("0"));
-        }
-
-        setCurrentPage(data.page ?? 1);
-        setTotalPages(data.totalPages ?? 1);
         setListAssets(listAssetCustom);
       } else {
         console.error("Failed to load assets: ", data);
@@ -130,12 +96,11 @@ export default function Index({
         <AssetManagement
           data={listAsset}
           totalPages={totalPage}
-          currentPage={currentPage}
+          currentPage={parseInt(currentPage)}
           sortBy={sortBy}
           sortOrder={sortOrder}
           setSortBy={setSortBy}
           setSortOrder={setSortOrder}
-          setCurrentPage={setCurrentPage}
         />
       </Suspense>
     </Fragment>
