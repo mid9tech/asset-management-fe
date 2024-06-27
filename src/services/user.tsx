@@ -205,13 +205,16 @@ export const loadData = async (request: any) => {
 };
 
 export const loadDetail = async (id: number) => {
-  const result = await client.query({
-    query: fineOneUserQuery,
-    variables: { id },
-  });
-  return {
-    data: result.data.user,
-  };
+  try {
+    const result = await client.query({
+      query: fineOneUserQuery,
+      variables: { id },
+    });
+    return  result.data.user
+  } catch (error) {
+    console.log(error)
+    return null
+  }
 };
 
 export const disableUser = async (id: number) => {

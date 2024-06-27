@@ -69,24 +69,28 @@ export default function Index({
         request.type = filterType;
       }
     }
+    let detailUser: any = null;
+
     //push item up
     if (newUserId) {
       request.limit = 19
+      detailUser = await loadDetail(newUserId);
     }
     const { data }: any = await loadData(request);
     const listUserCustome = data?.users.map(
       (item: User) => (formatUser(item))
     );
-    if (newUserId) {
-      const { data: detailUser } = await loadDetail(newUserId);
-
+    if (detailUser) {
       const newUserIndex = listUserCustome.findIndex((user: User) => user.id === newUserId.toString());
       if (newUserIndex !== -1) {
         listUserCustome.splice(newUserIndex, 1);
       }
       detailUser.joinedDate = parseInt(detailUser?.joinedDate);
       detailUser.dateOfBirth = parseInt(detailUser?.dateOfBirth);
+      console.log(detailUser)
       listUserCustome.unshift(formatUser(detailUser));
+    } else {
+      pushUp(null)
     }
     //store data
     setTotalPages(data?.totalPages);

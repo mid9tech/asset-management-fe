@@ -126,7 +126,8 @@ const CreateUser = () => {
         });
       } else {
         const userId = response.data.createUser.id;
-        localStorage.setItem("newUserId", '"' + userId.toString() + '"');
+        pushUp(parseInt(userId))
+        // localStorage.setItem("newUserId", '"' + userId.toString() + '"');
         toast.success("Create User Successfully");
         router.push("/user");
       }
