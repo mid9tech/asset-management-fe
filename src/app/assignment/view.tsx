@@ -8,8 +8,10 @@ import ReusableTable from "@components/table";
 import { useLoading } from "@providers/loading";
 
 import { Assignment } from "../../__generated__/graphql";
-import { SORT_ORDER } from "../../types/enum.type";
+import { ASSIGNMENT_STATUS, SORT_ORDER } from "../../types/enum.type";
 import Paginate from "@components/paginate";
+import Filter from "@components/filter";
+import { convertEnumToMap } from "@utils/enumToMap";
 
 interface ViewAssignmentProps {
   listData: Assignment[];
@@ -70,11 +72,7 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center space-x-2">
           <div className="relative w-32">
-            {/* <Filter
-                setCurrentPage={setCurrentPage}
-                label="Type"
-                data={convertEnumToMap(USER_TYPE)}
-              /> */}
+            <Filter label="State" data={convertEnumToMap(ASSIGNMENT_STATUS)} />
           </div>
         </div>
         <div className="flex gap-10">

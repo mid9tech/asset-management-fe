@@ -10,10 +10,6 @@ export const formatText = (str: string) => {
 
 export const formatStateText = (str: string) => {
   if (!str) return str;
-  return str
-    .split(/[_\s]/)
-    .map((word) => {
-      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-    })
-    .join(" ");
+  str = str.toLowerCase().replace(/_/g, ' '); // Convert to lowercase and replace underscores with spaces
+  return str.charAt(0).toUpperCase() + str.slice(1);
 };

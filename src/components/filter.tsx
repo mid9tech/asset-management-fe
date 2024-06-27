@@ -1,7 +1,7 @@
 import { Fragment, useState } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
-import { formatText } from "@utils/formatText";
+import { formatStateText, formatText } from "@utils/formatText";
 
 export const defaultChoice = 'all'
 interface Props {
@@ -82,7 +82,7 @@ const Filter = ({ data, label, setCurrentPage, height = 150 }: Props) => {
                       className="h-4 w-4 text-nashtech focus:ring rounded custom-checkbox"
                     />
                     <label htmlFor={key} className="ml-3 block text-sm text-gray-700">
-                      {formatText(key)}
+                      {formatStateText(key)}
                     </label>
                   </div>
                 ))}
