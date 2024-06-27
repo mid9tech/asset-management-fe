@@ -4,13 +4,25 @@ import { useState } from "react";
 import DetailModal from "@components/modal";
 import { useQuery } from "@apollo/client";
 import { GET_CATEGORY_QUERY } from "@services/query/category.query";
-const ViewDetail = () => {
-    const [showModalRemoveAsset, setShowModalRemoveAsset] = useState(false);
-    const [showModalDetailAsset, setShowModalDetailAsset] = useState(false);
-    const [selectedAsset, setSelectedAsset] = useState<Asset | null>(null);
+import { SORT_ORDER } from '../../types/enum.type';
+import { truncateParagraph } from '@utils/truncate';
+interface AssetManagementProps {
+    data: Asset[];
+    totalPages: number;
+    currentPage: number;
+    sortOrder: SORT_ORDER;
+    sortBy: string;
+    setSortBy: (value: any) => void;
+    setSortOrder: (value: any) => void;
+}
+const ViewDetail = (props :any) => {
+    // const [showModalDetailAsset, setShowModalDetailAsset] = useState(false);
+    const {selectedAsset,showModalDetailAsset,setShowModalDetailAsset} = props;
+    console.log("selected: ",selectedAsset);
     const handleCloseDetailModal = () => {
         setShowModalDetailAsset(false);
     };
+
     const { data: categoryData, loading: categoryLoading } = useQuery(GET_CATEGORY_QUERY);
 
     const categoryMap = categoryData?.getCategories.reduce((map: { [key: string]: string }, category: any) => {
@@ -27,17 +39,17 @@ const ViewDetail = () => {
                     <div className="text-gray">
                         <div className="flex mb-2">
                             <span className="text-sm w-40">Asset Code</span>{" "}
-                            <span className="text-sm">{selectedAsset.assetCode}</span>
+                            <span className="text-sm">{truncateParagraph(selectedAsset.assetCode,25)}</span>
                         </div>
                         <div className="flex mb-2">
                             <span className="text-sm w-40">Asset Name</span>{" "}
                             <span className="text-sm">
-                                {selectedAsset.assetName}
+                                {truncateParagraph(selectedAsset.assetName,25)}
                             </span>
                         </div>
-                        <div className="flex mb-2">
+                        <div className="flex mb-2 overflow-y-auto">
                             <span className="text-sm w-40">Category</span>{" "}
-                            <span className="text-sm">{categoryMap[selectedAsset.categoryId]}</span>
+                            <span className="text-sm">{truncateParagraph(selectedAsset.category,25)}</span>
                         </div>
                         <div className="flex mb-2">
                             <span className="text-sm w-40">Installed Date</span>{" "}
@@ -52,7 +64,7 @@ const ViewDetail = () => {
                         <div className="flex mb-2">
                             <span className="text-sm w-40">Specification</span>{" "}
                             <span className="text-sm">
-                                {selectedAsset.specification}
+                                {truncateParagraph(selectedAsset.specification,25)}
                             </span>
                         </div>
                         <div className="flex mb-2">

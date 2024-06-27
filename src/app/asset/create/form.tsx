@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import {
+import  {
     Form, FormControl, FormField, FormItem, FormLabel, FormMessage,
 } from "@components/ui/form";
 import { useLoading } from "@providers/loading";
@@ -47,6 +47,7 @@ const FormCreateAsset = () => {
             state: State.AVAILABLE,
         },
     });
+
     const handleCloseCancelModal = () => {
         setShowModalCancel(false);
     };

@@ -114,7 +114,6 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
                                     data={convertEnumToMap(ASSET_TYPE)}
                                     height={170}
                                 />
-                                <FilterAltIcon className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none h-10" />
                             </div>
 
                             <div className="ml-4">
@@ -175,7 +174,12 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
                     </Button>
                 </div>
             </DetailModal>
-            <ViewDetail />
+            <ViewDetail 
+            selectedAsset={selectedAsset} 
+            setSelectedAsset={setSelectedAsset}
+            showModalDetailAsset={showModalDetailAsset}
+            setShowModalDetailAsset={setShowModalDetailAsset}
+            />
         </>
     );
 };

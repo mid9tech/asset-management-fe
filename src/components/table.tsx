@@ -12,6 +12,7 @@ import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import CreateIcon from "@mui/icons-material/Create";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { SORT_ORDER } from "../types/enum.type";
+import { truncateParagraph } from "@utils/truncate";
 
 type Column<T> = {
   header: string;
@@ -29,7 +30,7 @@ interface ReusableTableProps<T> {
   sortOrder: string;
 }
 
-const ReusableTable = <T extends { type?: string }>({
+const ReusableTable = <T extends {}>({
   columns,
   data,
   onRowClick,
@@ -39,7 +40,8 @@ const ReusableTable = <T extends { type?: string }>({
   sortBy,
   sortOrder,
 }: ReusableTableProps<T>) => {
-  
+  const maxLength = 30; 
+
   return (
     <Table>
       <TableHeader>
@@ -61,20 +63,20 @@ const ReusableTable = <T extends { type?: string }>({
         </TableRow>
       </TableHeader>
       <TableBody>
-        {data?.map((row, index) => (
+        {data.map((row, index) => (
           <TableRow
             key={index}
             className="cursor-pointer"
             onClick={() => onRowClick(row)}>
             {columns.map((column, colIndex) => (
               <TableCell key={colIndex} className="font-medium">
-                {row[column.accessor] as ReactNode}
+                {truncateParagraph(String(row[column.accessor]), maxLength) as ReactNode}
               </TableCell>
             ))}
             {onEditClick && onDeleteClick ? (
               <TableCell onClick={(e) => e.stopPropagation()}>
                 <CreateIcon
-                  className={`text-gray-500 ${row.type === "Admin" ? "text-gray" : ""}`}
+                  className="text-gray-500 cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation();
                     onEditClick(row);

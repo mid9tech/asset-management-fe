@@ -1,13 +1,13 @@
 'use client'
 import { useMutation, useQuery } from "@apollo/client";
 import { CREATE_CATEGORY_MUTATION, GET_CATEGORY_QUERY } from "@services/query/category.query";
-import {Select,SelectContent,SelectItem,SelectTrigger,SelectValue,
-} from "@components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@components/ui/select";
 import { Input } from "@components/ui/input";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
+import { truncateParagraph } from "@utils/truncate";
 
 const Category = () => {
     const [showNewCategoryInput, setShowNewCategoryInput] = useState(false);
@@ -59,11 +59,11 @@ const Category = () => {
         <SelectContent className="bg-graycustom2 text-black w-full h-[200px] overflow-scroll">
             {data?.getCategories.map((category: any) => (
                 <SelectItem key={category?.id} value={category?.id}>
-                    {category?.categoryName}
+                    {truncateParagraph(`${category?.categoryName}`, 25)}
                 </SelectItem>
             ))}
             {showNewCategoryInput ? (
-                <div className="relative text-black mt-4 border-t-2 border-black bg-input-gray flex flex-col items-center w-full">
+                <div className="relative text-nashtech mt-4 border-t-2 border-black bg-input-gray flex flex-col items-center">
                     <div className="flex w-2/3">
                         <Input
                             value={newCategory}
@@ -79,7 +79,11 @@ const Category = () => {
                         />
                     </div>
                     <div className="absolute inset-y-0 end-0 flex items-center px-4">
-                        <CheckIcon onClick={handleSaveNewCategory} className="text-nashtech font-bold cursor-pointer stroke-red-600" />
+                        {newCategory ? (
+                            <CheckIcon onClick={handleSaveNewCategory} className="text-nashtech font-bold cursor-pointer stroke-red-600" />
+                        ) : (
+                            <CheckIcon className="text-gray-400" />
+                        )}
                         <ClearIcon onClick={handleCancelNewCategory} className="cursor-pointer text-black stroke-black" />
                     </div>
                 </div>

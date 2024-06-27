@@ -2,6 +2,7 @@ import { Fragment, useState } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import { formatStateText, formatText } from "@utils/formatText";
+import { truncateParagraph } from "@utils/truncate";
 
 export const defaultChoice = 'all'
 interface Props {
@@ -9,7 +10,7 @@ interface Props {
   data: Map<string, string>;
   height?: number;
 }
-
+const maxLength = 30; 
 
 const Filter = ({ data, label, height = 150 }: Props) => {
   const searchParams = useSearchParams();
@@ -51,7 +52,7 @@ const Filter = ({ data, label, height = 150 }: Props) => {
           <FilterAltIcon className="cursor-pointer" style={{height: 17}} />
         </div>
         {dropdownVisible && (
-          <div className={`absolute mt-2 bg-white border border-gray-300 rounded shadow-lg z-10 w-full -ml-2 overflow-scroll`} style={{ height: height }}>
+          <div className={`absolute mt-2 bg-white border border-gray-300 rounded shadow-lg z-10 w-full -ml-1 overflow-scroll`} style={{ height: height }}>
             <fieldset>
               <legend className="sr-only">{label}</legend>
               <div className="space-y-2 p-2">
@@ -81,7 +82,7 @@ const Filter = ({ data, label, height = 150 }: Props) => {
                       className="h-4 w-4 text-nashtech focus:ring rounded bg-transparent"
                     />
                     <label htmlFor={key} className="ml-3 block text-sm text-gray-700">
-                      {formatStateText(key)}
+                      {truncateParagraph(String(formatStateText(key)), maxLength)}
                     </label>
                   </div>
                 ))}
