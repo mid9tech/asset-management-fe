@@ -12,9 +12,9 @@ export const CREATE_ASSET_MUTATION = gql`
       location
       specification
       category {
-          id
-          categoryName
-          categoryCode
+        id
+        categoryName
+        categoryCode
       }
     }
   }
@@ -89,6 +89,9 @@ export const FIND_ASSETS_QUERY = gql`
         state
         location
         specification
+        isRemoved
+        isAllowRemoved
+        isReadyAssigned
         category {
           id
           categoryName
@@ -96,5 +99,23 @@ export const FIND_ASSETS_QUERY = gql`
         }
       }
     }
+  }
+`;
+
+export const DISABLE_ASSET_QUERY = gql`
+  mutation DeleteAsset($id: Int!) {
+    deleteAsset(id: $id) {
+      id
+      assetCode
+      assetName
+      categoryId
+      installedDate
+      isRemoved
+      isAllowRemoved
+      isReadyAssigned
+      state
+      location
+      specification
+  }
   }
 `;

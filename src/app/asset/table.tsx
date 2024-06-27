@@ -10,12 +10,14 @@ import Search from "@components/search";
 import { ASSET_TYPE, SORT_ORDER } from "../../types/enum.type";
 import { Asset } from "../../__generated__/graphql";
 import { Button } from "@components/ui/button";
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { GET_CATEGORY_QUERY } from "@services/query/category.query";
 import ViewDetail from "./viewDetail";
 import Paginate from "@components/paginate";
 import ReusableList from "@components/list";
 import EmptyComponent from "@components/empty";
+import { DISABLE_ASSET_QUERY } from "@services/query/asset.query";
+import { toast } from "react-toastify";
 
 interface AssetManagementProps {
   data: Asset[];
@@ -25,6 +27,14 @@ interface AssetManagementProps {
   sortBy: string;
   setSortBy: (value: any) => void;
   setSortOrder: (value: any) => void;
+  loadAssetList: () => void;
+}
+
+interface Props {
+  asset: Asset
+  showModalDetailAsset: boolean
+  handleCloseDetailModal: () => void
+
 }
 
 const assetColumns = [
@@ -51,12 +61,16 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
     sortBy,
     setSortBy,
     setSortOrder,
+    loadAssetList
   } = props;
 
   const [showModalRemoveAsset, setShowModalRemoveAsset] = useState(false);
+  const [showModalErrorAsset, setShowModalErrorAsset] = useState(false);
   const [showModalDetailAsset, setShowModalDetailAsset] = useState(false);
   const [selectedAsset, setSelectedAsset] = useState<Asset | null>(null);
   const [dataUpdate, setDataUpdate] = useState<Asset | Asset[] | null>(null);
+  const [deleteAsset] = useMutation(DISABLE_ASSET_QUERY);
+
   const router = useRouter();
   const { setLoading }: any = useLoading();
   const { data: categoryData, loading: categoryLoading } =
@@ -65,7 +79,7 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
   const handleNavigateEditAsset = (asset: Asset) => {
     setDataUpdate(asset);
     router.push(`/asset/${asset.id}`);
-  };
+  }
 
   const handleSortClick = (item: string) => {
     let defaultOrder = SORT_ORDER.ASC;
@@ -86,6 +100,10 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
     setShowModalRemoveAsset(false);
   };
 
+  const handleCloseModalAsset = () => {
+    setShowModalErrorAsset(false);
+  };
+
   const handleRowClick = (asset: Asset) => {
     setSelectedAsset(asset);
     setShowModalDetailAsset(true);
@@ -96,6 +114,31 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
     router.push("asset/create");
     setLoading(false);
   };
+
+  const handleConfirmDelete = async () => {
+    try {
+      setLoading(true);
+      const deleteOptions = {
+        variables: {
+          id: parseInt(selectedAsset?.id as string),
+        },
+      };
+      const response = await deleteAsset(deleteOptions);
+      console.log("delete response: ", response);
+
+      if (response) {
+        setShowModalRemoveAsset(false);
+        toast.success("Delete Asset Successfully");
+        loadAssetList();
+        setLoading(false);
+      }
+    } catch (error: any) {
+      setShowModalRemoveAsset(false);
+      setLoading(false);
+      setShowModalErrorAsset(true);
+    }
+  };
+
 
   const convertToMap = (data: any): Map<string, string> => {
     const map = new Map<string, string>();
@@ -165,22 +208,41 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
         <div className="p-3">
           <div className="sm:flex sm:items-start">
             <p className="text-md text-gray-500">
-              Do you want to disable this asset?
+              Do you want to delete this asset?
             </p>
           </div>
         </div>
         <div className="sm:flex sm:flex-row gap-4">
           <Button
             type="button"
+            onClick={handleConfirmDelete}
             className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto">
-            Disable
+            Delete
           </Button>
           <Button
             variant="outline"
             type="button"
-            onClick={() => setShowModalRemoveAsset(false)}>
+            className="text-gray"
+            onClick={() => setShowModalRemoveAsset(false)}
+            >
             Cancel
           </Button>
+        </div>
+      </DetailModal>
+      <DetailModal
+        isOpen={showModalErrorAsset}
+        onClose={handleCloseModalAsset}
+        // isShowCloseIcon={true}
+        title="Cannot Delete asset">
+        <div className="p-0">
+          <div className="sm:flex sm:items-start">
+            <p className="text-md text-gray-500">
+              Cannot delete the asset because it belongs to one or more historical assignments.
+              <div>
+              If the asset is not able to be used anymore, please update its state in <a href="/asset" className="text-blue underline">Edit Asset page</a>
+              </div>
+            </p>
+          </div>
         </div>
       </DetailModal>
       <ViewDetail

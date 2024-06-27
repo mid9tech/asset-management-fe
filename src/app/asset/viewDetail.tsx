@@ -15,6 +15,13 @@ interface AssetManagementProps {
     setSortBy: (value: any) => void;
     setSortOrder: (value: any) => void;
 }
+
+interface Props {
+    asset: Asset
+    showModalDetailAsset: boolean
+    handleCloseDetailModal: () => void
+
+}
 const ViewDetail = (props :any) => {
     // const [showModalDetailAsset, setShowModalDetailAsset] = useState(false);
     const {selectedAsset,showModalDetailAsset,setShowModalDetailAsset} = props;
@@ -62,25 +69,19 @@ const ViewDetail = (props :any) => {
                                 {selectedAsset.state}
                             </span>
                         </div>
-                        <div className="flex mb-2">
-                            <span className="text-sm w-40">State</span>{" "}
-                            <span className="text-sm">
-                                {selectedAsset.state}
-                            </span>
-                        </div>
                         <div className="flex flex-row mb-2">
                             <span className="text-sm w-40">Location</span>{" "}
                             <span className="text-sm">{selectedAsset.location}</span>
                         </div>
                         <div className="flex flex-row gap-9 mb-2">
                             <span className="text-sm w-40">Specification</span>{" "}
-                            <span className="text-sm w-[60%]">
+                            <span className="text-sm w-80">
                                {selectedAsset.specification}
                             </span>
                         </div>
-                        <div className="flex mb-2">
-                            <span className="text-sm">History</span>{" "}
-                            <span className="text-sm">
+                        <div className="flex gap-9 mb-2">
+                            <span className="text-sm w-40">History</span>{" "}
+                            <span className="text-sm w-80">
                                 ...
                             </span>
                         </div>

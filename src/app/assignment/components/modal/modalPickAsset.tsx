@@ -11,7 +11,7 @@ import { Button } from "@components/ui/button";
 import SearchIcon from "@public/icon/search.svg";
 import { useLoading } from "@providers/loading";
 
-import { SORT_ORDER } from "../../../../types/enum.type";
+import { ASSET_TYPE, SORT_ORDER } from "../../../../types/enum.type";
 import { Asset, FindAssetsInput } from "../../../../__generated__/graphql";
 import { loadDataAsset } from "@services/asset";
 
@@ -72,7 +72,7 @@ const ModalPikcAsset: React.FC<ModalPickerProps> = ({
         limit: 10,
         sortField: sortBy,
         sortOrder: sortOrder,
-        
+        stateFilter: [ASSET_TYPE.Available]
       });
 
       document.addEventListener("mousedown", handleClickOutside);
@@ -128,7 +128,9 @@ const ModalPikcAsset: React.FC<ModalPickerProps> = ({
           <div className="p-3">
             <div className="grid grid-cols-6 gap-4">
               <div></div>
-              <div className="col border-b-2 border-black cursor-pointer" onClick={() => handleSortClick('assetCode')}>
+              <div
+                className="col border-b-2 border-black cursor-pointer"
+                onClick={() => handleSortClick("assetCode")}>
                 <span className="font-bold">
                   Asset Code{" "}
                   {sortBy === "assetCode" && sortOrder === SORT_ORDER.ASC ? (
@@ -138,7 +140,9 @@ const ModalPikcAsset: React.FC<ModalPickerProps> = ({
                   )}
                 </span>
               </div>
-              <div className="col-span-3 border-b-2 border-black cursor-pointer" onClick={() => handleSortClick('assetName')}>
+              <div
+                className="col-span-3 border-b-2 border-black cursor-pointer"
+                onClick={() => handleSortClick("assetName")}>
                 <span className="font-bold">
                   Asset Name{" "}
                   {sortBy === "assetName" && sortOrder === SORT_ORDER.ASC ? (
@@ -148,7 +152,9 @@ const ModalPikcAsset: React.FC<ModalPickerProps> = ({
                   )}
                 </span>
               </div>
-              <div className="border-b-2 border-black cursor-pointer" onClick={() => handleSortClick('categoryId')}>
+              <div
+                className="border-b-2 border-black cursor-pointer"
+                onClick={() => handleSortClick("categoryId")}>
                 <span className="font-bold">
                   Category{" "}
                   {sortBy === "categoryId" && sortOrder === SORT_ORDER.ASC ? (
@@ -163,12 +169,17 @@ const ModalPikcAsset: React.FC<ModalPickerProps> = ({
             {list?.map((item, key) => (
               <div
                 key={key}
-                className="grid grid-cols-6 gap-4 cursor-pointer"
-                onClick={() => handleSelected(item)}>
+                className={`grid grid-cols-6 gap-4 ${
+                  item.isReadyAssigned == false
+                    ? "opacity-50 cursor-not-allowed"
+                    : "cursor-pointer"
+                }`}
+                onClick={item.isReadyAssigned == false ? () => {} : () => handleSelected(item)}>
                 <div className="flex justify-end items-center">
                   <label className="custom-radio">
                     <input
                       type="radio"
+                      disabled={item.isReadyAssigned == false}
                       checked={selected?.id === item.id}
                       onChange={() => handleSelected(item)}
                     />
@@ -182,7 +193,9 @@ const ModalPikcAsset: React.FC<ModalPickerProps> = ({
                   <span className="truncate">{item?.assetName}</span>
                 </div>
                 <div className="border-b-2 border-graycustom">
-                  <span className="truncate">{item?.category.categoryName}</span>
+                  <span className="truncate">
+                    {item?.category.categoryName}
+                  </span>
                 </div>
                 <div></div>
               </div>

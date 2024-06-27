@@ -1,21 +1,17 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-"use client";
 import React, { FC, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLoading } from "@providers/loading";
-
 import { Assignment } from "../../__generated__/graphql";
 import { ASSIGNMENT_STATUS, SORT_ORDER } from "../../types/enum.type";
 import Paginate from "@components/paginate";
-import Filter from "@components/filter";
-import { convertEnumToMap } from "@utils/enumToMap";
-import Search from "@components/search";
-import CustomDatePicker from "@components/datepicker";
 import ReusableList from "@components/list";
-import DetailAssignment from "./detail";
 import EmptyComponent from "@components/empty";
-import ModalConfirmDeleteAssignment from "./components/modal/confirmDelete";
-import { deleteAssignment } from "@services/assignment";
+import DetailOwnAssignment from "./detail";
+import ModalConfirmDeclineAssignment from "./components/modal/confirmDecline";
+import ModalConfirmAcceptAssignment from "./components/modal/confirmAccept";
+import HomeList from "./components/table/homeList";
+import { useMutation } from "@apollo/client";
+import { UPDATE_STATUS_ASSIGNMENT, updateStatusAssignment } from "@services/query/assignment.query";
 import { toast } from "react-toastify";
 
 interface ViewAssignmentProps {
@@ -60,7 +56,7 @@ const tableColumns = [
   { header: "icon", accessor: "" as keyof Assignment, width: "10%" },
 ];
 
-const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
+const ViewOwnAssignment: FC<ViewAssignmentProps> = (props) => {
   const {
     listData,
     totalPages,
@@ -76,12 +72,9 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
 
   const [selected, setSelected] = useState<Assignment>();
   const [showModalDetail, setShowModalDetail] = useState(false);
-  const [showModalConfirmDelete, setShowModalConfirmDelete] = useState(false);
-
-  const handleNavigateCreate = () => {
-    setLoading(true);
-    route.push("assignment/create");
-  };
+  const [showModalConfirmDecline, setShowModalConfirmDecline] = useState(false);
+  const [showModalConfirmAccept, setShowModalConfirmAccept] = useState(false);
+  const [changeStatus] = useMutation(UPDATE_STATUS_ASSIGNMENT);
 
   const handleSortClick = (item: string) => {
     let defaultOrder = SORT_ORDER.ASC;
@@ -102,64 +95,74 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
     setShowModalDetail(false);
   };
 
-  const handleModalDeleteAssignment = (ass: Assignment) => {
+  const handleDeclineAssignment = (ass: Assignment) => {
     setSelected(ass);
-    setShowModalConfirmDelete(true);
+    setShowModalConfirmDecline(true);
   };
 
-  const handleCloseConfirmDeleteAssignment = () => {
-    setShowModalConfirmDelete(false);
+  const handleAcceptAssignment = (ass: Assignment) => {
+    setSelected(ass);
+    setShowModalConfirmAccept(true);
   };
 
-  const handleNavigateEditPage = (item: Assignment) => {
-    if (item.state === ASSIGNMENT_STATUS.ACCEPTED) return;
-    setLoading(true);
-    setSelected(item);
-    route.push(`/assignment/${item.id}`);
-  };
+  const handleConfirmAccept = async () => {
+    if (selected?.id === undefined) {
+      toast.error("Selected assignment ID is undefined. Please try again.");
+      return;
+    }
 
-  const confirmDelete = async () => {
+    console.log("selected: ",selected.id, selected.state);
+    // try {
+    //   setLoading(true);
+    //   const response = await disableUser(parseInt(selectedUser?.id as string));
+    //   if (response) {
+    //     setShowModalRemoveUser(false);
+    //     toast.success("Disable User Successfully");
+    //     loadUserList();
+    //     setLoading(false);
+    //   }
+    // } catch (error: any) {
+    //   setShowModalRemoveUser(false);
+    //   setLoading(false);
+    //   setShowModalError(true);
+    // }
+
     try {
       setLoading(true);
-      const response = await deleteAssignment(selected?.id as number);
-      if (response) {
-        setShowModalConfirmDelete(false);
-        toast.success("Delete Assignment Successfully");
-        reloadTableData();
-        setLoading(false);
+      // const acceptOptions = {
+      //   variables: {
+      //     id: selected.id,
+      //     state: ASSIGNMENT_STATUS.ACCEPTED, 
+      //   },
+      // };
+      const response = await updateStatusAssignment(selected?.id);
+      console.log("res: ",response);
+      
+
+      if (response && response.data.updateStatusAssignment) {
+        setShowModalConfirmAccept(false);
+        toast.success("Accept Asset Successfully");
+        reloadTableData(); 
+      } else {
+        toast.error("Failed to accept the assignment. Please try again.");
       }
     } catch (error: any) {
-      setShowModalConfirmDelete(false);
+      toast.error("An error occurred. Please try again.");
+    } finally {
       setLoading(false);
     }
   };
 
   return (
     <div className="container mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4 text-nashtech">Assignment List</h2>
-      <div className="flex justify-between items-start mb-4">
-        <div className="flex items-start space-x-2">
-          <div className="relative w-auto flex flex-row items-center justify-start gap-3">
-            <Filter label="State" data={convertEnumToMap(ASSIGNMENT_STATUS)} />
-            <CustomDatePicker name="assignedDate" label="Assigned date" />
-          </div>
-        </div>
-        <div className="flex gap-3">
-          <Search />
-          <button
-            className="bg-red-600 text-white rounded px-4 py-1 cursor-pointer hover:opacity-75"
-            onClick={handleNavigateCreate}>
-            Create new assignment
-          </button>
-        </div>
-      </div>
-      <ReusableList
+      <h2 className="text-2xl font-bold mb-4 text-nashtech">My Assignment</h2>
+      <HomeList
         columns={tableColumns}
         data={listData}
         onRowClick={handleRowClick}
-        onDeleteClick={handleModalDeleteAssignment}
+        onDeleteClick={handleDeclineAssignment}
         onSortClick={handleSortClick}
-        onEditClick={handleNavigateEditPage}
+        onEditClick={handleAcceptAssignment}
         onReturnClick={() => {}}
         sortBy={sortBy}
         sortOrder={sortOrder}
@@ -171,7 +174,7 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
       )}
 
       {selected && (
-        <DetailAssignment
+        <DetailOwnAssignment
           showModalDetailUser={showModalDetail}
           handleCloseDetailModal={handleCloseDetailModal}
           data={selected}
@@ -179,14 +182,25 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
       )}
 
       {selected && (
-        <ModalConfirmDeleteAssignment
-          showModalConfirm={showModalConfirmDelete}
-          setShowModalConfirm={handleCloseConfirmDeleteAssignment}
-          handleDelete={() => confirmDelete()}
+        <ModalConfirmDeclineAssignment
+          showModalConfirm={showModalConfirmDecline}
+          setShowModalConfirm={setShowModalConfirmDecline}
+          reloadTableData={reloadTableData}
+          id={selected.id as number}
+        />
+      )}
+
+      {selected && (
+        <ModalConfirmAcceptAssignment
+          showModalConfirm={showModalConfirmAccept}
+          setShowModalConfirm={setShowModalConfirmAccept}
+          handleConfirmAccept={handleConfirmAccept}
+          reloadTableData={reloadTableData}
+          id={selected.id as number}
         />
       )}
     </div>
   );
 };
 
-export default ViewAssignment;
+export default ViewOwnAssignment;

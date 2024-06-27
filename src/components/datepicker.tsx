@@ -7,6 +7,7 @@ import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
 import CalenderIcon from "@public/icon/calender.svg";
 import Image from "next/image";
+import { formatDateCustome } from "@utils/dateFormat";
 
 interface Props {
   label: string;
@@ -19,23 +20,7 @@ const DatePicker: FC<Props> = ({ label, name }) => {
   const { replace } = useRouter();
   const datePickerRef = useRef<HTMLInputElement>(null);
 
-  const formatDateCustome = (dateString: string, format: string): string => {
-    const date = new Date(dateString);
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const year = date.getFullYear();
-
-    if (format === "DMY") {
-      return `${day}-${month}-${year}`;
-    } else if (format === "YMD") {
-      return `${year}-${month}-${day}`;
-    } else if (format === "ISO") {
-      return new Date(date).toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ); // Returns yyyy-mm-dd
-    }
-    return dateString;
-  };
-
-  const handleSearch = useDebouncedCallback((date: Date | Date[]) => {
+  const handleSearch = useDebouncedCallback((date: Date | null) => {
     const params = new URLSearchParams(searchParams);
     params.set("page", "1");
     if (date && date instanceof Date) {
@@ -60,18 +45,18 @@ const DatePicker: FC<Props> = ({ label, name }) => {
 
   return (
     <Fragment>
-      <div className="relative w-52 h-full">
+      <div className="relative w-52 h-full" onClick={() => datePickerRef.current && datePickerRef.current.focus()}>
         <input
           ref={datePickerRef}
           placeholder={label}
           className="w-full pr-9 rounded border-solid border outline-none px-2 py-1 border-graycustom"
         />
-        <button className="absolute top-0 p-2 h-full right-0 border-l-graycustom border-l">
+        <button className="absolute top-0 p-2 h-full right-0 border-l-graycustom border-l ml-8" onClick={() => datePickerRef.current && datePickerRef.current.focus()}>
           <Image
             src={CalenderIcon}
             width={15}
             height={15}
-            alt={"search icon"}
+            alt={"calendar icon"}
           />
         </button>
       </div>
