@@ -7,6 +7,8 @@ export const CREATE_ASSIGNMENT_MUTATION = gql`
     $assetName: String!
     $assignedToId: Int!
     $assignedToUsername: String!
+    $assignedById: Int!
+    $state: String!
     $assignedDate: String!
     $note: String!
     $assetId: Int!
@@ -17,6 +19,8 @@ export const CREATE_ASSIGNMENT_MUTATION = gql`
         assetName: $assetName
         assignedToId: $assignedToId
         assignedToUsername: $assignedToUsername
+        assignedById: $assignedById
+        state: $state
         assignedDate: $assignedDate
         note: $note
         assetId: $assetId
@@ -28,6 +32,7 @@ export const CREATE_ASSIGNMENT_MUTATION = gql`
       state
       note
       assignedDate
+      assetId
       assignee {
         username
       }

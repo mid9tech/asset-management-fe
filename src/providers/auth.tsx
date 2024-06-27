@@ -167,7 +167,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             }}>
             <div className="md:flex md:items-center mb-3 relative">
               <div className="md:w-1/3">
-                <label className="block text-gray-700 mb-1 md:mb-0 pr-4">
+                <label className="block text-gray-700 mb-1 md:mb-0">
                   New Password <span className="text-red-500">*</span>
                 </label>
               </div>

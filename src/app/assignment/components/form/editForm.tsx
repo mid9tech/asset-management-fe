@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Button } from "@components/ui/button";
 import {
   Form,
@@ -7,15 +8,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@components/ui/form";
-import { Input } from "@components/ui/input";
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import {
-  IAssignmentForm,
-} from "../../../../types/assignment.type";
+import { IAssignmentEditForm } from "../../../../types/assignment.type";
 import {
   Asset,
+  Assignment,
   CreateAssignmentInput,
+  UpdateAssignmentInput,
   User,
 } from "../../../../__generated__/graphql";
 import ModalUserPicker from "../modal/modalPickUser";
@@ -23,17 +23,20 @@ import ModalPikcAsset from "../modal/modalPickAsset";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { validateCreateSchema } from "../../create/validation";
 import { useLoading } from "@providers/loading";
-import { createAssignment } from "@services/assignment";
-import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { usePushUp } from "../../pushUp";
+import { DatePicker } from "@components/datepickerInput";
+import { Input } from "@components/ui/input";
+import { updateAssignment } from "@services/assignment";
+import { toast } from "react-toastify";
 
 interface FormProps {
   setShowModalConfirm: (value: boolean) => void;
+  assignment: Assignment | undefined;
 }
 
 const EditForm: FC<FormProps> = (props) => {
-  const { setShowModalConfirm } = props;
+  const { setShowModalConfirm, assignment } = props;
   const { setLoading }: any = useLoading();
   const { pushUp }: any = usePushUp();
 
@@ -45,44 +48,74 @@ const EditForm: FC<FormProps> = (props) => {
 
   const [userSelected, setUserSelected] = useState<User>();
   const [assetSelected, setAssetSelected] = useState<Asset>();
-  const [noteValue, setNoteValue] = useState<string>();
+  const [noteValue, setNoteValue] = useState<string | null>();
+
+  const [dataUpdate, setDataUpdate] = useState<IAssignmentEditForm | null>(
+    null
+  );
+
+  useEffect(() => {
+    if (assignment) {
+      console.log("data", assignment);
+      setUserSelected(assignment.assignee);
+      setAssetSelected(assignment.asset);
+      setNoteValue(assignment?.note);
+      setDataUpdate({
+        assignedDate: assignment.assignedDate,
+        note: assignment?.note || "",
+        user: assignment.assignee,
+        asset: assignment.asset,
+      });
+    }
+  }, [assignment]);
+
+  useEffect(() => {
+    if (dataUpdate) {
+      form.reset(dataUpdate);
+    }
+  }, [dataUpdate]);
 
   const form = useForm({
     resolver: zodResolver(validateCreateSchema),
     mode: "onChange",
-    defaultValues: {
+    defaultValues: dataUpdate || {
       asset: null,
       user: null,
       assignedDate: new Date().toISOString().slice(0, 10),
+      note: "",
     },
   });
 
   const allFieldsFilled =
     !!userSelected && !!assetSelected && !!form.watch("assignedDate");
 
-  const onSubmit = async (value: IAssignmentForm) => {
+  const onSubmit = async (value: IAssignmentEditForm) => {
     if (submissionInProgress) return;
     setSubmissionInProgress(true);
     setLoading(true);
-    const variables: CreateAssignmentInput = {
+    const variables: UpdateAssignmentInput = {
       assetCode: assetSelected?.assetCode || "",
       assetName: assetSelected?.assetName || "",
-      assetId: parseInt(assetSelected?.id as string),
+      assetId:
+        assetSelected?.id !== assignment?.asset.id
+          ? parseInt(assetSelected?.id as string)
+          : undefined,
       assignedToId: parseInt(userSelected?.id as string),
       assignedToUsername: userSelected?.username || "",
-      assignedDate: value.assignedDate,
+      assignedDate: value.assignedDate || assignment?.assignedDate,
       note: noteValue || "",
     };
-    const { data }: any = await createAssignment(variables);
-    console.log();
-    
+    const data = await updateAssignment(
+      assignment?.id as number,
+      variables
+    );
+
     if (data) {
       pushUp(data?.id);
       setLoading(false);
-      toast.success("Assignment created success");
+      toast.success("Assignment update success");
       route.push("/assignment");
     }
-    
   };
   return (
     <Form {...form}>
@@ -102,7 +135,7 @@ const EditForm: FC<FormProps> = (props) => {
                     className="w-full flex justify-start"
                     onClick={() => setOpenModalUser(true)}>
                     {userSelected
-                      ? userSelected.firstName + " " + userSelected.lastName
+                      ? userSelected.lastName + " " + userSelected.firstName
                       : ""}
                   </Button>
                 </FormControl>
@@ -156,7 +189,7 @@ const EditForm: FC<FormProps> = (props) => {
                 <FormLabel className="w-[150px]">Assigned Date</FormLabel>
                 <FormControl>
                   <Input
-                    id="assigned-date-assignment"
+                    id="assigned-date-assignment-edit"
                     placeholder="Select a date"
                     {...field}
                     type="date"
@@ -172,10 +205,12 @@ const EditForm: FC<FormProps> = (props) => {
             </FormItem>
           )}
         />
+
         <div className="flex flex-row justify-between items-start w-full gap-20">
           <label>Note</label>
           <textarea
-          onChange={(e) => setNoteValue(e.target.value)}
+            onChange={(e) => setNoteValue(e.target.value)}
+            defaultValue={assignment?.note || ""}
             id="note-assignment"
             rows={5}
             className="flex h-auto w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
