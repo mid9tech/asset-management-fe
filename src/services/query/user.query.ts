@@ -23,7 +23,7 @@ export const findUsersQuery = gql`
     $page: Int
     $query: String
     $sortOrder: String
-    $type: String
+    $type: [String!]
     $sort: String
     $limit: Int
   ) {

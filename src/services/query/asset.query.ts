@@ -19,6 +19,22 @@ export const CREATE_ASSET_MUTATION = gql`
     }
   }
 `;
+
+export const EDIT_ASSET_MUTATION = gql`
+  mutation UpdateAsset($id: Int!, $updateAssetInput: UpdateAssetInput!) {
+    updateAsset(id: $id, updateAssetInput: $updateAssetInput) {
+      id
+      assetCode
+      assetName
+      categoryId
+      installedDate
+      state
+      location
+      specification
+    }
+  }
+`;
+
 export const FIND_ONE_ASSET_QUERY = gql`
   query FindOneAsset($id: Int!) {
     findOneAsset(id: $id) {
@@ -44,9 +60,9 @@ export const FIND_ASSETS_QUERY = gql`
     $page: Int
     $query: String
     $sortOrder: String
-    $stateFilter: String
+    $stateFilter: [String!]
     $sortField: String
-    $categoryFilter: Int
+    $categoryFilter: [String!]
   ) {
     findAssets(
       request: {

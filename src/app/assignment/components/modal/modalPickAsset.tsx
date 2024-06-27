@@ -88,7 +88,6 @@ const ModalPikcAsset: React.FC<ModalPickerProps> = ({
   };
 
   const handleSave = () => {
-    console.log("Selected:", selected);
     setAssetSelected(selected as Asset);
     setOpenModal(false);
   };
