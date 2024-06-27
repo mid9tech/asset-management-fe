@@ -57,7 +57,7 @@ const Pagination: FC<PaginationProps> = (props) => {
             <button
               disabled={currentPage === 1}
               onClick={() => onClickPrev()}
-              className={`flex items-center justify-center px-3 h-8 leading-tight text-nashtech border border-gray rounded-l-md hover:bg-gray-100 hover:text-gray-700 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}`}>
+              className={`flex items-center justify-center px-3 h-8 leading-tight text-nashtech border border-gray rounded-l-md hover:bg-gray-100 hover:text-gray-700 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed text-gray' : ''}`}>
               Previous
             </button>
           </li>
@@ -66,7 +66,7 @@ const Pagination: FC<PaginationProps> = (props) => {
             <button
               disabled={currentPage === totalPages}
               onClick={() => onClickNext()}
-              className={`flex items-center justify-center px-3 h-8 leading-tight text-nashtech border border-gray rounded-r-md hover:bg-gray-100 hover:text-gray-700 ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''}`}>
+              className={`flex items-center justify-center px-3 h-8 leading-tight text-nashtech border border-gray rounded-r-md hover:bg-gray-100 hover:text-gray-700 ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed text-gray' : ''}`}>
               Next
             </button>
           </li>

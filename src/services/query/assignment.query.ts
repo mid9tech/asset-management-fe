@@ -43,8 +43,22 @@ export const CREATE_ASSIGNMENT_MUTATION = gql`
 `;
 
 export const GET_ALL_ASSIGNMENT_QUERY = gql`
-  query FindAssignments($findAssignmentsInput: FindAssignmentsInput!) {
-    findAssignments(findAssignmentsInput: $findAssignmentsInput) {
+  query FindAssignments(
+    $page: Int
+    $query: String
+    $sortOrder: String
+    $sort: String
+    $limit: Int
+  ) {
+    findAssignments(
+      findAssignmentsInput: {
+        page: $page
+        limit: $limit
+        query: $query
+        sortOrder: $sortOrder
+        sort: $sort
+      }
+    ) {
       page
       limit
       total
@@ -63,11 +77,7 @@ export const GET_ALL_ASSIGNMENT_QUERY = gql`
           staffCode
           lastName
           username
-          gender
-          joinedDate
-          dateOfBirth
           type
-          state
           location
         }
         assignee {
@@ -76,11 +86,7 @@ export const GET_ALL_ASSIGNMENT_QUERY = gql`
           staffCode
           lastName
           username
-          gender
-          joinedDate
-          dateOfBirth
           type
-          state
           location
         }
       }
