@@ -32,6 +32,7 @@ import { useMutation, useQuery } from "@apollo/client";
 import { useLoading } from "@providers/loading";
 import { useAuth } from "@providers/auth";
 import { menuItem } from "../../../types/menu.type";
+import { usePushUp } from "../pushUp";
 import { User } from "../../../__generated__/graphql";
 
 enum Gender {
@@ -140,6 +141,7 @@ interface FormData {
 }
 
 const EditUser = ({ params }: { params: { id: string } }) => {
+  const {pushUp}: any = usePushUp()
   const [editUserMutation] = useMutation(EDIT_USER_MUTATION);
   const { setLoading }: any = useLoading();
   const [showModalCancel, setShowModalCancel] = useState(false);
@@ -258,7 +260,8 @@ const EditUser = ({ params }: { params: { id: string } }) => {
         });
       } else {
         const userId = response.data.updateUser.id;
-        localStorage.setItem("newUserId", '"' + userId.toString() + '"');
+        pushUp(parseInt(userId))
+        // localStorage.setItem("newUserId", '"' + userId.toString() + '"');
         router.push("/user");
         toast.success("Edit User Successfully");
       }

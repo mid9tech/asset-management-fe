@@ -13,7 +13,6 @@ import Search from "@components/search";
 import { jwtDecode } from 'jwt-decode';
 import { SORT_ORDER, USER_TYPE } from "../../types/enum.type";
 import { User } from "../../__generated__/graphql";
-import Pagination from "@components/pagination";
 import { Button } from "@components/ui/button";
 import { toast } from "react-toastify";
 import DetailUser from "./detail";
@@ -50,7 +49,7 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
   const [showModalRemoveUser, setShowModalRemoveUser] = useState(false);
   const [showModalDetailUser, setShowModalDetailUser] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [listUser, setListUsers] = useState<User[] | []>();
+
   const [dataUpdate, setDataUpdate] = useState<User | User[] | null>(null);
   const router = useRouter();
   const { setLoading }: any = useLoading();
