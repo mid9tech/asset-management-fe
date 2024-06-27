@@ -10,6 +10,8 @@ import AssetManagement from "./table";
 import { loadDataAsset, loadDetailAsset } from "@services/asset";
 import { formatText } from "@utils/formatText";
 import { defaultChoice } from "@components/filter";
+import { usePushUp } from "./pushUp";
+import { formatAsset } from "./formatAsset";
 
 export const dynamic = "force-dynamic";
 export default function Index({
@@ -34,7 +36,7 @@ export default function Index({
   const [sortBy, setSortBy] = useState("assetCode");
   const [totalPage, setTotalPages] = useState<number>(0);
   const [newestAssetId, setNewestAssetId] = useState<string>("0");
-
+  const { pushUpId, pushUp }: any = usePushUp()
 
   useEffect(() => {
     const newAssetId = JSON.parse(localStorage.getItem("newAssetId") || "0");
@@ -49,7 +51,6 @@ export default function Index({
   const loadAssetList = async () => {
     try {
       setLoading(true);
-
       let request: { [k: string]: any } = {};
       request.page = parseInt(currentPage);
       request.sortField = sortBy;
@@ -66,22 +67,38 @@ export default function Index({
           request.categoryFilter = filterCategory;
         }
       }
-      const { data }: any = await loadDataAsset(request);
 
-      setTotalPages(data?.totalPages);
-      if (data && data.assets) {
-        const listAssetCustom = data.assets.map((item: Asset) => ({
-          ...item,
-          assetName: formatText(`${item.assetName}`),
-          installedDate: formatDate(new Date(item.installedDate)),
-           category: formatText(item?.category?.categoryName),
-          state: formatText(item.state === ASSET_TYPE.Available ? "AVAILABLE" : item.state),
-          isEditDisabled: item.state === 'ASSIGNED'
-        }));
-        setListAssets(listAssetCustom);
+      let detail: any = null;
+        //push item up
+    if (pushUpId) {
+      request.limit = 19
+      detail = await loadDetailAsset(pushUpId);
+      console.log("detail: ",detail);
+      
+    }
+
+    console.log("pushupid: ",pushUpId);
+    
+      const { data }: any = await loadDataAsset(request);
+      
+      const listAssetCustom = data?.assets.map(
+        (item: Asset) => (formatAsset(item))
+      );
+      
+      if (detail) {
+        const newAssetIndex = listAssetCustom.findIndex((asset: Asset) => asset.id === pushUpId.toString());
+        if (newAssetIndex !== -1) {
+          listAssetCustom.splice(newAssetIndex, 1);
+        }
+        detail.installedDate = parseInt(detail?.installedDate);
+        console.log(detail)
+        listAssetCustom.unshift(formatAsset(detail));
       } else {
-        console.error("Failed to load assets: ", data);
+        pushUp(null)
       }
+      setTotalPages(data?.totalPages);
+      setListAssets(listAssetCustom);
+      setLoading(false);
     } catch (error) {
       console.error("Error loading assets: ", error);
     } finally {
@@ -94,7 +111,7 @@ export default function Index({
     <Fragment>
       <Suspense>
         <AssetManagement
-          data={listAsset}
+          data={listAsset as Asset[]}
           totalPages={totalPage}
           currentPage={parseInt(currentPage)}
           sortBy={sortBy}

@@ -103,3 +103,14 @@
     border-radius: 50%;
     background: white;
   }
+  /* Custome datepicker */
+  .custom-date-picker {
+    border: 1px solid #707070;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 16px;
+    width: 40%;
+    max-width: 300px;
+    height: 34px;
+    box-sizing: border-box;
+  }

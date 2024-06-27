@@ -32,6 +32,8 @@ import { useMutation, useQuery } from "@apollo/client";
 import { useLoading } from "@providers/loading";
 import { useAuth } from "@providers/auth";
 import { menuItem } from "../../../types/menu.type";
+import { usePushUp } from "../pushUp";
+import { User } from "../../../__generated__/graphql";
 
 enum Gender {
   Male = "MALE",
@@ -139,9 +141,11 @@ interface FormData {
 }
 
 const EditUser = ({ params }: { params: { id: string } }) => {
+  const {pushUp}: any = usePushUp()
   const [editUserMutation] = useMutation(EDIT_USER_MUTATION);
   const { setLoading }: any = useLoading();
   const [showModalCancel, setShowModalCancel] = useState(false);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const router = useRouter();
   const { setActiveItem, menuItems } = useAuth();
   setLoading(false);
@@ -161,9 +165,19 @@ const EditUser = ({ params }: { params: { id: string } }) => {
       );
     }
     if (userData) {
+      if (userData?.user?.type == 'Admin') {
+        alert("me")
+      }
       setDataUpdate(userData.user);
     }
   }, [userData, setActiveItem]);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setCurrentUser(JSON.parse(storedUser));
+    }
+  }, []);
 
   useEffect(() => {
     if (userData) {
@@ -176,8 +190,12 @@ const EditUser = ({ params }: { params: { id: string } }) => {
           .toISOString()
           .substring(0, 10),
       });
+      if (userData.user.type == Type.Admin) {
+        router.push("/user");
+      }
     }
   }, [userData]);
+
 
   const handleCloseCancelModal = () => {
     setShowModalCancel(false);
@@ -242,7 +260,8 @@ const EditUser = ({ params }: { params: { id: string } }) => {
         });
       } else {
         const userId = response.data.updateUser.id;
-        localStorage.setItem("newUserId", '"' + userId.toString() + '"');
+        pushUp(parseInt(userId))
+        // localStorage.setItem("newUserId", '"' + userId.toString() + '"');
         router.push("/user");
         toast.success("Edit User Successfully");
       }
@@ -253,6 +272,9 @@ const EditUser = ({ params }: { params: { id: string } }) => {
       setLoading(false);
     }
   };
+
+  console.log("user: ",userData);
+  
 
   return (
     <>
@@ -272,9 +294,8 @@ const EditUser = ({ params }: { params: { id: string } }) => {
                         placeholder=""
                         {...field}
                         disabled
-                        className={`cursor-pointer bg-input-gray ${
-                          fieldState.error ? "border-nashtech" : ""
-                        }`}
+                        className={`cursor-pointer bg-input-gray ${fieldState.error ? "border-nashtech" : ""
+                          }`}
                       />
                     </FormControl>
                   </div>
@@ -296,9 +317,8 @@ const EditUser = ({ params }: { params: { id: string } }) => {
                         placeholder=""
                         {...field}
                         disabled
-                        className={`cursor-pointer bg-input-gray ${
-                          fieldState.error ? "border-nashtech" : ""
-                        }`}
+                        className={`cursor-pointer bg-input-gray ${fieldState.error ? "border-nashtech" : ""
+                          }`}
                       />
                     </FormControl>
                   </div>
@@ -320,9 +340,8 @@ const EditUser = ({ params }: { params: { id: string } }) => {
                         placeholder="Select a date"
                         {...field}
                         type="date"
-                        className={`flex justify-end cursor-pointer flex-col ${
-                          fieldState.error ? "border-nashtech" : ""
-                        }`}
+                        className={`flex justify-end cursor-pointer flex-col ${fieldState.error ? "border-nashtech" : ""
+                          }`}
                       />
                     </FormControl>
                   </div>
@@ -385,9 +404,8 @@ const EditUser = ({ params }: { params: { id: string } }) => {
                         placeholder=""
                         {...field}
                         type="date"
-                        className={`flex justify-end cursor-pointer flex-col ${
-                          fieldState.error ? "border-nashtech" : ""
-                        }`}
+                        className={`flex justify-end cursor-pointer flex-col ${fieldState.error ? "border-nashtech" : ""
+                          }`}
                       />
                     </FormControl>
                   </div>

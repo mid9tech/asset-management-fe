@@ -16,6 +16,9 @@ import { User } from "../../__generated__/graphql";
 import { redirect } from "next/navigation";
 import { ACCESS_TOKEN } from "../../constants";
 import { formatText } from "@utils/formatText";
+import { usePushUp } from "./pushUp";
+import { formatUser } from "./formatUser";
+
 import { defaultChoice } from "@components/filter";
 
 
@@ -39,6 +42,7 @@ export default function Index({
   const [sortBy, setSortBy] = useState("firstName");
   const [totalPages, setTotalPages] = useState<number>();
   const [newestUserId, setNewestUserId] = useState<string>("0");
+  const { pushUpId, pushUp }: any = usePushUp()
 
   useEffect(() => {
     const newUserId = JSON.parse(localStorage.getItem("newUserId") || "0");
@@ -50,6 +54,7 @@ export default function Index({
     loadUserList();
   }, [searchParams, sortBy, sortOrder]);
   const loadUserList = async () => {
+    const newUserId = pushUpId
     let request: { [k: string]: any } = {};
     request.page = parseInt(currentPage);
     request.sort = sortBy;
@@ -64,58 +69,31 @@ export default function Index({
         request.type = filterType;
       }
     }
+    let detailUser: any = null;
+
+    //push item up
+    if (newUserId) {
+      request.limit = 19
+      detailUser = await loadDetail(newUserId);
+    }
 
     const { data }: any = await loadData(request);
-
     const listUserCustome = data?.users.map(
-      (item: User) => ({
-        ...item,
-        fullName: formatText(`${item.firstName} ${item.lastName}`),
-        dateOfBirth: formatDate(new Date(item.dateOfBirth)),
-        joinedDate: formatDate(new Date(item.joinedDate)),
-        type: formatText(item.type === USER_TYPE.STAFF ? "STAFF" : item.type),
-      })
+      (item: User) => (formatUser(item))
     );
-
-    if (newestUserId !== "0" && newestUserId) {
-      const newestUserIndex = listUserCustome.findIndex(
-        (user: User) => user.id === newestUserId
-      );
-
-      if (newestUserIndex !== -1) {
-        const [newestUser] = listUserCustome.splice(newestUserIndex, 1);
-        listUserCustome.unshift(newestUser);
-      } else {
-        const currentAdmin = JSON.parse(localStorage.getItem("user") || "{}");
-        const { data: newUserDetail } = await loadDetail(Number(newestUserId));
-        const { data: currentAdminDetail } = await loadDetail(
-          Number(currentAdmin.id)
-        );
-        if (
-          newUserDetail &&
-          currentAdminDetail.location == newUserDetail.location
-        ) {
-          listUserCustome.unshift({
-            ...newUserDetail,
-            fullName: formatText(`${newUserDetail.firstName} ${newUserDetail.lastName}`),
-            dateOfBirth: formatDate(
-              new Date(parseInt(newUserDetail.dateOfBirth))
-            ),
-            joinedDate: formatDate(
-              new Date(parseInt(newUserDetail.joinedDate))
-            ),
-            type:
-              formatText(newUserDetail.type === USER_TYPE.STAFF
-                ? "STAFF"
-                : newUserDetail.type,)
-          });
-          if (listUserCustome.length > 20) {
-            listUserCustome.pop();
-          }
-        }
+    if (detailUser) {
+      const newUserIndex = listUserCustome.findIndex((user: User) => user.id === newUserId.toString());
+      if (newUserIndex !== -1) {
+        listUserCustome.splice(newUserIndex, 1);
       }
-      localStorage.setItem("newUserId", JSON.stringify("0"));
+      detailUser.joinedDate = parseInt(detailUser?.joinedDate);
+      detailUser.dateOfBirth = parseInt(detailUser?.dateOfBirth);
+      console.log(detailUser)
+      listUserCustome.unshift(formatUser(detailUser));
+    } else {
+      pushUp(null)
     }
+    //store data
     setTotalPages(data?.totalPages);
     setListUsers(listUserCustome);
     setLoading(false);

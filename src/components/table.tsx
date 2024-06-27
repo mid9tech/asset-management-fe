@@ -12,6 +12,7 @@ import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import CreateIcon from "@mui/icons-material/Create";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { SORT_ORDER } from "../types/enum.type";
+import { truncateParagraph } from "@utils/truncate";
 
 type Column<T> = {
   header: string;
@@ -39,6 +40,8 @@ const ReusableTable = <T extends {}>({
   sortBy,
   sortOrder,
 }: ReusableTableProps<T>) => {
+  const maxLength = 30;
+
   return (
     <Table>
       <TableHeader>
@@ -67,13 +70,13 @@ const ReusableTable = <T extends {}>({
             onClick={() => onRowClick(row)}>
             {columns.map((column, colIndex) => (
               <TableCell key={colIndex} className="font-medium">
-                {row[column.accessor] as ReactNode}
+                {truncateParagraph(String(row[column.accessor]), maxLength) as ReactNode}
               </TableCell>
             ))}
             {onEditClick && onDeleteClick ? (
               <TableCell onClick={(e) => e.stopPropagation()}>
                 <CreateIcon
-                  className="text-gray-500 cursor-pointer"
+                  className={`text-gray-500`}
                   onClick={(e) => {
                     e.stopPropagation();
                     onEditClick(row);

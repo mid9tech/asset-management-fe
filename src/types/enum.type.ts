@@ -24,3 +24,19 @@ export enum ASSIGNMENT_STATUS {
     ACCEPTED = "ACCEPTED",
     DECLINED = "DECLINED",
 }
+export enum Gender {
+    Male = "MALE",
+    Female = "FEMALE",
+    Other = "OTHER",
+}
+
+export enum Type {
+    Admin = "ADMIN",
+    Staff = "USER",
+}
+
+export enum Location {
+    HCM = "HCM",
+    HN = "HN",
+    DN = "DN",
+}

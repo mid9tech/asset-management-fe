@@ -44,7 +44,7 @@ const Paginate = ({ totalPages, totalItem, currentPage, itemsPerPage }: Props) =
     });
     return (
         <Fragment>
-            <nav aria-label="Page navigation example" className="mt-4">
+            <nav aria-label="Page navigation example" className="mt-5">
                 <ul className="flex -space-x-px text-sm justify-end">
                     <li>
                         <button

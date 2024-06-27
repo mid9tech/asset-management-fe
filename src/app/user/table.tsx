@@ -10,10 +10,8 @@ import { convertEnumToMap } from "@utils/enumToMap";
 import Filter from "@components/filter";
 import { useLoading } from "@providers/loading";
 import Search from "@components/search";
-
 import { SORT_ORDER, USER_TYPE } from "../../types/enum.type";
 import { User } from "../../__generated__/graphql";
-import Pagination from "@components/pagination";
 import { Button } from "@components/ui/button";
 import { toast } from "react-toastify";
 import DetailUser from "./detail";
@@ -50,13 +48,13 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
   const [showModalRemoveUser, setShowModalRemoveUser] = useState(false);
   const [showModalDetailUser, setShowModalDetailUser] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [listUser, setListUsers] = useState<User[] | []>();
-  const [dataUpdate, setDataUpdate] = useState<User | User[] | null>(null);
 
+  const [dataUpdate, setDataUpdate] = useState<User | User[] | null>(null);
   const router = useRouter();
   const { setLoading }: any = useLoading();
 
   const handleNavigateEditUser = (user: User) => {
+    if(user.type == 'Admin') return
     setLoading(true);
     setDataUpdate(user);
     router.push(`/user/${user.id}`);
@@ -112,6 +110,8 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
     router.push("user/create");
   };
 
+  console.log("data user: ",data);
+
   return (
     <>
       <div className="container mx-auto p-4">
@@ -127,7 +127,7 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
             </div>
           </div>
           <div className="flex gap-10">
-            <Search  />
+            <Search />
             <button
               className="bg-red-600 text-white rounded px-4 py-1 cursor-pointer"
               onClick={handleNavigateCreateUser}
@@ -147,10 +147,10 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
           sortOrder={sortOrder}
         />
         {data?.length > 0 ?
-        <Paginate
+          <Paginate
             totalPages={totalPages}
             currentPage={currentPage}
-      /> : ''}
+          /> : ''}
       </div>
       <DetailModal
         isOpen={showModalRemoveUser}
@@ -183,7 +183,7 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
         </div>
       </DetailModal>
       {selectedUser && (
-        <DetailUser showModalDetailUser={showModalDetailUser} handleCloseDetailModal={handleCloseDetailModal} user={selectedUser}/>
+        <DetailUser showModalDetailUser={showModalDetailUser} handleCloseDetailModal={handleCloseDetailModal} user={selectedUser} />
       )}
     </>
   );

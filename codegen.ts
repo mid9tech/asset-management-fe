@@ -1,5 +1,5 @@
 import { CodegenConfig } from "@graphql-codegen/cli";
-require('dotenv').config({ path: '.env.development' });
+require('dotenv').config({ path: '.env' });
 
 const config: CodegenConfig = {
   schema: `${process.env.NEXT_PUBLIC_URL_SERVER}/graphql`,

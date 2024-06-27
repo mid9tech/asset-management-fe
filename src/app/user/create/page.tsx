@@ -30,118 +30,12 @@ import DetailModal from "@components/modal";
 import { CREATE_USER_MUTATION } from "@services/user";
 import { useMutation } from "@apollo/client";
 import { useLoading } from "@providers/loading";
+import { Gender, Type, Location } from "../../../types/enum.type";
+import { formSchema } from "./create-user-schema";
+import { usePushUp, PushUp } from '../pushUp';
 
-import { useAuth } from "@providers/auth";
-import { User } from "../../../__generated__/graphql";
 
-enum Gender {
-  Male = "MALE",
-  Female = "FEMALE",
-  Other = "OTHER",
-}
 
-enum Type {
-  Admin = "ADMIN",
-  Staff = "USER",
-}
-
-enum Location {
-  HCM = "HCM",
-  HN = "HN",
-  DN = "DN",
-}
-
-const formSchema: ZodSchema = z
-  .object({
-    firstName: z
-      .string()
-      .min(1, { message: "First Name is missing" })
-      .regex(/^[a-zA-Z0-9_ ]+$/, {
-        message: "Must contain alphabetic characters",
-      })
-      .max(128, {
-        message: "First Name can't be more than 128 characters",
-      })
-      .refine((val) => /[a-zA-Z]/.test(val), {
-        message: "First Name is invalid",
-      }),
-    lastName: z
-      .string()
-      .min(1, { message: "Last Name is missing" })
-      .regex(/^[a-zA-Z0-9_ ]+$/, {
-        message: "Must contain only alphabetic characters",
-      })
-      .max(128, {
-        message: "Last Name can't be more than 128 characters",
-      })
-      .refine((val) => /[a-zA-Z]/.test(val), {
-        message: "Last Name is invalid",
-      }),
-    dateOfBirth: z
-      .string()
-      .min(1, { message: "Date of birth is missing" })
-      .refine(
-        (val) => {
-          const date = new Date(val);
-          return differenceInYears(new Date(), date) >= 18;
-        },
-        { message: "User is under 18. Please select a different date" }
-      ),
-    gender: z.nativeEnum(Gender, { message: "Gender is missing" }),
-    joinedDate: z
-      .string()
-      .min(1, { message: "Joined Date is missing" })
-      .refine(
-        (val) => {
-          const date = new Date(val);
-          return !isWeekend(date);
-        },
-        {
-          message:
-            "Joined date cannot be Saturday or Sunday. Please select a different date",
-        }
-      ),
-    type: z.string().min(1, { message: "Type is missing" }),
-    location: z.string().optional(),
-  })
-  .superRefine((values, ctx) => {
-    const dobDate = new Date(values.dateOfBirth);
-    const joinedDate = new Date(values.joinedDate);
-
-    if (differenceInYears(joinedDate, dobDate) < 18) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message:
-          "Joined date is not later than Date of Birth. Please select a different date",
-        path: ["joinedDate"],
-      });
-    }
-
-    if (isAfter(dobDate, joinedDate)) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message:
-          "Joined date is not later than Date of Birth. Please select a different date",
-        path: ["joinedDate"],
-      });
-    }
-
-    if (values.type === Type.Admin && !values.location) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Location is required when Type is Admin",
-        path: ["location"],
-      });
-    }
-
-    if (values.type === Type.Admin && !values.location) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Location is required when Type is Admin",
-        path: ["location"],
-      });
-    }
-  });
 
 interface FormData {
   firstName: string;
@@ -154,11 +48,14 @@ interface FormData {
 }
 
 const CreateUser = () => {
+  const {pushUp}: any = usePushUp()
   const [createUserMutation] = useMutation(CREATE_USER_MUTATION);
+  const [submissionInProgress, setSubmissionInProgress] = useState(false);
   const { setLoading }: any = useLoading();
   setLoading(false);
 
   const [showModalCancel, setShowModalCancel] = useState(false);
+  const [double, setDouble] = useState(false);
   const router = useRouter();
 
   const handleCloseCancelModal = () => {
@@ -170,6 +67,7 @@ const CreateUser = () => {
     setShowModalCancel(false);
     router.push("/user");
   };
+
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -194,9 +92,11 @@ const CreateUser = () => {
     (!!form.watch("location") || form.watch("type") === Type.Staff);
 
   const onSubmit = async (data: FormData) => {
+    if (submissionInProgress) return;
+    setSubmissionInProgress(true);
     setLoading(true);
+    
     try {
-      // Capitalize first name and last name
       const capitalize = (str: string) =>
         str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
       const capitalizedFirstName = capitalize(data.firstName);
@@ -225,12 +125,10 @@ const CreateUser = () => {
           console.error(`GraphQL error message: ${error.message}`);
         });
       } else {
-        // Save user ID to local storage
         const userId = response.data.createUser.id;
-        localStorage.setItem("newUserId", '"' + userId.toString() + '"');
-
+        pushUp(parseInt(userId))
+        // localStorage.setItem("newUserId", '"' + userId.toString() + '"');
         toast.success("Create User Successfully");
-
         router.push("/user");
       }
     } catch (error) {
@@ -240,6 +138,7 @@ const CreateUser = () => {
       setLoading(false);
     }
   };
+  
 
   return (
     <>
@@ -456,7 +355,7 @@ const CreateUser = () => {
               <Button
                 type="submit"
                 className="bg-nashtech text-white mr-4 cursor-pointer"
-                disabled={!allFieldsFilled}
+                disabled={!allFieldsFilled && double}
               >
                 Save
               </Button>

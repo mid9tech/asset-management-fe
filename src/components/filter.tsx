@@ -1,18 +1,21 @@
+'use client'
 import { Fragment, useState } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
-import FilterAltIcon from "@mui/icons-material/FilterAlt";
-import { formatText } from "@utils/formatText";
+import { formatStateText } from "@utils/formatText";
+import { truncateParagraph } from "@utils/truncate";
+import FilterIcon from "@public/icon/filter.svg";
+import Image from "next/image";
 
-export const defaultChoice = 'all'
+export const defaultChoice = 'all';
+
 interface Props {
   label: string;
   data: Map<string, string>;
   height?: number;
-  setCurrentPage?: (value: number) => void;
 }
+const maxLength = 30; 
 
-
-const Filter = ({ data, label, setCurrentPage, height = 150 }: Props) => {
+const Filter = ({ data, label, height = 150 }: Props) => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
@@ -21,7 +24,7 @@ const Filter = ({ data, label, setCurrentPage, height = 150 }: Props) => {
   const handleChange = (event: any, value: string) => {
     const params = new URLSearchParams(searchParams.toString());
     const isChecked = event.target.checked;
-    params.set('page', '1')
+    params.set('page', '1');
     if (isChecked) {
       params.append(`${label}`, value);
     } else {
@@ -46,13 +49,28 @@ const Filter = ({ data, label, setCurrentPage, height = 150 }: Props) => {
 
   return (
     <Fragment>
-      <div className="relative border rounded p-2 w-48 h-full">
-        <div className="flex items-center justify-between cursor-pointer" onClick={toggleDropdown}>
-          <span className="font-medium text-gray-700">{label}</span>
-          <FilterAltIcon className="cursor-pointer" />
+      <div className="relative w-40 h-full">
+        <div className="relative w-full h-full">
+          <input
+            type="text"
+            placeholder={label}
+            readOnly
+            value={searchParams.get(label) || ""}
+            onClick={toggleDropdown}
+            className="w-full pr-9 rounded border-solid border outline-none px-2 py-1 border-graycustom cursor-pointer"
+          />
+          <button
+            className="absolute top-0 px-2 py-1 h-full right-0 border-l-graycustom border-l"
+            onClick={toggleDropdown}
+          >
+            <Image src={FilterIcon} width={15} alt={""} />
+          </button>
         </div>
         {dropdownVisible && (
-          <div className={`absolute mt-2 bg-white border border-gray-300 rounded shadow-lg z-10 w-full -ml-2 overflow-scroll`} style={{ height: height }}>
+          <div
+            className={`absolute mt-2 bg-white border border-gray-300 rounded shadow-lg z-10 w-full overflow-scroll`}
+            style={{ height: height }}
+          >
             <fieldset>
               <legend className="sr-only">{label}</legend>
               <div className="space-y-2 p-2">
@@ -63,10 +81,10 @@ const Filter = ({ data, label, setCurrentPage, height = 150 }: Props) => {
                     type="checkbox"
                     checked={isChecked(`${defaultChoice}`)}
                     value={`${defaultChoice}`}
-                    onChange={(e) => handleChange(event, `${defaultChoice}`)}
+                    onChange={(e) => handleChange(e, `${defaultChoice}`)}
                     className="input-checkbox h-4 w-4 text-nashtech rounded custom-checkbox accent-red-500"
                   />
-                  <label htmlFor="" className="ml-3 block text-sm text-gray-700">
+                  <label htmlFor={defaultChoice} className="ml-3 block text-sm text-gray-700">
                     All
                   </label>
                 </div>
@@ -79,10 +97,10 @@ const Filter = ({ data, label, setCurrentPage, height = 150 }: Props) => {
                       checked={isChecked(value)}
                       value={value}
                       onChange={(e) => handleChange(e, value)}
-                      className="h-4 w-4 text-nashtech focus:ring rounded custom-checkbox"
+                      className="h-4 w-4 text-nashtech focus:ring rounded bg-transparent"
                     />
                     <label htmlFor={key} className="ml-3 block text-sm text-gray-700">
-                      {formatText(key)}
+                      {truncateParagraph(String(formatStateText(key)), maxLength)}
                     </label>
                   </div>
                 ))}
