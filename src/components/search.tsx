@@ -6,7 +6,7 @@ import SearchIcon from "@public/icon/search.svg";
 import Image from "next/image";
 
 interface SearchProps {
-  setCurrentPage: (value: number) => void;
+  setCurrentPage?: (value: number) => void;
 }
 
 const Search: FC<SearchProps> = (props) => {
@@ -16,14 +16,15 @@ const Search: FC<SearchProps> = (props) => {
   const { replace } = useRouter();
   const handleSearch = useDebouncedCallback((term: string) => {
     const params = new URLSearchParams(searchParams);
+    params.set('page', '1')
     if (term) {
       params.set("query", term);
     } else {
       params.delete("query");
     }
-    setCurrentPage(1);
+    // setCurrentPage(1);
     replace(`${pathname}?${params.toString()}`);
-  }, 300);
+  }, 500);
   return (
     <Fragment>
       <div className="relative w-52 h-full">

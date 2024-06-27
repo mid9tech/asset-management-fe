@@ -17,6 +17,7 @@ import Pagination from "@components/pagination";
 import { Button } from "@components/ui/button";
 import { toast } from "react-toastify";
 import DetailUser from "./detail";
+import Paginate from "@components/paginate";
 
 interface UserManagementProps {
   data: User[];
@@ -26,7 +27,6 @@ interface UserManagementProps {
   sortBy: string;
   setSortBy: (value: any) => void;
   setSortOder: (value: any) => void;
-  setCurrentPage: (value: number) => void;
 }
 
 const userColumns = [
@@ -46,7 +46,6 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
     sortBy,
     setSortBy,
     setSortOder,
-    setCurrentPage,
   } = props;
   const [showModalRemoveUser, setShowModalRemoveUser] = useState(false);
   const [showModalDetailUser, setShowModalDetailUser] = useState(false);
@@ -121,7 +120,6 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
           <div className="flex items-center space-x-2">
             <div className="relative w-32">
               <Filter
-                setCurrentPage={setCurrentPage}
                 label="Type"
                 data={convertEnumToMap(USER_TYPE)}
                 height={110}
@@ -129,7 +127,7 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
             </div>
           </div>
           <div className="flex gap-10">
-            <Search setCurrentPage={setCurrentPage} />
+            <Search  />
             <button
               className="bg-red-600 text-white rounded px-4 py-1 cursor-pointer"
               onClick={handleNavigateCreateUser}
@@ -148,11 +146,10 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
           sortBy={sortBy === "firstName" ? "fullName" : sortBy}
           sortOrder={sortOrder}
         />
-        {data?.length > 0 ? 
-        <Pagination
-        totalPages={totalPages}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
+        {data?.length > 0 ?
+        <Paginate
+            totalPages={totalPages}
+            currentPage={currentPage}
       /> : ''}
       </div>
       <DetailModal
