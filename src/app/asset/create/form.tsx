@@ -47,7 +47,6 @@ const FormCreateAsset = () => {
             state: State.AVAILABLE,
         },
     });
-
     const handleCloseCancelModal = () => {
         setShowModalCancel(false);
     };
@@ -96,152 +95,155 @@ const FormCreateAsset = () => {
     };
     return (
         <>
-            <Form {...form}>
-                <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
-                    <FormField
-                        control={form.control}
-                        name="name"
-                        render={({ field, fieldState }) => (
-                            <FormItem>
-                                <div className="flex items-center gap-5">
-                                    <FormLabel className="w-[150px]">Name</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder=""
-                                            {...field}
-                                            className={`cursor-pointer ${fieldState.error ? "border-nashtech" : ""
-                                                }`}
-                                        />
-                                    </FormControl>
-                                </div>
-                                <FormMessage className="text-nashtech float-left ml-26">
-                                    {fieldState.error?.message}
-                                </FormMessage>
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="categoryId"
-                        render={({ field, fieldState }) => (
-                            <FormItem>
-                                <div className="flex items-center gap-5">
-                                    <FormLabel className="w-[150px]">Category</FormLabel>
-                                    <FormControl>
-                                        <>
-                                            <Select
-                                                {...field}
-                                                value={field.value}
-                                                onValueChange={field.onChange}>
-                                                <SelectTrigger>
-                                                    <SelectValue
-                                                        className="cursor-pointer"
-                                                        ref={field.ref}
-                                                    />
-                                                </SelectTrigger>
-                                                <Category />
-                                            </Select>
-                                        </>
-                                    </FormControl>
-                                </div>
-                                <FormMessage className="text-nashtech float-left ml-26">
-                                    {fieldState.error?.message}
-                                </FormMessage>
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="specification"
-                        render={({ field, fieldState }) => (
-                            <FormItem>
-                                <div className="flex items-start gap-5">
-                                    <FormLabel className="w-[150px]">Specification</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            {...field}
-                                            type="text"
-                                            className={`h-[100px] flex justify-end cursor-pointer flex-col ${fieldState.error ? "border-nashtech" : ""
-                                                }`}
-                                        />
-                                    </FormControl>
-                                </div>
-                                <FormMessage className="text-nashtech float-left ml-26">
-                                    {fieldState.error?.message}
-                                </FormMessage>
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="installedDate"
-                        render={({ field, fieldState }) => (
-                            <FormItem>
-                                <div className="flex items-center gap-5">
-                                    <FormLabel className="w-[150px]">Installed Date</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder=""
-                                            {...field}
-                                            type="date"
-                                            className={`flex justify-end cursor-pointer flex-col ${fieldState.error ? "border-nashtech" : ""}`}
-                                        />
-                                    </FormControl>
-                                </div>
-                                <FormMessage className="text-nashtech float-left ml-26">
-                                    {fieldState.error?.message}
-                                </FormMessage>
-                            </FormItem>
-                        )}
-                    />
-                    <Controller
-                        control={form.control}
-                        name="state"
-                        render={({ field, fieldState }) => (
-                            <FormItem>
-                                <div className="flex">
-                                    <FormLabel className="w-[110px]">State</FormLabel>
-                                    <FormControl>
-                                        <RadioGroup
+        <Form {...form}>
+            <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
+                <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field, fieldState }) => (
+                        <FormItem>
+                            <div className="flex items-center gap-5">
+                                <FormLabel className="w-[150px]">Name</FormLabel>
+                                <FormControl>
+                                    <Input
+                                        placeholder=""
+                                        {...field}
+                                        className={`cursor-pointer ${fieldState.error ? "border-nashtech" : ""
+                                            }`}
+                                    />
+                                </FormControl>
+                            </div>
+                            <FormMessage className="text-nashtech float-left ml-26">
+                                {fieldState.error?.message}
+                            </FormMessage>
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="categoryId"
+                    render={({ field, fieldState }) => (
+                        <FormItem>
+                            <div className="flex items-center gap-5">
+                                <FormLabel className="w-[150px]">Category</FormLabel>
+                                <FormControl>
+                                    <>
+                                        <Select
                                             {...field}
                                             value={field.value}
-                                            onValueChange={field.onChange}
-                                            className="cursor-pointer">
-                                            <div className="flex items-center space-x-2">
-                                                <RadioGroupItem value={State.AVAILABLE} id="option-one" />
-                                                <Label htmlFor="option-one" className="">Available</Label>
-                                            </div>
-                                            <div className="flex items-center space-x-2">
-                                                <RadioGroupItem
-                                                    value={State.NOT_AVAILABLE}
-                                                    id="option-two"
+                                            onValueChange={field.onChange}>
+                                            <SelectTrigger>
+                                                <SelectValue
+                                                    className="cursor-pointer"
+                                                    ref={field.ref}
                                                 />
-                                                <Label htmlFor="option-two">Not Available</Label>
-                                            </div>
-                                        </RadioGroup>
-                                    </FormControl>
-                                </div>
-                                <FormMessage className="text-nashtech float-left ml-26">
-                                    {fieldState.error?.message}
-                                </FormMessage>
-                            </FormItem>
-                        )}
-                    />
-                    <div className="float-right">
-                        <Button
-                            type="submit"
-                            className="bg-nashtech text-white mr-4 cursor-pointer"
-                            disabled={!allFieldsFilled}
-                        >
-                            Save
-                        </Button>
-                        <Button type="button" onClick={() => setShowModalCancel(true)}>
-                            Cancel
-                        </Button>
-                    </div>
-                </form>
-            </Form>
-            <DetailModal
+                                            </SelectTrigger>
+                                            <Category />
+                                        </Select>
+                                    </>
+                                </FormControl>
+                            </div>
+                            <FormMessage className="text-nashtech float-left ml-26">
+                                {fieldState.error?.message}
+                            </FormMessage>
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="specification"
+                    render={({ field, fieldState }) => (
+                        <FormItem>
+                            <div className="flex items-start gap-5">
+                                <FormLabel className="w-[150px]">Specification</FormLabel>
+                                <FormControl>
+                                    <Input
+                                        {...field}
+                                        type="text"
+                                        className={`h-[100px] flex justify-end cursor-pointer flex-col ${fieldState.error ? "border-nashtech" : ""
+                                            }`}
+                                    />
+                                </FormControl>
+                            </div>
+                            <FormMessage className="text-nashtech float-left ml-26">
+                                {fieldState.error?.message}
+                            </FormMessage>
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="installedDate"
+                    render={({ field, fieldState }) => (
+                        <FormItem>
+                            <div className="flex items-center gap-5">
+                                <FormLabel className="w-[150px]">Installed Date</FormLabel>
+                                <FormControl>
+                                    <Input
+                                        placeholder=""
+                                        {...field}
+                                        type="date"
+                                        className={`flex justify-end cursor-pointer flex-col ${fieldState.error ? "border-nashtech" : ""}`}
+                                    />
+                                </FormControl>
+                            </div>
+                            <FormMessage className="text-nashtech float-left ml-26">
+                                {fieldState.error?.message}
+                            </FormMessage>
+                        </FormItem>
+                    )}
+                />
+                <Controller
+                    control={form.control}
+                    name="state"
+                    render={({ field, fieldState }) => (
+                        <FormItem>
+                            <div className="flex">
+                                <FormLabel className="w-[110px]">State</FormLabel>
+                                <FormControl>
+                                    <RadioGroup
+                                        {...field}
+                                        value={field.value}
+                                        onValueChange={field.onChange}
+                                        className="cursor-pointer">
+                                        <div className="flex items-center space-x-2">
+                                            <RadioGroupItem value={State.AVAILABLE} id="option-one"
+                                            className={field.value === State.AVAILABLE ? "focus:ring text-nashtech" : ""}
+                                            />
+                                            <Label htmlFor="option-one" >Available</Label>
+                                        </div>
+                                        <div className="flex items-center space-x-2">
+                                            <RadioGroupItem
+                                                value={State.NOT_AVAILABLE}
+                                                id="option-two"
+                                                className={field.value === State.NOT_AVAILABLE ? "focus:ring text-nashtech" : ""}
+                                            />
+                                            <Label htmlFor="option-two">Not Available</Label>
+                                        </div>
+                                    </RadioGroup>
+                                </FormControl>
+                            </div>
+                            <FormMessage className="text-nashtech float-left ml-26">
+                                {fieldState.error?.message}
+                            </FormMessage>
+                        </FormItem>
+                    )}
+                />
+                <div className="float-right">
+                    <Button
+                        type="submit"
+                        className="bg-nashtech text-white mr-4 cursor-pointer"
+                        disabled={!allFieldsFilled}
+                    >
+                        Save
+                    </Button>
+                    <Button type="button" onClick={() => setShowModalCancel(true)}>
+                        Cancel
+                    </Button>
+                </div>
+            </form>
+        </Form>
+        <DetailModal
                 isOpen={showModalCancel}
                 onClose={handleCloseCancelModal}
                 title="Are you sure">

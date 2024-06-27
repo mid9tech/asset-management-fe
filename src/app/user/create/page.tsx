@@ -30,9 +30,7 @@ import DetailModal from "@components/modal";
 import { CREATE_USER_MUTATION } from "@services/user";
 import { useMutation } from "@apollo/client";
 import { useLoading } from "@providers/loading";
-
-import { useAuth } from "@providers/auth";
-import { User } from "../../../__generated__/graphql";
+import {useRef} from 'react';
 
 enum Gender {
   Male = "MALE",
@@ -155,10 +153,12 @@ interface FormData {
 
 const CreateUser = () => {
   const [createUserMutation] = useMutation(CREATE_USER_MUTATION);
+  const [submissionInProgress, setSubmissionInProgress] = useState(false);
   const { setLoading }: any = useLoading();
   setLoading(false);
 
   const [showModalCancel, setShowModalCancel] = useState(false);
+  const [double, setDouble] = useState(false);
   const router = useRouter();
 
   const handleCloseCancelModal = () => {
@@ -170,6 +170,7 @@ const CreateUser = () => {
     setShowModalCancel(false);
     router.push("/user");
   };
+
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -194,9 +195,11 @@ const CreateUser = () => {
     (!!form.watch("location") || form.watch("type") === Type.Staff);
 
   const onSubmit = async (data: FormData) => {
+    if (submissionInProgress) return;
+    setSubmissionInProgress(true);
     setLoading(true);
+    
     try {
-      // Capitalize first name and last name
       const capitalize = (str: string) =>
         str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
       const capitalizedFirstName = capitalize(data.firstName);
@@ -225,12 +228,9 @@ const CreateUser = () => {
           console.error(`GraphQL error message: ${error.message}`);
         });
       } else {
-        // Save user ID to local storage
         const userId = response.data.createUser.id;
         localStorage.setItem("newUserId", '"' + userId.toString() + '"');
-
         toast.success("Create User Successfully");
-
         router.push("/user");
       }
     } catch (error) {
@@ -456,7 +456,7 @@ const CreateUser = () => {
               <Button
                 type="submit"
                 className="bg-nashtech text-white mr-4 cursor-pointer"
-                disabled={!allFieldsFilled}
+                disabled={!allFieldsFilled && double}
               >
                 Save
               </Button>

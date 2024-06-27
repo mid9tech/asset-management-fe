@@ -56,7 +56,7 @@ const Category = () => {
     };
 
     return (
-        <SelectContent className="bg-graycustom2 text-black w-full h-[250px] overflow-scroll">
+        <SelectContent className="bg-graycustom2 text-black w-full h-[200px] overflow-scroll">
             {data?.getCategories.map((category: any) => (
                 <SelectItem key={category?.id} value={category?.id}>
                     {category?.categoryName}
@@ -64,21 +64,23 @@ const Category = () => {
             ))}
             {showNewCategoryInput ? (
                 <div className="relative text-black mt-4 border-t-2 border-black bg-input-gray flex flex-col items-center w-full">
-                    <div className="flex mr-10">
+                    <div className="flex w-2/3">
                         <Input
                             value={newCategory}
+                            id="newCategory"
                             onChange={(e) => setNewCategory(e.target.value)}
-                            className="h-fit w-full mt-1 bg-gray-50 border border-gray-100 text-gray-900 text-sm block dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black rounded-none"
+                            className="h-fit w-3/5 mt-1 bg-gray-50 border border-gray-100 text-gray-900 text-sm block dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black rounded-none"
                         />
                         <Input
                             value={abbreviation}
                             readOnly
+                            id="abbreviation"
                             className="h-fit mt-1 bg-gray-50 b-l-0 border border-gray-100 text-gray-900 text-sm block w-[60px] dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black rounded-none"
                         />
                     </div>
-                    <div className="absolute inset-y-0 end-0 flex items-center">
-                        <CheckIcon onClick={handleSaveNewCategory} className="text-nashtech font-bold cursor-pointer" />
-                        <ClearIcon onClick={handleCancelNewCategory} className="cursor-pointer" />
+                    <div className="absolute inset-y-0 end-0 flex items-center px-4">
+                        <CheckIcon onClick={handleSaveNewCategory} className="text-nashtech font-bold cursor-pointer stroke-red-600" />
+                        <ClearIcon onClick={handleCancelNewCategory} className="cursor-pointer text-black stroke-black" />
                     </div>
                 </div>
             ) : (
