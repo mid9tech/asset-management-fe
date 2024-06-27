@@ -1,13 +1,16 @@
 import { Fragment, useState } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
+import { formatText } from "@utils/formatText";
 
+export const defaultChoice = 'all'
 interface Props {
   label: string;
   data: Map<string, string>;
   height?: number;
-  setCurrentPage: (value: number) => void;
+  setCurrentPage?: (value: number) => void;
 }
+
 
 const Filter = ({ data, label, setCurrentPage, height = 150 }: Props) => {
   const searchParams = useSearchParams();
@@ -18,12 +21,13 @@ const Filter = ({ data, label, setCurrentPage, height = 150 }: Props) => {
   const handleChange = (event: any, value: string) => {
     const params = new URLSearchParams(searchParams.toString());
     const isChecked = event.target.checked;
+    params.set('page', '1')
     if (isChecked) {
       params.append(`${label}`, value);
     } else {
       params.delete(`${label}`, value);
     }
-    setCurrentPage(1);
+
     replace(`${pathname}?${params.toString()}`);
   };
 
@@ -48,24 +52,21 @@ const Filter = ({ data, label, setCurrentPage, height = 150 }: Props) => {
           <FilterAltIcon className="cursor-pointer" />
         </div>
         {dropdownVisible && (
-          <div
-            className={`absolute mt-2 bg-white border border-gray-300 rounded shadow-lg z-10 w-full -ml-2 overflow-scroll`}
-            style={{ height: height }}
-          >
+          <div className={`absolute mt-2 bg-white border border-gray-300 rounded shadow-lg z-10 w-full -ml-2 overflow-scroll`} style={{ height: height }}>
             <fieldset>
               <legend className="sr-only">{label}</legend>
               <div className="space-y-2 p-2">
                 <div className="flex items-center">
                   <input
-                    id="all"
-                    name="all"
+                    id={`${defaultChoice}`}
+                    name={defaultChoice}
                     type="checkbox"
-                    checked={isChecked("all")}
-                    value="all"
-                    onChange={(e) => handleChange(e, "all")}
-                    className="h-4 w-4 text-nashtech focus:ring rounded custom-checkbox"
+                    checked={isChecked(`${defaultChoice}`)}
+                    value={`${defaultChoice}`}
+                    onChange={(e) => handleChange(event, `${defaultChoice}`)}
+                    className="input-checkbox h-4 w-4 text-nashtech rounded custom-checkbox accent-red-500"
                   />
-                  <label htmlFor="all" className="ml-3 block text-sm text-gray-700">
+                  <label htmlFor="" className="ml-3 block text-sm text-gray-700">
                     All
                   </label>
                 </div>
@@ -81,7 +82,7 @@ const Filter = ({ data, label, setCurrentPage, height = 150 }: Props) => {
                       className="h-4 w-4 text-nashtech focus:ring rounded custom-checkbox"
                     />
                     <label htmlFor={key} className="ml-3 block text-sm text-gray-700">
-                      {key}
+                      {formatText(key)}
                     </label>
                   </div>
                 ))}

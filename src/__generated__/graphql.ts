@@ -137,7 +137,7 @@ export type FindUsersInput = {
   query?: InputMaybe<Scalars['String']['input']>;
   sort?: InputMaybe<Scalars['String']['input']>;
   sortOrder?: InputMaybe<Scalars['String']['input']>;
-  type?: InputMaybe<Scalars['String']['input']>;
+  type?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 export type FindUsersOutput = {
@@ -160,6 +160,7 @@ export type Mutation = {
   removeAssignment: Assignment;
   removeRequestReturn: RequestReturn;
   removeUser: User;
+  updateAsset: Asset;
   updateAssignment: Assignment;
   updateRequestReturn: RequestReturn;
   updateUser: User;
@@ -208,6 +209,12 @@ export type MutationRemoveRequestReturnArgs = {
 
 export type MutationRemoveUserArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type MutationUpdateAssetArgs = {
+  id: Scalars['Int']['input'];
+  updateAssetInput: UpdateAssetInput;
 };
 
 
@@ -278,6 +285,17 @@ export type RequestReturn = {
   __typename?: 'RequestReturn';
   /** Example field (placeholder) */
   exampleField: Scalars['Int']['output'];
+};
+
+export type UpdateAssetInput = {
+  /** Name of the asset */
+  assetName: Scalars['String']['input'];
+  /** Date the asset was installed */
+  installedDate: Scalars['String']['input'];
+  /** Specification of the asset */
+  specification?: InputMaybe<Scalars['String']['input']>;
+  /** State of the asset */
+  state: Scalars['String']['input'];
 };
 
 export type UpdateAssignmentInput = {

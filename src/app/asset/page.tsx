@@ -22,8 +22,8 @@ export default function Index({
 }) {
   const { setLoading }: any = useLoading();
   const [listAsset, setListAssets] = useState<Asset[]>([]);
-  const filterState = searchParams?.State || "All"; 
-  const filterCategory = searchParams?.Category || "All"; 
+  const filterState = searchParams?.State || "All";
+  const filterCategory = searchParams?.Category || "All";
   const queryString = searchParams?.query || "";
   const [sortOrder, setSortOrder] = useState(SORT_ORDER.ASC);
   const [sortBy, setSortBy] = useState("assetCode");
@@ -46,25 +46,24 @@ export default function Index({
   const loadAssetList = async () => {
     try {
       setLoading(true);
-  
+
       let request: { [k: string]: any } = {};
       request.page = currentPage;
       request.sortField = sortBy;
       request.sortOrder = sortOrder;
-  
+
       if (queryString) {
         request.query = queryString;
       }
-  
+
       const { data }: any = await loadDataAsset(request);
-      console.log("data table: ", data);
-  
+
       if (data && data.assets) {
         const categoryMap = categoryData?.getCategories.reduce((map: any, category: any) => {
           map[category.id] = category.categoryName;
           return map;
         }, {});
-  
+
         const listAssetCustom = data.assets.map((item: Asset) => ({
           ...item,
           assetName: `${item.assetName}`,
@@ -73,12 +72,12 @@ export default function Index({
           state: item.state === ASSET_TYPE.Available ? "AVAILABLE" : item.state,
           isEditDisabled: item.state === 'ASSIGNED'
         }));
-  
+
         if (newestAssetId !== "0" && newestAssetId) {
           const newestAssetIndex = listAssetCustom.findIndex(
             (asset: Asset) => asset.id === newestAssetId
           );
-  
+
           if (newestAssetIndex !== -1) {
             const [newestAsset] = listAssetCustom.splice(newestAssetIndex, 1);
             listAssetCustom.unshift(newestAsset);
@@ -107,10 +106,10 @@ export default function Index({
               }
             }
           }
-  
+
           localStorage.setItem("newAssetId", JSON.stringify("0"));
         }
-  
+
         setCurrentPage(data.page ?? 1);
         setTotalPages(data.totalPages ?? 1);
         setListAssets(listAssetCustom);
@@ -124,7 +123,6 @@ export default function Index({
     }
   };
 
-  console.log("categoryData: ", categoryData);
 
   return (
     <Fragment>

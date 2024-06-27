@@ -94,14 +94,11 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
 
     const convertToMap =  (data : any) : Map<string, string> => {
         const map = new Map<string, string>()
-        console.log('data: ', data)
-        for(let i = 0;i <= data.length;i++){
+        for(let i = 0; i < data.length; i++){
             map.set(data[i]?.categoryName, data[i]?.id)
         }
-        console.log('map: ', map)
         return map
     }
-    
     return (
         <>
             <div className="container mx-auto p-4">

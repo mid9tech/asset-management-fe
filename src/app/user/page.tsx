@@ -13,10 +13,11 @@ import { SORT_ORDER, USER_TYPE } from "../../types/enum.type";
 import { formatDate } from "@utils/timeFormat";
 import { loadData, loadDetail } from "@services/user";
 import { User } from "../../__generated__/graphql";
-import { useAuth } from "@providers/auth";
 import { redirect } from "next/navigation";
 import { ACCESS_TOKEN } from "../../constants";
 import { formatText } from "@utils/formatText";
+import { defaultChoice } from "@components/filter";
+
 
 export const dynamic = "force-dynamic";
 
@@ -24,18 +25,20 @@ export default function Index({
   searchParams,
 }: {
   searchParams?: {
-    Type?: string;
+    Type?: string[];
     query?: string;
+    page?: string;
   };
 }) {
   const { setLoading }: any = useLoading();
   const [listUser, setListUsers] = useState<User[]>();
-  const filterType = searchParams?.Type || "";
+  const filterType = searchParams?.Type || [];
   const queryString = searchParams?.query || "";
+  const currentPage = searchParams?.page || '1';
   const [sortOrder, setSortOder] = useState(SORT_ORDER.ASC);
   const [sortBy, setSortBy] = useState("firstName");
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [totlaPage, setTotalPages] = useState<number>();
+  // const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>();
   const [newestUserId, setNewestUserId] = useState<string>("0");
 
   useEffect(() => {
@@ -43,34 +46,28 @@ export default function Index({
     setNewestUserId(newUserId);
   }, []);
 
-  useLayoutEffect(() => {
-    const token = localStorage.getItem(ACCESS_TOKEN);
-    if(!token) {
-      redirect('/login');
-    }
-  }, []);
-
   useEffect(() => {
     setLoading(true);
     loadUserList();
-  }, [queryString, filterType, sortBy, sortOrder, currentPage, newestUserId]);
-
+  }, [searchParams, sortBy, sortOrder]);
   const loadUserList = async () => {
     let request: { [k: string]: any } = {};
-    request.page = currentPage;
+    request.page = parseInt(currentPage);
     request.sort = sortBy;
     request.sortOrder = sortOrder;
     if (queryString) {
       request.query = queryString;
     }
     if (filterType) {
-      if (filterType === USER_TYPE.ALL) {
+      if (filterType.includes(defaultChoice)) {
         delete request.type;
       } else {
         request.type = filterType;
       }
     }
+
     const { data }: any = await loadData(request);
+    console.log(data)
 
     const listUserCustome = data?.users.map(
       (item: User) => ({
@@ -110,7 +107,7 @@ export default function Index({
               new Date(parseInt(newUserDetail.joinedDate))
             ),
             type:
-             formatText(newUserDetail.type === USER_TYPE.STAFF
+              formatText(newUserDetail.type === USER_TYPE.STAFF
                 ? "STAFF"
                 : newUserDetail.type,)
           });
@@ -119,12 +116,9 @@ export default function Index({
           }
         }
       }
-
       localStorage.setItem("newUserId", JSON.stringify("0"));
     }
-
-    setCurrentPage(data.page);
-    setTotalPages(data.totalPages);
+    setTotalPages(data?.totalPages);
     setListUsers(listUserCustome);
     setLoading(false);
   };
@@ -133,13 +127,12 @@ export default function Index({
       <Suspense>
         <UserManagement
           data={listUser as User[]}
-          totalPages={totlaPage as number}
-          currentPage={currentPage}
+          totalPages={totalPages as number}
+          currentPage={parseInt(currentPage)}
           sortBy={sortBy}
           sortOrder={sortOrder}
           setSortBy={setSortBy}
           setSortOder={setSortOder}
-          setCurrentPage={setCurrentPage}
         />
       </Suspense>
     </Fragment>

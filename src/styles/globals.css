@@ -6,7 +6,6 @@
     height: 30px;
     overflow: hidden;
     transition: all .2s;
-    
 }
 .dropdown.active  {
     height: 150px;
@@ -65,7 +64,6 @@
     opacity: 0;
     cursor: pointer;
   }
-  
   .custom-radio {
     position: relative;
     padding-left: 30px;
@@ -73,7 +71,6 @@
     font-size: 20px;
     user-select: none;
   }
-  
   .custom-radio .checkmark {
     position: absolute;
     top: -11px;
@@ -106,4 +103,3 @@
     border-radius: 50%;
     background: white;
   }
-  
