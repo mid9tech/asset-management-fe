@@ -97,8 +97,6 @@ const FormEdit = ({ params }: { params: { id: string } }) => {
             };
 
             const response = await editAssetMutation({ variables });
-            console.log("res: ",response);
-            
 
             if (response.errors) {
                 response.errors.forEach((error: any) => {
