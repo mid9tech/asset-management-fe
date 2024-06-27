@@ -51,12 +51,6 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
     const router = useRouter();
     const { setLoading }: any = useLoading();
     const { data: categoryData, loading: categoryLoading } = useQuery(GET_CATEGORY_QUERY);
-    const categoryMap = categoryData?.getCategories.reduce((map: { [key: string]: string }, category: any) => {
-        map[category.id] = category.categoryName;
-        return map;
-    }, {}) || {};
-
-    const categoryFilterData : any = [{ value: "All", label: "All" }, ...Object.entries(categoryMap).map(([value, label]) => ({ value, label }))];
 
     const handleNavigateEditAsset = (asset: Asset) => {
         setDataUpdate(asset);
@@ -97,6 +91,16 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
         router.push("asset/create");
         setLoading(false);
     };
+
+    const convertToMap =  (data : any) : Map<string, string> => {
+        const map = new Map<string, string>()
+        console.log('data: ', data)
+        for(let i = 0;i <= data.length;i++){
+            map.set(data[i]?.categoryName, data[i]?.id)
+        }
+        console.log('map: ', map)
+        return map
+    }
     
     return (
         <>
@@ -110,6 +114,7 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
                                 setCurrentPage={setCurrentPage}
                                 label="State"
                                 data={convertEnumToMap(ASSET_TYPE)}
+                                height={170}
                             />
                             <FilterAltIcon className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none h-10" />
                             </div>
@@ -121,7 +126,8 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
                                     <Filter
                                         setCurrentPage={setCurrentPage}
                                         label="Category"
-                                        data={new Map<string, string>(categoryFilterData.map(({ label }:any) => [label]))}
+                                        data={convertToMap(categoryData?.getCategories)}
+                                        height={300}
                                     />
                                 )}
                             </div>
@@ -138,10 +144,7 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
                 </div>
                 <ReusableTable
                     columns={assetColumns}
-                    data={data.map(asset => ({
-                        ...asset,
-                        category: categoryMap[asset.categoryId] || asset.categoryId
-                    })) ?? []}
+                    data={data}
                     onRowClick={handleRowClick}
                     onDeleteClick={handleDeleteClick}
                     onSortClick={handleSortClick}
