@@ -1,18 +1,17 @@
 import { Fragment, useState } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
-import { formatText } from "@utils/formatText";
+import { formatStateText, formatText } from "@utils/formatText";
 
 export const defaultChoice = 'all'
 interface Props {
   label: string;
   data: Map<string, string>;
   height?: number;
-  setCurrentPage?: (value: number) => void;
 }
 
 
-const Filter = ({ data, label, setCurrentPage, height = 150 }: Props) => {
+const Filter = ({ data, label, height = 150 }: Props) => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
@@ -46,10 +45,10 @@ const Filter = ({ data, label, setCurrentPage, height = 150 }: Props) => {
 
   return (
     <Fragment>
-      <div className="relative border rounded p-2 w-48 h-full">
-        <div className="flex items-center justify-between cursor-pointer" onClick={toggleDropdown}>
-          <span className="font-medium text-gray-700">{label}</span>
-          <FilterAltIcon className="cursor-pointer" />
+      <div className="relative border border-gray rounded py-1 px-1 w-40 h-8">
+        <div className="flex items-center justify-between cursor-pointer divide-x" onClick={toggleDropdown}>
+          <span className="">{label}</span>
+          <FilterAltIcon className="cursor-pointer" style={{height: 17}} />
         </div>
         {dropdownVisible && (
           <div className={`absolute mt-2 bg-white border border-gray-300 rounded shadow-lg z-10 w-full -ml-2 overflow-scroll`} style={{ height: height }}>
@@ -82,7 +81,7 @@ const Filter = ({ data, label, setCurrentPage, height = 150 }: Props) => {
                       className="h-4 w-4 text-nashtech focus:ring rounded custom-checkbox"
                     />
                     <label htmlFor={key} className="ml-3 block text-sm text-gray-700">
-                      {formatText(key)}
+                      {formatStateText(key)}
                     </label>
                   </div>
                 ))}

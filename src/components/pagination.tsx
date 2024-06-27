@@ -1,4 +1,5 @@
 "use client";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { FC, Fragment } from "react";
 
 interface PaginationProps {
@@ -10,8 +11,19 @@ interface PaginationProps {
 const Pagination: FC<PaginationProps> = (props) => {
   const { totalPages, currentPage, setCurrentPage } = props;
 
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const {replace} = useRouter();
+
   const handleChangePage = (value: number) => {
     setCurrentPage(value);
+    const params = new URLSearchParams(searchParams.toString());
+    if (value) {
+      params.set(`page`, value.toString());
+    } else {
+      params.delete(`page`, value.toString());
+    }
+    replace(`${pathname}?${params.toString()}`);
   };
 
   const onClickNext = () => {
@@ -30,9 +42,9 @@ const Pagination: FC<PaginationProps> = (props) => {
 
     return (
       <li key={index} onClick={() => handleChangePage(index + 1)}>
-        <a href="#" className={classNames}>
+        <i className={classNames}>
           {index + 1}
-        </a>
+        </i>
       </li>
     );
   });
@@ -44,7 +56,7 @@ const Pagination: FC<PaginationProps> = (props) => {
             <button
               disabled={currentPage === 1}
               onClick={() => onClickPrev()}
-              className={`flex items-center justify-center px-3 h-8 leading-tight text-nashtech border border-gray rounded-l-md hover:bg-gray-100 hover:text-gray-700 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}`}>
+              className={`flex items-center justify-center px-3 h-8 leading-tight text-nashtech border border-gray rounded-l-md hover:bg-gray-100 hover:text-gray-700 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed text-gray' : ''}`}>
               Previous
             </button>
           </li>
@@ -53,7 +65,7 @@ const Pagination: FC<PaginationProps> = (props) => {
             <button
               disabled={currentPage === totalPages}
               onClick={() => onClickNext()}
-              className={`flex items-center justify-center px-3 h-8 leading-tight text-nashtech border border-gray rounded-r-md hover:bg-gray-100 hover:text-gray-700 ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''}`}>
+              className={`flex items-center justify-center px-3 h-8 leading-tight text-nashtech border border-gray rounded-r-md hover:bg-gray-100 hover:text-gray-700 ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed text-gray' : ''}`}>
               Next
             </button>
           </li>

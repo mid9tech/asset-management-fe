@@ -68,17 +68,15 @@ const CreateForm: FC<CreateFormProps> = (props) => {
       assetName: assetSelected?.assetName || "",
       assetId: parseInt(assetSelected?.id as string),
       assignedToId: parseInt(userSelected?.id as string),
-      assignedById: user?.id as number,
       assignedToUsername: userSelected?.username || "",
-      state: ASSIGNMENT_STATUS.WAITING_FOR_ACCEPTANCE,
       assignedDate: value.assignedDate,
       note: value.note || "",
     };
-
+    console.log('value: ', variables);
     const { data }: any = await createAssignment(variables);
     if (data) {
       setLoading(false);
-      toast.success("Created assignment");
+      toast.success("Assignment created success");
       route.push("/assignment");
     }
   };

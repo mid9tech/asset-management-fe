@@ -34,11 +34,13 @@ export type Assignment = {
   assetCode: Scalars['String']['output'];
   assetId: Scalars['Int']['output'];
   assetName: Scalars['String']['output'];
+  assignedByUsername?: Maybe<Scalars['String']['output']>;
   assignedDate: Scalars['String']['output'];
+  assignedToUsername?: Maybe<Scalars['String']['output']>;
   assignee: User;
   assigner: User;
   id: Scalars['Int']['output'];
-  note: Scalars['String']['output'];
+  note?: Maybe<Scalars['String']['output']>;
   state: Scalars['String']['output'];
 };
 
@@ -66,12 +68,10 @@ export type CreateAssignmentInput = {
   assetCode: Scalars['String']['input'];
   assetId: Scalars['Int']['input'];
   assetName: Scalars['String']['input'];
-  assignedById: Scalars['Int']['input'];
   assignedDate: Scalars['String']['input'];
   assignedToId: Scalars['Int']['input'];
   assignedToUsername: Scalars['String']['input'];
-  note: Scalars['String']['input'];
-  state: Scalars['String']['input'];
+  note?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CreateCategoryInput = {
@@ -95,13 +95,13 @@ export type CreateUserInput = {
 };
 
 export type FindAssetsInput = {
-  categoryFilter?: InputMaybe<Scalars['Int']['input']>;
+  categoryFilter?: InputMaybe<Array<Scalars['String']['input']>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   page?: InputMaybe<Scalars['Int']['input']>;
   query?: InputMaybe<Scalars['String']['input']>;
   sortField?: InputMaybe<Scalars['String']['input']>;
   sortOrder?: InputMaybe<Scalars['String']['input']>;
-  stateFilter?: InputMaybe<Scalars['String']['input']>;
+  stateFilter?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 export type FindAssetsOutput = {
@@ -114,6 +114,7 @@ export type FindAssetsOutput = {
 };
 
 export type FindAssignmentsInput = {
+  assignedDate?: InputMaybe<Scalars['String']['input']>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   page?: InputMaybe<Scalars['Int']['input']>;
   query?: InputMaybe<Scalars['String']['input']>;
@@ -302,13 +303,11 @@ export type UpdateAssignmentInput = {
   assetCode?: InputMaybe<Scalars['String']['input']>;
   assetId?: InputMaybe<Scalars['Int']['input']>;
   assetName?: InputMaybe<Scalars['String']['input']>;
-  assignedById?: InputMaybe<Scalars['Int']['input']>;
   assignedDate?: InputMaybe<Scalars['String']['input']>;
   assignedToId?: InputMaybe<Scalars['Int']['input']>;
   assignedToUsername?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['Int']['input'];
   note?: InputMaybe<Scalars['String']['input']>;
-  state?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateRequestReturnInput = {

@@ -1,6 +1,6 @@
 import client from "@libs/graphQl/apolloClient";
-import { CreateAssignmentInput } from "../__generated__/graphql";
-import { CREATE_ASSIGNMENT_MUTATION } from "./query/assignment.query";
+import { CreateAssignmentInput, FindAssignmentsInput } from "../__generated__/graphql";
+import { CREATE_ASSIGNMENT_MUTATION, GET_ALL_ASSIGNMENT_QUERY } from "./query/assignment.query";
 
 export const createAssignment = async (value: CreateAssignmentInput) => {
     const result = await client.mutate({
@@ -11,3 +11,13 @@ export const createAssignment = async (value: CreateAssignmentInput) => {
       data: result.data.createAssignment,
     };
   };
+
+  export const gettAllAssignment = async (value: FindAssignmentsInput) => {
+    const result = await client.mutate({
+      mutation: GET_ALL_ASSIGNMENT_QUERY,
+      variables: value,
+    });
+    return {
+      data: result.data.findAssignments,
+    }; 
+  }

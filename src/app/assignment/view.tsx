@@ -7,24 +7,44 @@ import Pagination from "@components/pagination";
 import ReusableTable from "@components/table";
 import { useLoading } from "@providers/loading";
 
-import { AssignmentType } from "../../types/assignment.type";
+import { Assignment } from "../../__generated__/graphql";
+import { ASSIGNMENT_STATUS, SORT_ORDER } from "../../types/enum.type";
+import Paginate from "@components/paginate";
+import Filter from "@components/filter";
+import { convertEnumToMap } from "@utils/enumToMap";
+import Search from "@components/search";
+import DatePicker from "@components/datepicker";
 
 interface ViewAssignmentProps {
+  listData: Assignment[];
   setCurrentPage: (value: number) => void;
+  sortOrder: SORT_ORDER;
+  sortBy: string;
+  setSortBy: (value: any) => void;
+  setSortOder: (value: any) => void;
+  totalPages: number;
+  currentPage: number;
 }
 
 const tableColumns = [
-  { header: "No.", accessor: "" },
-  { header: "Asset Code", accessor: "assetCode" as keyof AssignmentType },
-  { header: "Asset Name", accessor: "assetName" as keyof AssignmentType },
-  { header: "Assigned To", accessor: "assignedToId" as keyof AssignmentType },
-  { header: "Assigned By", accessor: "assignedById" as keyof AssignmentType },
-  { header: "Assigned Date", accessor: "assignedDate" as keyof AssignmentType },
-  { header: "State", accessor: "state" as keyof AssignmentType },
+  { header: "Asset Code", accessor: "assetCode" as keyof Assignment },
+  { header: "Asset Name", accessor: "assetName" as keyof Assignment },
+  { header: "Assigned To", accessor: "assignedToUsername" as keyof Assignment },
+  { header: "Assigned By", accessor: "assignedByUsername" as keyof Assignment },
+  { header: "Assigned Date", accessor: "assignedDate" as keyof Assignment },
+  { header: "State", accessor: "state" as keyof Assignment },
 ];
 
 const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
-  const { setCurrentPage } = props;
+  const {
+    listData,
+    totalPages,
+    currentPage,
+    setSortBy,
+    setSortOder,
+    sortOrder,
+    sortBy,
+  } = props;
   const route = useRouter();
   const { setLoading }: any = useLoading();
 
@@ -34,21 +54,32 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
     setLoading(false);
   };
 
+  const handleSortClick = (item: string) => {
+    let defaultOrder = SORT_ORDER.ASC;
+    if (sortBy === item || (sortBy === "firstName" && item === "fullName")) {
+      defaultOrder =
+        sortOrder === SORT_ORDER.ASC ? SORT_ORDER.DESC : SORT_ORDER.ASC;
+    }
+    setSortOder(defaultOrder);
+    if (item === "fullName") {
+      setSortBy("firstName");
+    } else {
+      setSortBy(item);
+    }
+  };
+
   return (
     <div className="container mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4 text-nashtech">Asignment List</h2>
-      <div className="flex justify-between items-center mb-4">
-        <div className="flex items-center space-x-2">
-          <div className="relative w-32">
-            {/* <Filter
-                setCurrentPage={setCurrentPage}
-                label="Type"
-                data={convertEnumToMap(USER_TYPE)}
-              /> */}
+      <h2 className="text-2xl font-bold mb-4 text-nashtech">Assignment List</h2>
+      <div className="flex justify-between items-start mb-4">
+        <div className="flex items-start space-x-2">
+          <div className="relative w-auto flex flex-row items-center justify-start gap-3">
+            <Filter label="State" data={convertEnumToMap(ASSIGNMENT_STATUS)}  />
+            <DatePicker label="Assigned Date"/>
           </div>
         </div>
         <div className="flex gap-10">
-          {/* <Search setCurrentPage={setCurrentPage} /> */}
+          <Search />
           <button
             className="bg-red-600 text-white rounded px-4 py-1 cursor-pointer hover:opacity-75"
             onClick={handleNavigateCreate}>
@@ -58,19 +89,15 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
       </div>
       <ReusableTable
         columns={tableColumns}
-        data={[]}
+        data={listData}
         onRowClick={() => {}}
         onDeleteClick={() => {}}
-        onSortClick={() => {}}
+        onSortClick={handleSortClick}
         onEditClick={() => {}}
-        sortBy={"assetCode"}
-        sortOrder={"asc"}
+        sortBy={sortBy}
+        sortOrder={sortOrder}
       />
-      <Pagination
-        totalPages={3}
-        currentPage={1}
-        setCurrentPage={setCurrentPage}
-      />
+      <Paginate currentPage={currentPage} totalPages={totalPages} />
     </div>
   );
 };

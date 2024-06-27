@@ -60,7 +60,7 @@ const ReusableTable = <T extends {}>({
         </TableRow>
       </TableHeader>
       <TableBody>
-        {data.map((row, index) => (
+        {data?.map((row, index) => (
           <TableRow
             key={index}
             className="cursor-pointer"
