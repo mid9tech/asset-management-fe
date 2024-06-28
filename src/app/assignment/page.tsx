@@ -72,12 +72,33 @@ export default function Index({
     const { data }: any = await gettAllAssignment(request);
 
     if (data) {
-      const lsitCustome = data?.assignments.map((item: Assignment) => ({
+      const listCustom = data?.assignments.map((item: Assignment) => ({
         ...item,
         state: formatStateText(item.state),
         assignedDate: formatDate(item.assignedDate),
       }));
-      setListData(lsitCustome);
+      console.log("Detail data: ",detail);
+      
+      if (detail) {
+        const index = listCustom.findIndex(
+          (asset: Assignment) => asset.id === pushUpId.toString()
+        );
+        if (index !== -1) {
+          listCustom.splice(index, 1);
+        }
+        detail.installedDate = parseInt(detail?.installedDate);
+        console.log(detail);
+        listCustom.unshift({
+          ...detail,
+          assignedByUsername: detail.assignedTo?.username,
+          assignedToUsername: detail.assignedBy?.username,
+          state: formatStateText(detail.state),
+          assignedDate: formatDate(detail.assignedDate),
+        });
+      } else {
+        pushUp(null);
+      }
+      setListData(listCustom);
       setTotalPages(data.totalPages);
       setLoading(false);
     }
