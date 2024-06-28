@@ -73,7 +73,6 @@ export default function Index({
 
     //push item up
     if (newUserId) {
-      request.limit = 19
       detailUser = await loadDetail(newUserId);
     }
 
@@ -81,11 +80,12 @@ export default function Index({
     const listUserCustome = data?.users.map(
       (item: User) => (formatUser(item))
     );
-    if (detailUser) {
+    if (detailUser && request.page === 1) {
       const newUserIndex = listUserCustome.findIndex((user: User) => user.id === newUserId.toString());
       if (newUserIndex !== -1) {
         listUserCustome.splice(newUserIndex, 1);
       }
+      console.log(detailUser)
       detailUser.joinedDate = parseInt(detailUser?.joinedDate);
       detailUser.dateOfBirth = parseInt(detailUser?.dateOfBirth);
       console.log(detailUser)

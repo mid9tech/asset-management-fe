@@ -99,7 +99,7 @@ export default function Index({
         formatAsset(item)
       );
 
-      if (detail) {
+      if (detail && request?.page === 1) {
         const newAssetIndex = listAssetCustom.findIndex(
           (asset: Asset) => asset.id === pushUpId.toString()
         );

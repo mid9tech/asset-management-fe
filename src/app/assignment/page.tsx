@@ -75,9 +75,8 @@ export default function Index({
         state: formatStateText(item.state),
         assignedDate: formatDate(item.assignedDate),
       }));
-      console.log(data)
       console.log(lsitCustome)
-      if (detail) {
+      if (detail  && request?.page === 1) {
         const index = lsitCustome.findIndex(
           (asset: Assignment) => asset.id === pushUpId.toString()
         );
@@ -85,14 +84,15 @@ export default function Index({
           lsitCustome.splice(index, 1);
         }
         detail.installedDate = parseInt(detail?.installedDate);
-        console.log(detail);
-        lsitCustome.unshift({
+        detail = {
           ...detail,
-          assignedByUsername: detail.assignedTo?.username,
-          assignedToUsername: detail.assignedBy?.username,
+          assignedByUsername: detail.assigner?.username,
+          assignedToUsername: detail.assignee?.username,
           state: formatStateText(detail.state),
           assignedDate: formatDate(detail.assignedDate),
-        });
+        }
+        console.log(detail)
+        lsitCustome.unshift(detail);
       } else {
         pushUp(null);
       }
