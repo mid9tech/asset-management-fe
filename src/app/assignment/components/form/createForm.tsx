@@ -30,6 +30,7 @@ import { useLoading } from "@providers/loading";
 import { createAssignment } from "@services/assignment";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import { usePushUp } from "../../pushUp";
 
 interface CreateFormProps {
   setShowModalConfirm: (value: boolean) => void;
@@ -38,7 +39,8 @@ interface CreateFormProps {
 const CreateForm: FC<CreateFormProps> = (props) => {
   const { setShowModalConfirm } = props;
   const { setLoading }: any = useLoading();
-  const { user } = useAuth();
+  const {pushUp}: any = usePushUp()
+
   const route = useRouter();
 
   const [openModalUser, setOpenModalUser] = useState(false);
@@ -74,7 +76,9 @@ const CreateForm: FC<CreateFormProps> = (props) => {
     };
     console.log("value: ", variables);
     const { data }: any = await createAssignment(variables);
+
     if (data) {
+      pushUp(data?.id)
       setLoading(false);
       toast.success("Assignment created success");
       route.push("/assignment");

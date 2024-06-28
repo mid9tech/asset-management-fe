@@ -91,3 +91,42 @@ export const GET_ALL_ASSIGNMENT_QUERY = gql`
     }
   }
 `;
+export const GET_DETAIL_ASSIGNMENT_QUERY = gql`
+query Assignment($id: Int!) {
+    assignment(id: $id) {
+        id
+        assetCode
+        assetName
+        state
+        note
+        assignedDate
+        assetId
+        assigner {
+            id
+            firstName
+            staffCode
+            lastName
+            username
+            gender
+            joinedDate
+            dateOfBirth
+            type
+            state
+            location
+        }
+        assignee {
+            id
+            firstName
+            staffCode
+            lastName
+            username
+            gender
+            joinedDate
+            dateOfBirth
+            type
+            state
+            location
+        }
+    }
+}`
+

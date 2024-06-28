@@ -20,7 +20,6 @@ export const loadDetailAsset = async (id: number) => {
       variables: { id },
     });
     console.log("result.data",result.data);
-    
     return result.data.findOneAsset
   }
   catch (error) {

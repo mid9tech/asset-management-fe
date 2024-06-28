@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-'use client'
+"use client";
 import { gql, useQuery } from "@apollo/client";
 import { useLoading } from "@providers/loading";
 import { Fragment, Suspense, useEffect, useState } from "react";
@@ -22,21 +22,20 @@ export default function Index({
     Category?: string[];
     query?: string;
     page?: string;
-
   };
 }) {
   const { setLoading }: any = useLoading();
   const [listAsset, setListAssets] = useState<Asset[]>([]);
   const filterState = searchParams?.State || null;
   const filterCategory = searchParams?.Category || null;
-  const currentPage = searchParams?.page || '1';
+  const currentPage = searchParams?.page || "1";
 
   const queryString = searchParams?.query || "";
   const [sortOrder, setSortOrder] = useState(SORT_ORDER.ASC);
   const [sortBy, setSortBy] = useState("assetCode");
   const [totalPage, setTotalPages] = useState<number>(0);
   const [newestAssetId, setNewestAssetId] = useState<string>("0");
-  const { pushUpId, pushUp }: any = usePushUp()
+  const { pushUpId, pushUp }: any = usePushUp();
 
   useEffect(() => {
     const newAssetId = JSON.parse(localStorage.getItem("newAssetId") || "0");
@@ -69,32 +68,32 @@ export default function Index({
       }
 
       let detail: any = null;
-        //push item up
-    if (pushUpId) {
-      request.limit = 19
-      detail = await loadDetailAsset(pushUpId);
-      console.log("detail: ",detail);
-      
-    }
+      //push item up
+      if (pushUpId) {
+        request.limit = 19;
+        detail = await loadDetailAsset(pushUpId);
+      }
 
-    console.log("pushupid: ",pushUpId);
-    
+      console.log("pushupid: ", pushUpId);
+
       const { data }: any = await loadDataAsset(request);
-      
-      const listAssetCustom = data?.assets.map(
-        (item: Asset) => (formatAsset(item))
+
+      const listAssetCustom = data?.assets.map((item: Asset) =>
+        formatAsset(item)
       );
-      
+
       if (detail) {
-        const newAssetIndex = listAssetCustom.findIndex((asset: Asset) => asset.id === pushUpId.toString());
+        const newAssetIndex = listAssetCustom.findIndex(
+          (asset: Asset) => asset.id === pushUpId.toString()
+        );
         if (newAssetIndex !== -1) {
           listAssetCustom.splice(newAssetIndex, 1);
         }
         detail.installedDate = parseInt(detail?.installedDate);
-        console.log(detail)
+        console.log(detail);
         listAssetCustom.unshift(formatAsset(detail));
       } else {
-        pushUp(null)
+        pushUp(null);
       }
       setTotalPages(data?.totalPages);
       setListAssets(listAssetCustom);
@@ -105,7 +104,6 @@ export default function Index({
       setLoading(false);
     }
   };
-
 
   return (
     <Fragment>

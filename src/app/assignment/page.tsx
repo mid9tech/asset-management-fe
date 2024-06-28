@@ -3,11 +3,13 @@
 import { Fragment, useEffect, useState } from "react";
 import ViewAssignment from "./view";
 import { Assignment } from "../../__generated__/graphql";
-import { gettAllAssignment } from "@services/assignment";
+import { gettAllAssignment, loadDetailAssignment } from "@services/assignment";
 import { useLoading } from "@providers/loading";
 import { SORT_ORDER } from "../../types/enum.type";
 import { formatStateText } from "@utils/formatText";
 import { formatDate } from "@utils/timeFormat";
+import { usePushUp } from "./pushUp";
+import { loadDetailAsset } from "@services/asset";
 
 export default function Index({
   searchParams,
@@ -16,28 +18,32 @@ export default function Index({
     query?: string;
     State?: string;
     assignedDate?: string;
+    page?: string;
+
   };
 }) {
+  const { pushUpId, pushUp }: any = usePushUp()
   const { setLoading }: any = useLoading();
   const [listData, setListData] = useState<Assignment[]>();
 
   const queryString = searchParams?.query || "";
   const state = searchParams?.State || "";
   const assignedDate = searchParams?.assignedDate || "";
+  const currentPage = searchParams?.page || "1";
+
   const [sortOrder, setSortOder] = useState(SORT_ORDER.ASC);
   const [totlaPage, setTotalPages] = useState<number>();
   const [sortBy, setSortBy] = useState("assetName");
-  const [currentPage, setCurrentPage] = useState<number>(1);
 
   useEffect(() => {
     handleGetAllAssignment();
-  }, [sortBy, sortOrder, queryString, state, assignedDate]);
+  }, [sortBy, sortOrder, searchParams]);
 
   const handleGetAllAssignment = async () => {
     setLoading(true);
     let request: { [k: string]: any } = {};
 
-    request.page = currentPage;
+    request.page = parseInt(currentPage);
     request.sort = sortBy;
     request.sortOrder = sortOrder;
 
@@ -52,17 +58,46 @@ export default function Index({
     if (state) {
       request.state = state;
     }
+    //push item up
 
+    let detail: any = null;
+    if (pushUpId) {
+      request.limit = 19
+      detail = await loadDetailAssignment(pushUpId);
+      console.log("detail: ", detail);
+    }
+    console.log("pushupid: ", pushUpId);
     const { data }: any = await gettAllAssignment(request);
+
     if (data) {
       const lsitCustome = data?.assignments.map((item: Assignment) => ({
         ...item,
         state: formatStateText(item.state),
         assignedDate: formatDate(item.assignedDate),
       }));
+      console.log(data)
+      console.log(lsitCustome)
+      if (detail) {
+        const index = lsitCustome.findIndex(
+          (asset: Assignment) => asset.id === pushUpId.toString()
+        );
+        if (index !== -1) {
+          lsitCustome.splice(index, 1);
+        }
+        detail.installedDate = parseInt(detail?.installedDate);
+        console.log(detail);
+        lsitCustome.unshift({
+          ...detail,
+          assignedByUsername: detail.assignedTo?.username,
+          assignedToUsername: detail.assignedBy?.username,
+          state: formatStateText(detail.state),
+          assignedDate: formatDate(detail.assignedDate),
+        });
+      } else {
+        pushUp(null);
+      }
       setListData(lsitCustome);
       setTotalPages(data.totalPages);
-      setCurrentPage(data.page);
       setLoading(false);
     }
   };
@@ -70,9 +105,9 @@ export default function Index({
     <Fragment>
       <ViewAssignment
         listData={listData as Assignment[]}
-        setCurrentPage={setCurrentPage}
+
         totalPages={totlaPage as number}
-        currentPage={currentPage}
+        currentPage={parseInt(currentPage)}
         sortBy={sortBy}
         sortOrder={sortOrder}
         setSortBy={setSortBy}

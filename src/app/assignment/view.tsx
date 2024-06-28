@@ -2,8 +2,6 @@
 "use client";
 import React, { FC, useState } from "react";
 import { useRouter } from "next/navigation";
-
-import ReusableTable from "@components/table";
 import { useLoading } from "@providers/loading";
 
 import { Assignment } from "../../__generated__/graphql";
@@ -18,7 +16,6 @@ import DetailAssignment from "./detail";
 
 interface ViewAssignmentProps {
   listData: Assignment[];
-  setCurrentPage: (value: number) => void;
   sortOrder: SORT_ORDER;
   sortBy: string;
   setSortBy: (value: any) => void;
@@ -39,6 +36,7 @@ const tableColumns = [
 ];
 
 const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
+
   const {
     listData,
     totalPages,
