@@ -25,7 +25,7 @@ interface ReusableTableProps<T> {
   sortOrder: string;
 }
 
-const ReusableList = <T extends {type?: string}>({
+const ReusableList = <T extends {}>({
   columns,
   data,
   onRowClick,
@@ -96,7 +96,7 @@ const ReusableList = <T extends {type?: string}>({
                           <div className="flex justify-between items-start h-full">
                             {onEditClick && (
                               <CreateIcon
-                                className={`text-gray-500 ${item.type === 'Admin' ? 'text-gray cursor-not-allowed' : ''}`}
+                                className={`text-gray-500`}
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   onEditClick(item);
