@@ -17,6 +17,7 @@ import { GET_CATEGORY_QUERY } from "@services/query/category.query";
 import ViewDetail from "./viewDetail";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import Paginate from "@components/paginate";
+import ReusableList from "@components/list";
 
 interface AssetManagementProps {
     data: Asset[];
@@ -29,10 +30,11 @@ interface AssetManagementProps {
 }
 
 const assetColumns = [
-    { header: "Asset Code", accessor: "assetCode" as keyof Asset },
-    { header: "Asset Name", accessor: "assetName" as keyof Asset },
-    { header: "Category", accessor: "category" as keyof Asset },
-    { header: "State", accessor: "state" as keyof Asset },
+    { header: "Asset Code", accessor: "assetCode" as keyof Asset, width: 150 },
+    { header: "Asset Name", accessor: "assetName" as keyof Asset, width: 200 },
+    { header: "Category", accessor: "category" as keyof Asset, width: 250 },
+    { header: "State", accessor: "state" as keyof Asset, width: 180 },
+    { header: "icon", accessor: "" as keyof Asset },
 ];
 
 const historyColumns = [
@@ -61,17 +63,12 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
 
     const handleSortClick = (item: string) => {
         let defaultOrder = SORT_ORDER.ASC;
-        if (sortBy === item || (sortBy === "assetName" && item === "assetCode")) {
+        if (sortBy === item) {
             defaultOrder =
                 sortOrder === SORT_ORDER.ASC ? SORT_ORDER.DESC : SORT_ORDER.ASC;
         }
         setSortOrder(defaultOrder);
-        if (item === "assetName") {
-            setSortBy("assetName");
-        }
-        else {
-            setSortBy(item);
-        }
+        setSortBy(item);
     };
 
     const handleDeleteClick = (asset: Asset) => {
@@ -138,7 +135,7 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
                         </button>
                     </div>
                 </div>
-                <ReusableTable
+                <ReusableList
                     columns={assetColumns}
                     data={data}
                     onRowClick={handleRowClick}

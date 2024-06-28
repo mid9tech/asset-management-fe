@@ -15,5 +15,4 @@ export interface IAssignmentForm {
   user: User | null;
   asset: Asset | null;
   assignedDate: string;
-  note?: string;
 }

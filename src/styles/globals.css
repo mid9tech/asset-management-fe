@@ -114,3 +114,8 @@
     height: 34px;
     box-sizing: border-box;
   }
+
+  /* Disable popup error ^.^ */
+  nextjs-portal {
+    display: none;
+  }

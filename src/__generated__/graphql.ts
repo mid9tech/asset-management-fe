@@ -31,8 +31,8 @@ export type Asset = {
 
 export type Assignment = {
   __typename?: 'Assignment';
+  asset: Asset;
   assetCode: Scalars['String']['output'];
-  assetId: Scalars['Int']['output'];
   assetName: Scalars['String']['output'];
   assignedByUsername?: Maybe<Scalars['String']['output']>;
   assignedDate: Scalars['String']['output'];
@@ -158,11 +158,8 @@ export type Mutation = {
   createRequestReturn: RequestReturn;
   createUser: User;
   disableUser: Scalars['Boolean']['output'];
-  removeAssignment: Assignment;
   removeRequestReturn: RequestReturn;
-  removeUser: User;
   updateAsset: Asset;
-  updateAssignment: Assignment;
   updateRequestReturn: RequestReturn;
   updateUser: User;
 };
@@ -198,17 +195,7 @@ export type MutationDisableUserArgs = {
 };
 
 
-export type MutationRemoveAssignmentArgs = {
-  id: Scalars['Int']['input'];
-};
-
-
 export type MutationRemoveRequestReturnArgs = {
-  id: Scalars['Int']['input'];
-};
-
-
-export type MutationRemoveUserArgs = {
   id: Scalars['Int']['input'];
 };
 
@@ -216,11 +203,6 @@ export type MutationRemoveUserArgs = {
 export type MutationUpdateAssetArgs = {
   id: Scalars['Int']['input'];
   updateAssetInput: UpdateAssetInput;
-};
-
-
-export type MutationUpdateAssignmentArgs = {
-  updateAssignmentInput: UpdateAssignmentInput;
 };
 
 
@@ -297,17 +279,6 @@ export type UpdateAssetInput = {
   specification?: InputMaybe<Scalars['String']['input']>;
   /** State of the asset */
   state: Scalars['String']['input'];
-};
-
-export type UpdateAssignmentInput = {
-  assetCode?: InputMaybe<Scalars['String']['input']>;
-  assetId?: InputMaybe<Scalars['Int']['input']>;
-  assetName?: InputMaybe<Scalars['String']['input']>;
-  assignedDate?: InputMaybe<Scalars['String']['input']>;
-  assignedToId?: InputMaybe<Scalars['Int']['input']>;
-  assignedToUsername?: InputMaybe<Scalars['String']['input']>;
-  id: Scalars['Int']['input'];
-  note?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateRequestReturnInput = {

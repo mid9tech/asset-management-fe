@@ -27,7 +27,6 @@ export const CREATE_ASSIGNMENT_MUTATION = gql`
       state
       note
       assignedDate
-      assetId
       assignee {
         username
       }
@@ -70,63 +69,61 @@ export const GET_ALL_ASSIGNMENT_QUERY = gql`
         state
         note
         assignedDate
-        assetId
         assignedByUsername
         assignedToUsername
+        asset {
+          specification
+        }
         assigner {
-          id
           staffCode
           username
-          type
-          location
         }
         assignee {
-          id
           staffCode
           username
-          type
-          location
         }
       }
     }
   }
 `;
 export const GET_DETAIL_ASSIGNMENT_QUERY = gql`
-query Assignment($id: Int!) {
+  query Assignment($id: Int!) {
     assignment(id: $id) {
+      id
+      assetCode
+      assetName
+      state
+      note
+      assignedDate
+      asset {
+        specification
+      }
+      assigner {
         id
-        assetCode
-        assetName
+        firstName
+        staffCode
+        lastName
+        username
+        gender
+        joinedDate
+        dateOfBirth
+        type
         state
-        note
-        assignedDate
-        assetId
-        assigner {
-            id
-            firstName
-            staffCode
-            lastName
-            username
-            gender
-            joinedDate
-            dateOfBirth
-            type
-            state
-            location
-        }
-        assignee {
-            id
-            firstName
-            staffCode
-            lastName
-            username
-            gender
-            joinedDate
-            dateOfBirth
-            type
-            state
-            location
-        }
+        location
+      }
+      assignee {
+        id
+        firstName
+        staffCode
+        lastName
+        username
+        gender
+        joinedDate
+        dateOfBirth
+        type
+        state
+        location
+      }
     }
-}`
-
+  }
+`;

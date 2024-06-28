@@ -36,7 +36,7 @@ const Search: FC<SearchProps> = (props) => {
           }}
           className="w-full pr-9 rounded border-solid border outline-none px-2 py-1 border-graycustom"
         />
-        <button className="absolute top-0 p-2 h-full right-0 border-l-graycustom border-l">
+        <button type="button" className="absolute top-0 p-2 h-full right-0 border-l-graycustom border-l">
           <Image src={SearchIcon} width={15} height={15} alt={"search icon"} />
         </button>
       </div>

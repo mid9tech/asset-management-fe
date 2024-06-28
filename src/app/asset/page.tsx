@@ -45,8 +45,7 @@ useEffect(() => {
   }
 }, [])
   const filterCategory = searchParams?.Category || null;
-  const currentPage = searchParams?.page || "1";
-
+  const currentPage = searchParams?.page || '1';
 
   const queryString = searchParams?.query || "";
   const [sortOrder, setSortOrder] = useState(SORT_ORDER.ASC);
@@ -101,11 +100,9 @@ useEffect(() => {
       const listAssetCustom = data?.assets.map((item: Asset) =>
         formatAsset(item)
       );
-
-      if (detail && request?.page === 1) {
-        const newAssetIndex = listAssetCustom.findIndex(
-          (asset: Asset) => asset.id === pushUpId.toString()
-        );
+      
+      if (detail) {
+        const newAssetIndex = listAssetCustom.findIndex((asset: Asset) => asset.id === pushUpId.toString());
         if (newAssetIndex !== -1) {
           listAssetCustom.splice(newAssetIndex, 1);
         }
