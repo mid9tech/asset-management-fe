@@ -31,11 +31,11 @@ export default function RootLayout({
               <Navbar />
               <div className="grid grid-cols-10 gap-4">
                 <div className="col-start-2 col-span-8">
-                  <div className="grid sm:grid-cols-1 md:grid-cols-5 lg:grid-cols-5 gap-10">
+                  <div className="grid sm:grid-cols-1 md:grid-cols-5 lg:grid-cols-5">
                     <div>
                       <Sidebar />
                     </div>
-                    <div className="col-span-4 p-5">
+                    <div className="col-span-4">
                       <div className="mt-14">{children}</div>
                     </div>
                   </div>

@@ -3,8 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import DetailModal from "@components/modal";
-import ReusableTable from "@components/table";
 import { disableUser } from "@services/user";
 import { convertEnumToMap } from "@utils/enumToMap";
 import Filter from "@components/filter";
@@ -12,10 +10,12 @@ import { useLoading } from "@providers/loading";
 import Search from "@components/search";
 import { SORT_ORDER, USER_TYPE } from "../../types/enum.type";
 import { User } from "../../__generated__/graphql";
-import { Button } from "@components/ui/button";
 import { toast } from "react-toastify";
 import DetailUser from "./detail";
 import Paginate from "@components/paginate";
+import ModalConfirmUser from "./modal/modalConfirm";
+import ModalError from "./modal/modalError";
+import ReusableList from "@components/list";
 
 interface UserManagementProps {
   data: User[];
@@ -25,14 +25,16 @@ interface UserManagementProps {
   sortBy: string;
   setSortBy: (value: any) => void;
   setSortOder: (value: any) => void;
+  loadUserList: () => void;
 }
 
 const userColumns = [
-  { header: "Staff Code", accessor: "staffCode" as keyof User },
-  { header: "Full Name", accessor: "fullName" as keyof User },
-  { header: "Username", accessor: "username" as keyof User },
-  { header: "Joined Date", accessor: "joinedDate" as keyof User },
-  { header: "Type", accessor: "type" as keyof User },
+  { header: "Staff Code", accessor: "staffCode" as keyof User, width: 120 },
+  { header: "Full Name", accessor: "fullName" as keyof User, width: 250 },
+  { header: "Username", accessor: "username" as keyof User, width: 150 },
+  { header: "Joined Date", accessor: "joinedDate" as keyof User, width: 120 },
+  { header: "Type", accessor: "type" as keyof User, width: 100 },
+  { header: "icon", accessor: "" as keyof User },
 ];
 
 const UserManagement: React.FC<UserManagementProps> = (props) => {
@@ -44,9 +46,11 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
     sortBy,
     setSortBy,
     setSortOder,
+    loadUserList
   } = props;
   const [showModalRemoveUser, setShowModalRemoveUser] = useState(false);
   const [showModalDetailUser, setShowModalDetailUser] = useState(false);
+  const [showModalError, setShowModalError] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   const [dataUpdate, setDataUpdate] = useState<User | User[] | null>(null);
@@ -54,7 +58,7 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
   const { setLoading }: any = useLoading();
 
   const handleNavigateEditUser = (user: User) => {
-    if(user.type == 'Admin') return
+    if (user.type == "Admin") return;
     setLoading(true);
     setDataUpdate(user);
     router.push(`/user/${user.id}`);
@@ -78,10 +82,6 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
     setShowModalRemoveUser(true);
   };
 
-  const handleCloseModal = () => {
-    setShowModalRemoveUser(false);
-  };
-
   const handleConfirmDelete = async () => {
     try {
       setLoading(true);
@@ -89,10 +89,13 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
       if (response) {
         setShowModalRemoveUser(false);
         toast.success("Disable User Successfully");
+        loadUserList();
         setLoading(false);
       }
-    } catch (error) {
-      console.error("Error disabling user:", error);
+    } catch (error: any) {
+      setShowModalRemoveUser(false);
+      setLoading(false);
+      setShowModalError(true);
     }
   };
 
@@ -109,8 +112,6 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
     setLoading(true);
     router.push("user/create");
   };
-
-  console.log("data user: ",data);
 
   return (
     <>
@@ -130,60 +131,42 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
             <Search />
             <button
               className="bg-red-600 text-white rounded px-4 py-1 cursor-pointer"
-              onClick={handleNavigateCreateUser}
-            >
+              onClick={handleNavigateCreateUser}>
               Create new user
             </button>
           </div>
         </div>
-        <ReusableTable
+        <ReusableList
           columns={userColumns}
           data={data ?? []}
           onRowClick={handleRowClick}
-          onDeleteClick={handleDeleteClick}
+          onDeleteClick={(e) => handleDeleteClick(e)}
           onSortClick={handleSortClick}
           onEditClick={handleNavigateEditUser}
           sortBy={sortBy === "firstName" ? "fullName" : sortBy}
           sortOrder={sortOrder}
         />
-        {data?.length > 0 ?
-          <Paginate
-            totalPages={totalPages}
-            currentPage={currentPage}
-          /> : ''}
+        {data?.length > 0 ? (
+          <Paginate totalPages={totalPages} currentPage={currentPage} />
+        ) : (
+          ""
+        )}
       </div>
-      <DetailModal
-        isOpen={showModalRemoveUser}
-        onClose={handleCloseModal}
-        isShowCloseIcon={true}
-        title="Are you sure ?"
-      >
-        <div className="p-3">
-          <div className="sm:flex sm:items-start">
-            <p className="text-md text-gray-500">
-              Do you want to disable this user?
-            </p>
-          </div>
-        </div>
-        <div className="sm:flex sm:flex-row gap-4">
-          <Button
-            type="button"
-            className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
-            onClick={handleConfirmDelete}
-          >
-            Disable
-          </Button>
-          <Button
-            variant="outline"
-            type="button"
-            onClick={() => setShowModalRemoveUser(false)}
-          >
-            Cancel
-          </Button>
-        </div>
-      </DetailModal>
+      <ModalConfirmUser
+        handleDisableUser={handleConfirmDelete}
+        showModalConfirm={showModalRemoveUser}
+        setShowModalConfirm={setShowModalRemoveUser}
+      />
+      <ModalError
+        setShowModalConfirm={setShowModalError}
+        showModalConfirm={showModalError}
+      />
       {selectedUser && (
-        <DetailUser showModalDetailUser={showModalDetailUser} handleCloseDetailModal={handleCloseDetailModal} user={selectedUser} />
+        <DetailUser
+          showModalDetailUser={showModalDetailUser}
+          handleCloseDetailModal={handleCloseDetailModal}
+          user={selectedUser}
+        />
       )}
     </>
   );

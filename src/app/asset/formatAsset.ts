@@ -8,7 +8,7 @@ export const formatAsset = (item: Asset) => {
         ...item,
         assetName: formatText(`${item.assetName}`),
         installedDate: formatDate(new Date(item.installedDate)),
-         category: formatText(item?.category?.categoryName),
+        category: formatText(item?.category?.categoryName),
         state: formatText(item.state === ASSET_TYPE.Available ? "AVAILABLE" : item.state),
         isEditDisabled: item.state === 'ASSIGNED'
       }

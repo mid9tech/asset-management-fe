@@ -39,7 +39,7 @@ interface CreateFormProps {
 const CreateForm: FC<CreateFormProps> = (props) => {
   const { setShowModalConfirm } = props;
   const { setLoading }: any = useLoading();
-  const {pushUp}: any = usePushUp()
+  const { pushUp }: any = usePushUp();
 
   const route = useRouter();
 
@@ -48,15 +48,15 @@ const CreateForm: FC<CreateFormProps> = (props) => {
 
   const [userSelected, setUserSelected] = useState<User>();
   const [assetSelected, setAssetSelected] = useState<Asset>();
+  const [noteValue, setNoteValue] = useState<string>();
 
-  const form = useForm<IAssignmentForm>({
+  const form = useForm({
     resolver: zodResolver(validateCreateSchema),
     mode: "onChange",
     defaultValues: {
       asset: null,
       user: null,
       assignedDate: new Date().toISOString().slice(0, 10),
-      note: "",
     },
   });
 
@@ -72,13 +72,12 @@ const CreateForm: FC<CreateFormProps> = (props) => {
       assignedToId: parseInt(userSelected?.id as string),
       assignedToUsername: userSelected?.username || "",
       assignedDate: value.assignedDate,
-      note: value.note || "",
+      note: noteValue || "",
     };
-    console.log("value: ", variables);
     const { data }: any = await createAssignment(variables);
 
     if (data) {
-      pushUp(data?.id)
+      pushUp(data?.id);
       setLoading(false);
       toast.success("Assignment created success");
       route.push("/assignment");
@@ -172,23 +171,15 @@ const CreateForm: FC<CreateFormProps> = (props) => {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="note"
-          render={({ field, fieldState }) => (
-            <FormItem>
-              <div className="flex items-start gap-5">
-                <FormLabel className="w-[120px]">Note</FormLabel>
-                <FormControl>
-                  <TextArea id="note-assignment" {...field} />
-                </FormControl>
-              </div>
-              <FormMessage className="text-nashtech float-left ml-26">
-                {fieldState.error?.message}
-              </FormMessage>
-            </FormItem>
-          )}
-        />
+        <div className="flex flex-row justify-between items-start w-full gap-20">
+          <label>Note</label>
+          <textarea
+          onChange={(e) => setNoteValue(e.target.value)}
+            id="note-assignment"
+            rows={5}
+            className="flex h-auto w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+          />
+        </div>
         <div className="float-right">
           <Button
             id="save-btn-assignment"

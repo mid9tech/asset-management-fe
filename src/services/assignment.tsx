@@ -13,8 +13,8 @@ export const createAssignment = async (value: CreateAssignmentInput) => {
   };
 
   export const gettAllAssignment = async (value: FindAssignmentsInput) => {
-    const result = await client.mutate({
-      mutation: GET_ALL_ASSIGNMENT_QUERY,
+    const result = await client.query({
+      query: GET_ALL_ASSIGNMENT_QUERY,
       variables: value,
     });
     return {

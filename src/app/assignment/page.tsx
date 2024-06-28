@@ -37,6 +37,8 @@ export default function Index({
 
   useEffect(() => {
     handleGetAllAssignment();
+    pushUp(null)
+
   }, [sortBy, sortOrder, searchParams]);
 
   const handleGetAllAssignment = async () => {
@@ -75,27 +77,6 @@ export default function Index({
         state: formatStateText(item.state),
         assignedDate: formatDate(item.assignedDate),
       }));
-      console.log(data)
-      console.log(lsitCustome)
-      if (detail) {
-        const index = lsitCustome.findIndex(
-          (asset: Assignment) => asset.id === pushUpId.toString()
-        );
-        if (index !== -1) {
-          lsitCustome.splice(index, 1);
-        }
-        detail.installedDate = parseInt(detail?.installedDate);
-        console.log(detail);
-        lsitCustome.unshift({
-          ...detail,
-          assignedByUsername: detail.assignedTo?.username,
-          assignedToUsername: detail.assignedBy?.username,
-          state: formatStateText(detail.state),
-          assignedDate: formatDate(detail.assignedDate),
-        });
-      } else {
-        pushUp(null);
-      }
       setListData(lsitCustome);
       setTotalPages(data.totalPages);
       setLoading(false);
@@ -105,7 +86,6 @@ export default function Index({
     <Fragment>
       <ViewAssignment
         listData={listData as Assignment[]}
-
         totalPages={totlaPage as number}
         currentPage={parseInt(currentPage)}
         sortBy={sortBy}

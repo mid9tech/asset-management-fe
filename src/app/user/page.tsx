@@ -27,7 +27,7 @@ export const dynamic = "force-dynamic";
 export default function Index({
   searchParams,
 }: {
-  searchParams?: {
+  searchParams: {
     Type?: string[];
     query?: string;
     page?: string;
@@ -52,8 +52,10 @@ export default function Index({
   useEffect(() => {
     setLoading(true);
     loadUserList();
+    pushUp(null)
   }, [searchParams, sortBy, sortOrder]);
   const loadUserList = async () => {
+
     const newUserId = pushUpId
     let request: { [k: string]: any } = {};
     request.page = parseInt(currentPage);
@@ -73,7 +75,6 @@ export default function Index({
 
     //push item up
     if (newUserId) {
-      request.limit = 19
       detailUser = await loadDetail(newUserId);
     }
 
@@ -86,6 +87,7 @@ export default function Index({
       if (newUserIndex !== -1) {
         listUserCustome.splice(newUserIndex, 1);
       }
+      console.log(detailUser)
       detailUser.joinedDate = parseInt(detailUser?.joinedDate);
       detailUser.dateOfBirth = parseInt(detailUser?.dateOfBirth);
       console.log(detailUser)
@@ -109,6 +111,7 @@ export default function Index({
           sortOrder={sortOrder}
           setSortBy={setSortBy}
           setSortOder={setSortOder}
+          loadUserList={loadUserList}
         />
       </Suspense>
     </Fragment>

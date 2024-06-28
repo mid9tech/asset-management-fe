@@ -3,6 +3,7 @@
 import { useDebouncedCallback } from "use-debounce";
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { truncateParagraph } from "@utils/truncate";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 
@@ -13,6 +14,7 @@ import { useLoading } from "@providers/loading";
 
 import { SORT_ORDER, USER_TYPE } from "../../../../types/enum.type";
 import { FindUsersInput, User } from "../../../../__generated__/graphql";
+import { formatText } from "@utils/formatText";
 
 interface ModalPickerProps {
   isOpen: boolean;
@@ -190,11 +192,14 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
                 </div>
                 <div className="col-span-3 border-b-2 border-graycustom">
                   <span>
-                    {item?.lastName} {item?.firstName}
+                    {truncateParagraph(
+                      `${item.lastName} ${item.firstName}`,
+                      25
+                    )}
                   </span>
                 </div>
                 <div className="border-b-2 border-graycustom">
-                  <span>{item?.type}</span>
+                  <span>{formatText(item?.type)}</span>
                 </div>
                 <div></div>
               </div>

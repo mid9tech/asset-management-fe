@@ -7,8 +7,8 @@ export const formatUser = (item: User) => {
     return {
         ...item,
         fullName: formatText(`${item.firstName} ${item.lastName}`),
-        dateOfBirth: formatDate(new Date(parseInt(item.dateOfBirth))),
-        joinedDate: formatDate(new Date(parseInt(item.joinedDate))),
+        dateOfBirth: formatDate(parseInt(item.dateOfBirth)),
+        joinedDate: formatDate(parseInt(item.joinedDate)),
         type: formatText(item.type === USER_TYPE.STAFF ? "STAFF" : item.type),
       }
 }

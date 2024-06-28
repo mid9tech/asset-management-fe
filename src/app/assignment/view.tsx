@@ -25,18 +25,37 @@ interface ViewAssignmentProps {
 }
 
 const tableColumns = [
-  { header: "No.", accessor: "id" as keyof Assignment },
-  { header: "Asset Code", accessor: "assetCode" as keyof Assignment },
-  { header: "Asset Name", accessor: "assetName" as keyof Assignment },
-  { header: "Assigned To", accessor: "assignedToUsername" as keyof Assignment },
-  { header: "Assigned By", accessor: "assignedByUsername" as keyof Assignment },
-  { header: "Assigned Date", accessor: "assignedDate" as keyof Assignment },
-  { header: "State", accessor: "state" as keyof Assignment },
+  { header: "No.", accessor: "id" as keyof Assignment, width: 55 },
+  {
+    header: "Asset Code",
+    accessor: "assetCode" as keyof Assignment,
+    width: 122,
+  },
+  {
+    header: "Asset Name",
+    accessor: "assetName" as keyof Assignment,
+    width: 120,
+  },
+  {
+    header: "Assigned To",
+    accessor: "assignedToUsername" as keyof Assignment,
+    width: 120,
+  },
+  {
+    header: "Assigned By",
+    accessor: "assignedByUsername" as keyof Assignment,
+    width: 120,
+  },
+  {
+    header: "Assigned Date",
+    accessor: "assignedDate" as keyof Assignment,
+    width: 140,
+  },
+  { header: "State", accessor: "state" as keyof Assignment, width: 158 },
   { header: "icon", accessor: "" as keyof Assignment },
 ];
 
 const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
-
   const {
     listData,
     totalPages,
@@ -55,7 +74,6 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
   const handleNavigateCreate = () => {
     setLoading(true);
     route.push("assignment/create");
-    setLoading(false);
   };
 
   const handleSortClick = (item: string) => {
@@ -84,7 +102,7 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
         <div className="flex items-start space-x-2">
           <div className="relative w-auto flex flex-row items-center justify-start gap-3">
             <Filter label="State" data={convertEnumToMap(ASSIGNMENT_STATUS)} />
-            <CustomDatePicker name="assignedDate" label="Assignd date" />
+            <CustomDatePicker name="assignedDate" label="Assigned date" />
           </div>
         </div>
         <div className="flex gap-3">
@@ -103,10 +121,14 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
         onDeleteClick={() => {}}
         onSortClick={handleSortClick}
         onEditClick={() => {}}
+        onReturnClick={() => {}}
         sortBy={sortBy}
         sortOrder={sortOrder}
       />
-      <Paginate currentPage={currentPage} totalPages={totalPages} />
+      {listData?.length > 0 && (
+        <Paginate currentPage={currentPage} totalPages={totalPages} />
+      )}
+
       {selected && (
         <DetailAssignment
           showModalDetailUser={showModalDetail}

@@ -3,6 +3,7 @@
 import { useDebouncedCallback } from "use-debounce";
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { truncateParagraph } from "@utils/truncate";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 
@@ -177,10 +178,10 @@ const ModalPikcAsset: React.FC<ModalPickerProps> = ({
                   <span>{item?.assetCode}</span>
                 </div>
                 <div className="col-span-3 border-b-2 border-graycustom">
-                  <span>{item?.assetName}</span>
+                  <span>{truncateParagraph(item?.assetName, 20)}</span>
                 </div>
                 <div className="border-b-2 border-graycustom">
-                  <span>{item.category?.categoryName}</span>
+                  <span>{truncateParagraph(item?.category.categoryName, 10)}</span>
                 </div>
                 <div></div>
               </div>

@@ -12,6 +12,7 @@ import { formatText } from "@utils/formatText";
 import { defaultChoice } from "@components/filter";
 import { usePushUp } from "./pushUp";
 import { formatAsset } from "./formatAsset";
+import { usePathname, useRouter } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 export default function Index({
@@ -24,11 +25,27 @@ export default function Index({
     page?: string;
   };
 }) {
+  const router = useRouter();
+  const pathname = usePathname();
   const { setLoading }: any = useLoading();
   const [listAsset, setListAssets] = useState<Asset[]>([]);
   const filterState = searchParams?.State || null;
+useEffect(() => {
+  if (!filterState) {
+    const defaultState = [
+      ASSET_TYPE.Assigned,
+      ASSET_TYPE.Available,
+      ASSET_TYPE.Not_available,
+    ];
+    const params = new URLSearchParams();
+    defaultState.forEach((state) => {
+      params.append("State", state);
+    });
+    router.replace(`${pathname}?${params.toString()}`);
+  }
+}, [])
   const filterCategory = searchParams?.Category || null;
-  const currentPage = searchParams?.page || "1";
+  const currentPage = searchParams?.page || '1';
 
   const queryString = searchParams?.query || "";
   const [sortOrder, setSortOrder] = useState(SORT_ORDER.ASC);
@@ -45,7 +62,9 @@ export default function Index({
   useEffect(() => {
     setLoading(true);
     loadAssetList();
-  }, [searchParams, sortOrder]);
+    pushUp(null)
+
+  }, [searchParams, sortOrder, sortBy]);
 
   const loadAssetList = async () => {
     try {
@@ -81,11 +100,9 @@ export default function Index({
       const listAssetCustom = data?.assets.map((item: Asset) =>
         formatAsset(item)
       );
-
+      
       if (detail) {
-        const newAssetIndex = listAssetCustom.findIndex(
-          (asset: Asset) => asset.id === pushUpId.toString()
-        );
+        const newAssetIndex = listAssetCustom.findIndex((asset: Asset) => asset.id === pushUpId.toString());
         if (newAssetIndex !== -1) {
           listAssetCustom.splice(newAssetIndex, 1);
         }
