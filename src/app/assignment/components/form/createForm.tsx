@@ -45,6 +45,7 @@ const CreateForm: FC<CreateFormProps> = (props) => {
 
   const [openModalUser, setOpenModalUser] = useState(false);
   const [openModalAsset, setOpenModalAsset] = useState(false);
+  const [submissionInProgress, setSubmissionInProgress] = useState(false);
 
   const [userSelected, setUserSelected] = useState<User>();
   const [assetSelected, setAssetSelected] = useState<Asset>();
@@ -64,6 +65,8 @@ const CreateForm: FC<CreateFormProps> = (props) => {
     !!userSelected && !!assetSelected && !!form.watch("assignedDate");
 
   const onSubmit = async (value: IAssignmentForm) => {
+    if (submissionInProgress) return;
+    setSubmissionInProgress(true);
     setLoading(true);
     const variables: CreateAssignmentInput = {
       assetCode: assetSelected?.assetCode || "",

@@ -25,7 +25,6 @@ const Category = () => {
   const [newCategory, setNewCategory] = useState("");
   const [abbreviation, setAbbreviation] = useState("");
 
-
   const handleCancelNewCategory = () => {
     setShowNewCategoryInput(false);
     setNewCategory("");
@@ -37,33 +36,36 @@ const Category = () => {
   };
 
   useEffect(() => {
-    if(data){
-
+    if (data) {
       const baseAbbreviation = newCategory
-      .split(" ")
-      .map((word) => word.charAt(0))
-      .join("")
-      .toUpperCase();
-      
+        .split(" ")
+        .map((word) => word.charAt(0))
+        .join("")
+        .toUpperCase();
+
       let abbreviation = baseAbbreviation;
       let counter = 1;
-      
+
       while (
-      data.getCategories.some(
-        (category: any) => category.categoryCode === abbreviation
-      )
-    ) {
-      abbreviation = `${baseAbbreviation}${counter}`;
-      counter++;
+        data.getCategories.some(
+          (category: any) => category.categoryCode === abbreviation
+        )
+      ) {
+        abbreviation = `${baseAbbreviation}${counter}`;
+        counter++;
+      }
+
+      setAbbreviation(abbreviation);
     }
-    
-    setAbbreviation(abbreviation);
-  }
-  }, [newCategory]);
+  }, [newCategory, data]);
   console.log(data);
 
   const handleSaveNewCategory = async () => {
     try {
+      if (!newCategory.trim()) {
+        toast.error("Category name is required");
+        return;
+      }
       const variables: any = {
         createCategoryInput: {
           categoryCode: abbreviation,
