@@ -25,6 +25,7 @@ const Category = () => {
   const [newCategory, setNewCategory] = useState("");
   const [abbreviation, setAbbreviation] = useState("");
 
+
   const handleCancelNewCategory = () => {
     setShowNewCategoryInput(false);
     setNewCategory("");
@@ -36,16 +37,18 @@ const Category = () => {
   };
 
   useEffect(() => {
-    const baseAbbreviation = newCategory
+    if(data){
+
+      const baseAbbreviation = newCategory
       .split(" ")
       .map((word) => word.charAt(0))
       .join("")
       .toUpperCase();
-
-    let abbreviation = baseAbbreviation;
-    let counter = 1;
-
-    while (
+      
+      let abbreviation = baseAbbreviation;
+      let counter = 1;
+      
+      while (
       data.getCategories.some(
         (category: any) => category.categoryCode === abbreviation
       )
@@ -53,8 +56,9 @@ const Category = () => {
       abbreviation = `${baseAbbreviation}${counter}`;
       counter++;
     }
-
+    
     setAbbreviation(abbreviation);
+  }
   }, [newCategory]);
   console.log(data);
 
