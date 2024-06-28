@@ -30,6 +30,7 @@ export default function Index({
   const { setLoading }: any = useLoading();
   const [listAsset, setListAssets] = useState<Asset[]>([]);
   const filterState = searchParams?.State || null;
+useEffect(() => {
   if (!filterState) {
     const defaultState = [
       ASSET_TYPE.Assigned,
@@ -37,12 +38,12 @@ export default function Index({
       ASSET_TYPE.Not_available,
     ];
     const params = new URLSearchParams();
-    console.log("params: ", params);
     defaultState.forEach((state) => {
       params.append("State", state);
     });
     router.replace(`${pathname}?${params.toString()}`);
   }
+}, [])
   const filterCategory = searchParams?.Category || null;
   const currentPage = searchParams?.page || "1";
 
@@ -62,7 +63,9 @@ export default function Index({
   useEffect(() => {
     setLoading(true);
     loadAssetList();
-  }, [searchParams, sortOrder]);
+    pushUp(null)
+
+  }, [searchParams, sortOrder, sortBy]);
 
   const loadAssetList = async () => {
     try {

@@ -37,6 +37,8 @@ export default function Index({
 
   useEffect(() => {
     handleGetAllAssignment();
+    pushUp(null)
+
   }, [sortBy, sortOrder, searchParams]);
 
   const handleGetAllAssignment = async () => {

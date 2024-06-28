@@ -55,7 +55,7 @@ const Filter = ({ data, label, height = 150 }: Props) => {
             type="text"
             placeholder={label}
             readOnly
-            value={searchParams.get(label) || ""}
+            value={label}
             onClick={toggleDropdown}
             className="w-full pr-9 rounded border-solid border outline-none px-2 py-1 border-graycustom cursor-pointer"
           />

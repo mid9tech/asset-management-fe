@@ -27,7 +27,7 @@ export const dynamic = "force-dynamic";
 export default function Index({
   searchParams,
 }: {
-  searchParams?: {
+  searchParams: {
     Type?: string[];
     query?: string;
     page?: string;
@@ -52,8 +52,10 @@ export default function Index({
   useEffect(() => {
     setLoading(true);
     loadUserList();
+    pushUp(null)
   }, [searchParams, sortBy, sortOrder]);
   const loadUserList = async () => {
+
     const newUserId = pushUpId
     let request: { [k: string]: any } = {};
     request.page = parseInt(currentPage);
@@ -80,7 +82,7 @@ export default function Index({
     const listUserCustome = data?.users.map(
       (item: User) => (formatUser(item))
     );
-    if (detailUser && request.page === 1) {
+    if (detailUser) {
       const newUserIndex = listUserCustome.findIndex((user: User) => user.id === newUserId.toString());
       if (newUserIndex !== -1) {
         listUserCustome.splice(newUserIndex, 1);
