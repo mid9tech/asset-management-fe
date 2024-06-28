@@ -96,7 +96,7 @@ const ReusableList = <T extends {}>({
                           <div className="flex justify-between items-start h-full">
                             {onEditClick && (
                               <CreateIcon
-                                className="text-gray-500 cursor-pointer"
+                                className={`text-gray-500`}
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   onEditClick(item);
