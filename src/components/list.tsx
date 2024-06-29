@@ -84,10 +84,10 @@ const ReusableList = <T extends {}>({
                           column.header === "icon"
                             ? ""
                             : "border-b-2 border-graycustom"
-                        } flex justify-start items-start h-full`}>
+                        } flex justify-start items-start h-full truncate text-ellipsis`}>
                         {column.header !== "icon" ? (
                           column.accessor !== "id" ? (
-                            (truncateParagraph(item[column.accessor] as ReactNode as string, 25))
+                            item[column.accessor] as ReactNode as string
                           ) : (
                             key + 1
                           )

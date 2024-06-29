@@ -30,7 +30,7 @@ export default function DetailAssignment({
         </div>
         <div className="flex mb-2">
           <span className="text-sm w-40">Specification:</span>{" "}
-          <span className="text-sm">{data.note}</span>
+          <span className="text-sm">{data.asset?.specification}</span>
         </div>
         <div className="flex mb-2">
           <span className="text-sm w-40">Assigned to:</span>{" "}
