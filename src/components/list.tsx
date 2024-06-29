@@ -36,7 +36,6 @@ const ReusableList = <T extends {}>({
   sortBy,
   sortOrder,
 }: ReusableTableProps<T>) => {
-  console.log('onDeleteClick', onDeleteClick);
   return (
     <div>
       <div className="bg-white h-auto">

@@ -58,7 +58,6 @@ const Category = () => {
       setAbbreviation(abbreviation);
     }
   }, [newCategory, data]);
-  console.log(data);
 
   const handleSaveNewCategory = async () => {
     try {

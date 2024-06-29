@@ -272,10 +272,6 @@ const EditUser = ({ params }: { params: { id: string } }) => {
       setLoading(false);
     }
   };
-
-  console.log("user: ",userData);
-  
-
   return (
     <>
       <div className="-mt-8 ml-14 w-1/2">

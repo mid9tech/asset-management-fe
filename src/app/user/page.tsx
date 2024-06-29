@@ -87,10 +87,8 @@ export default function Index({
       if (newUserIndex !== -1) {
         listUserCustome.splice(newUserIndex, 1);
       }
-      console.log(detailUser)
       detailUser.joinedDate = parseInt(detailUser?.joinedDate);
       detailUser.dateOfBirth = parseInt(detailUser?.dateOfBirth);
-      console.log(detailUser)
       listUserCustome.unshift(formatUser(detailUser));
     } else {
       pushUp(null)

@@ -30,8 +30,8 @@ export default function Index({
   const { setLoading }: any = useLoading();
   const [listAsset, setListAssets] = useState<Asset[]>([]);
   const filterState = searchParams?.State || null;
-useEffect(() => {
-  if (!filterState) {
+  useEffect(() => {
+    console.log(1)
     const defaultState = [
       ASSET_TYPE.Assigned,
       ASSET_TYPE.Available,
@@ -42,8 +42,7 @@ useEffect(() => {
       params.append("State", state);
     });
     router.replace(`${pathname}?${params.toString()}`);
-  }
-}, [])
+  }, [])
   const filterCategory = searchParams?.Category || null;
   const currentPage = searchParams?.page || '1';
 
@@ -89,25 +88,20 @@ useEffect(() => {
       let detail: any = null;
       //push item up
       if (pushUpId) {
-        request.limit = 19;
         detail = await loadDetailAsset(pushUpId);
       }
-
-      console.log("pushupid: ", pushUpId);
 
       const { data }: any = await loadDataAsset(request);
 
       const listAssetCustom = data?.assets.map((item: Asset) =>
         formatAsset(item)
       );
-      
       if (detail) {
         const newAssetIndex = listAssetCustom.findIndex((asset: Asset) => asset.id === pushUpId.toString());
         if (newAssetIndex !== -1) {
           listAssetCustom.splice(newAssetIndex, 1);
         }
         detail.installedDate = parseInt(detail?.installedDate);
-        console.log(detail);
         listAssetCustom.unshift(formatAsset(detail));
       } else {
         pushUp(null);

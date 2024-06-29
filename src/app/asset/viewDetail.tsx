@@ -18,7 +18,6 @@ interface AssetManagementProps {
 const ViewDetail = (props :any) => {
     // const [showModalDetailAsset, setShowModalDetailAsset] = useState(false);
     const {selectedAsset,showModalDetailAsset,setShowModalDetailAsset} = props;
-    console.log("selected: ",selectedAsset);
     const handleCloseDetailModal = () => {
         setShowModalDetailAsset(false);
     };

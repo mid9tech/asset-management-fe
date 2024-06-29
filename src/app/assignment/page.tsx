@@ -66,9 +66,7 @@ export default function Index({
     if (pushUpId) {
       request.limit = 19
       detail = await loadDetailAssignment(pushUpId);
-      console.log("detail: ", detail);
     }
-    console.log("pushupid: ", pushUpId);
     const { data }: any = await gettAllAssignment(request);
 
     if (data) {
@@ -77,8 +75,6 @@ export default function Index({
         state: formatStateText(item.state),
         assignedDate: formatDate(item.assignedDate),
       }));
-      console.log("Detail data: ",detail);
-      
       if (detail) {
         const index = listCustom.findIndex(
           (asset: Assignment) => asset.id === pushUpId.toString()
@@ -87,7 +83,6 @@ export default function Index({
           listCustom.splice(index, 1);
         }
         detail.installedDate = parseInt(detail?.installedDate);
-        console.log(detail);
         listCustom.unshift({
           ...detail,
           assignedByUsername: detail.assignedTo?.username,
