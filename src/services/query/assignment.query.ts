@@ -45,7 +45,7 @@ export const GET_ALL_ASSIGNMENT_QUERY = gql`
     $sort: String
     $limit: Int
     $assignedDate: String
-    $state: String
+    $state: [String!]
   ) {
     findAssignments(
       findAssignmentsInput: {
