@@ -119,3 +119,8 @@
   nextjs-portal {
     display: none;
   }
+
+  input {
+    box-shadow: none !important;
+    outline: none !important;
+  }
