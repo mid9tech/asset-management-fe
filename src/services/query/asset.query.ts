@@ -12,9 +12,9 @@ export const CREATE_ASSET_MUTATION = gql`
       location
       specification
       category {
-        id
-        categoryName
-        categoryCode
+          id
+          categoryName
+          categoryCode
       }
     }
   }
