@@ -79,12 +79,23 @@ const CreateForm: FC<CreateFormProps> = (props) => {
     };
     const { data }: any = await createAssignment(variables);
 
-    if (data) {
-      pushUp(data?.id);
-      setLoading(false);
-      toast.success("Assignment created success");
-      route.push("/assignment");
-    }
+    // if (data) {
+    //   pushUp(data?.id);
+    //   setLoading(false);
+    //   toast.success("Assignment created success");
+    //   route.push("/assignment");
+    // }
+    if (data.errors) {
+      data.errors.forEach((error: any) => {
+          console.error(`GraphQL error message: ${error.message}`);
+      });
+      toast.error("Error creating assignment");
+  } else {
+      const assignmentId = data.data.createAsset.id;
+      pushUp(parseInt(assignmentId));
+      toast.success("Assignment created successfully");
+      route.push('/asset');
+  }
   };
   return (
     <Form {...form}>
