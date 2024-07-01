@@ -235,8 +235,7 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
                                 e.stopPropagation();
                                 handleDeleteClick(item);
                               }}
-                              sx={{ color: "#cf2338" }}
-                              className={`text-gray-500 ${item.type === 'Admin' ? 'text-gray cursor-not-allowed' : ''}`}
+                              className={`text-gray-500 text-nashtech ${item.type === 'Admin' ? '!text-gray cursor-not-allowed' : ''}`}
                             />
                             </button>
                             
