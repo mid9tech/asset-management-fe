@@ -71,7 +71,8 @@ const ModalPikcAsset: React.FC<ModalPickerProps> = ({
         query: searchTerm,
         limit: 10,
         sortField: sortBy,
-        sortOrder: sortOrder
+        sortOrder: sortOrder,
+        
       });
 
       document.addEventListener("mousedown", handleClickOutside);
@@ -178,10 +179,10 @@ const ModalPikcAsset: React.FC<ModalPickerProps> = ({
                   <span>{item?.assetCode}</span>
                 </div>
                 <div className="col-span-3 border-b-2 border-graycustom">
-                  <span>{truncateParagraph(item?.assetName, 20)}</span>
+                  <span className="truncate">{item?.assetName}</span>
                 </div>
                 <div className="border-b-2 border-graycustom">
-                  <span>{truncateParagraph(item?.category.categoryName, 10)}</span>
+                  <span className="truncate">{item?.category.categoryName}</span>
                 </div>
                 <div></div>
               </div>

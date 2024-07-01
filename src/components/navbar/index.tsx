@@ -110,7 +110,7 @@ const Navbar = () => {
   return (
     <>
       <Disclosure as="nav" className="bg-nashtech text-white">
-        <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+        <div className="px-10">
           <div className="relative flex h-16 items-center justify-between font-bold">
             <div>{activeItem ? renderName() : ""}</div>
             <div className="relative">
