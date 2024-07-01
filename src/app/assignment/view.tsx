@@ -96,6 +96,13 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
     setShowModalDetail(false);
   };
 
+  const handleNavigateEditPage = (item: Assignment) => {
+    if (item.state === ASSIGNMENT_STATUS.ACCEPTED) return;
+    setLoading(true);
+    setSelected(item);
+    route.push(`/assignment/${item.id}`);
+  };
+
   return (
     <div className="container mx-auto p-4">
       <h2 className="text-2xl font-bold mb-4 text-nashtech">Assignment List</h2>
@@ -121,7 +128,7 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
         onRowClick={handleRowClick}
         onDeleteClick={() => {}}
         onSortClick={handleSortClick}
-        onEditClick={() => {}}
+        onEditClick={handleNavigateEditPage}
         onReturnClick={() => {}}
         sortBy={sortBy}
         sortOrder={sortOrder}
