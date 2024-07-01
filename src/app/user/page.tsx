@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-import UserManagement from "./table";
+import UserManagement from "./view";
 import { useLoading } from "@providers/loading";
 import {
   Fragment,
@@ -67,6 +67,7 @@ export default function Index({
     request.sort = sortBy;
     request.sortOrder = sortOrder;
     request.type = filterType;
+    request.limit = 20
     if (queryString) {
       request.query = queryString;
     }

@@ -47,7 +47,7 @@ const userColumns = [
   { header: "Username", accessor: "username" as keyof User, width: "20%" },
   { header: "Joined Date", accessor: "joinedDate" as keyof User, width: "20%" },
   { header: "Type", accessor: "type" as keyof User, width: "10%" },
-  { header: "icon", accessor: "" as keyof User, width: "10%" },
+  { header: "icon", accessor: "" as keyof User, width: "9%" },
 ];
 
 const UserManagement: React.FC<UserManagementProps> = (props) => {
@@ -132,7 +132,7 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
         <h2 className="text-2xl font-bold mb-4 text-nashtech">User List</h2>
         <div className="flex justify-between items-center mb-4">
           <div className="flex items-center space-x-2">
-            <div className="relative w-32">
+            <div className="relative w-auto">
               <Filter
                 label="Type"
                 data={convertEnumToMap(USER_TYPE)}

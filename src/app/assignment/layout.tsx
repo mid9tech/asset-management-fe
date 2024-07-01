@@ -1,10 +1,6 @@
 'use client'
 
 import { PushUp } from "./pushUp";
-
-
-
-
 export default function Layout({
     children,
   }: Readonly<{

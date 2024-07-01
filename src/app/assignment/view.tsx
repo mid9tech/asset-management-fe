@@ -30,12 +30,12 @@ const tableColumns = [
   {
     header: "Asset Code",
     accessor: "assetCode" as keyof Assignment,
-    width: "10%",
+    width: "13%",
   },
   {
     header: "Asset Name",
     accessor: "assetName" as keyof Assignment,
-    width: "18%",
+    width: "15%",
   },
   {
     header: "Assigned To",
