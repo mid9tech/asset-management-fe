@@ -95,6 +95,7 @@ export default function Index({
       setLoading(false);
     }
   };
+
   return (
     <Fragment>
       <ViewAssignment
