@@ -1,14 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-import { gql, useQuery } from "@apollo/client";
 import { useLoading } from "@providers/loading";
 import { Fragment, Suspense, useEffect, useState } from "react";
 import { ASSET_TYPE, SORT_ORDER } from "../../types/enum.type";
-import { formatDate } from "@utils/timeFormat";
 import { Asset } from "../../__generated__/graphql";
 import AssetManagement from "./table";
 import { loadDataAsset, loadDetailAsset } from "@services/asset";
-import { formatText } from "@utils/formatText";
 import { defaultChoice } from "@components/filter";
 import { usePushUp } from "./pushUp";
 import { formatAsset } from "./formatAsset";
@@ -31,7 +28,6 @@ export default function Index({
   const [listAsset, setListAssets] = useState<Asset[]>([]);
   const filterState = searchParams?.State || null;
   useEffect(() => {
-    console.log(1)
     const defaultState = [
       ASSET_TYPE.Assigned,
       ASSET_TYPE.Available,

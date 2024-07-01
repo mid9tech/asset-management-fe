@@ -78,12 +78,14 @@ const CreateForm: FC<CreateFormProps> = (props) => {
       note: noteValue || "",
     };
     const { data }: any = await createAssignment(variables);
-
+    console.log("data: ",data);
+    
     if (data) {
-      pushUp(data?.id);
-      setLoading(false);
-      toast.success("Assignment created success");
-      route.push("/assignment");
+      const assignmentId = data.id;
+      console.log("assignmentId: ",assignmentId);
+      pushUp(parseInt(assignmentId));
+      toast.success("Assignment created successfully");
+      route.push('/assignment');
     }
   };
   return (

@@ -48,7 +48,7 @@ interface FormData {
 }
 
 const CreateUser = () => {
-  const {pushUp}: any = usePushUp()
+  const { pushUp }: any = usePushUp()
   const [createUserMutation] = useMutation(CREATE_USER_MUTATION);
   const [submissionInProgress, setSubmissionInProgress] = useState(false);
   const { setLoading }: any = useLoading();
@@ -95,7 +95,7 @@ const CreateUser = () => {
     if (submissionInProgress) return;
     setSubmissionInProgress(true);
     setLoading(true);
-    
+
     try {
       const capitalize = (str: string) =>
         str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
@@ -138,7 +138,7 @@ const CreateUser = () => {
       setLoading(false);
     }
   };
-  
+
 
   return (
     <>
@@ -157,9 +157,8 @@ const CreateUser = () => {
                       <Input
                         placeholder=""
                         {...field}
-                        className={`cursor-pointer ${
-                          fieldState.error ? "border-nashtech" : ""
-                        }`}
+                        className={`cursor-pointer ${fieldState.error ? "border-nashtech" : ""
+                          }`}
                       />
                     </FormControl>
                   </div>
@@ -180,9 +179,8 @@ const CreateUser = () => {
                       <Input
                         placeholder=""
                         {...field}
-                        className={`cursor-pointer ${
-                          fieldState.error ? "border-nashtech" : ""
-                        }`}
+                        className={`cursor-pointer ${fieldState.error ? "border-nashtech" : ""
+                          }`}
                       />
                     </FormControl>
                   </div>
@@ -204,9 +202,8 @@ const CreateUser = () => {
                         placeholder="Select a date"
                         {...field}
                         type="date"
-                        className={`flex justify-end cursor-pointer flex-col ${
-                          fieldState.error ? "border-nashtech" : ""
-                        }`}
+                        className={`flex justify-end cursor-pointer flex-col ${fieldState.error ? "border-nashtech" : ""
+                          }`}
                       />
                     </FormControl>
                   </div>
@@ -231,22 +228,43 @@ const CreateUser = () => {
                         className="flex cursor-pointer"
                       >
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value={Gender.Male} id="option-one" />
-                          <Label htmlFor="option-one">Male</Label>
+                          <label className="custom-radio flex h-[20px]">
+                            <input
+                              type="radio"
+                              value={Gender.Male}
+                              checked={field.value === Gender.Male}
+                              onChange={field.onChange}
+                              className={`focus:ring ${field.value === Gender.Male ? "border-nashtech" : ""}`}
+                            />
+                            <div className="checkmark mt-2"></div>
+                            <Label htmlFor="option-one">Male</Label>
+                          </label>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem
-                            value={Gender.Female}
-                            id="option-two"
-                          />
-                          <Label htmlFor="option-two">Female</Label>
+                          <label className="custom-radio flex h-[20px]">
+                            <input
+                              type="radio"
+                              value={Gender.Female}
+                              checked={field.value === Gender.Female}
+                              onChange={field.onChange}
+                              className={`focus:ring ${field.value === Gender.Female ? "border-nashtech" : ""}`}
+                            />
+                            <div className="checkmark mt-2"></div>
+                            <Label htmlFor="option-one">Female</Label>
+                          </label>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem
-                            value={Gender.Other}
-                            id="option-three"
-                          />
-                          <Label htmlFor="option-three">Other</Label>
+                          <label className="custom-radio flex h-[20px]">
+                            <input
+                              type="radio"
+                              value={Gender.Other}
+                              checked={field.value === Gender.Other}
+                              onChange={field.onChange}
+                              className={`focus:ring ${field.value === Gender.Other ? "border-nashtech" : ""}`}
+                            />
+                            <div className="checkmark mt-2"></div>
+                            <Label htmlFor="option-one">Other</Label>
+                          </label>
                         </div>
                       </RadioGroup>
                     </FormControl>
@@ -269,9 +287,8 @@ const CreateUser = () => {
                         placeholder=""
                         {...field}
                         type="date"
-                        className={`flex justify-end cursor-pointer flex-col ${
-                          fieldState.error ? "border-nashtech" : ""
-                        }`}
+                        className={`flex justify-end cursor-pointer flex-col ${fieldState.error ? "border-nashtech" : ""
+                          }`}
                       />
                     </FormControl>
                   </div>

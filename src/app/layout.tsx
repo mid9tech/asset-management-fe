@@ -27,18 +27,13 @@ export default function RootLayout({
         <LoadingProvider>
           <AuthProvider>
             <ApolloCustomProvider>
-
               <Navbar />
-              <div className="grid grid-cols-10 gap-4">
-                <div className="col-start-2 col-span-8">
-                  <div className="grid sm:grid-cols-1 md:grid-cols-5 lg:grid-cols-5">
-                    <div>
-                      <Sidebar />
-                    </div>
-                    <div className="col-span-4">
-                      <div className="mt-14">{children}</div>
-                    </div>
-                  </div>
+              <div className="flex flex-grow justify-evenly items-start gap-10 px-10">
+                <div className="w-1/6">
+                  <Sidebar />
+                </div>
+                <div className="w-5/6">
+                  <div className="mt-10">{children}</div>
                 </div>
               </div>
             </ApolloCustomProvider>

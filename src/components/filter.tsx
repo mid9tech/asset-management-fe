@@ -46,6 +46,22 @@ const Filter = ({ data, label, height = 150 }: Props) => {
       return categoryParam.includes(id);
     }
   };
+  const handleClickAll = (event: any) => {
+    const checked = event.target.checked;
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('page', '1');
+    if (checked) {
+      data.forEach((key, value) => {
+        params.append(`${label}`, key);
+      });
+    } else {
+      data.forEach((key, value) => {
+        params.delete(`${label}`, key);
+      });
+    }
+
+    replace(`${pathname}?${params.toString()}`);
+  };
 
   return (
     <Fragment>
@@ -69,7 +85,7 @@ const Filter = ({ data, label, height = 150 }: Props) => {
         {dropdownVisible && (
           <div
             className={`absolute mt-2 bg-white border border-gray-300 rounded shadow-lg z-10 w-full overflow-scroll`}
-            style={{ height: height }}
+            style={{ height: `${height === 0 ? 'auto' : height}` }}
           >
             <fieldset>
               <legend className="sr-only">{label}</legend>
@@ -79,9 +95,9 @@ const Filter = ({ data, label, height = 150 }: Props) => {
                     id={`${defaultChoice}`}
                     name={defaultChoice}
                     type="checkbox"
-                    checked={isChecked(`${defaultChoice}`)}
+                     checked={Array.from(data.values()).every(value => isChecked(value))}
                     value={`${defaultChoice}`}
-                    onChange={(e) => handleChange(e, `${defaultChoice}`)}
+                    onChange={(e) => handleClickAll(e)}
                     className="input-checkbox h-4 w-4 text-nashtech rounded custom-checkbox accent-red-500"
                   />
                   <label htmlFor={defaultChoice} className="ml-3 block text-sm text-gray-700">

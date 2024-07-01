@@ -5,17 +5,16 @@ import CreateIcon from "@mui/icons-material/Create";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import ReplayIcon from "@mui/icons-material/Replay";
 import { SORT_ORDER } from "../types/enum.type";
-import { truncateParagraph } from "@utils/truncate";
 
 type Column<T> = {
   header: string;
   accessor: keyof T;
-  width?: number; // Optional width property for columns
+  width?: string; // Optional width property for columns
 };
 
 interface ReusableTableProps<T> {
   columns: Column<T>[];
-  data: T[];
+  data: any[];
   onRowClick: (item: T) => void;
   onDeleteClick?: (item: T) => void;
   onEditClick?: (item: T) => void;
@@ -51,7 +50,10 @@ const ReusableList = <T extends {}>({
                       {item.header !== "icon" ? (
                         <th
                           className="border-b-2 border-black cursor-pointer text-sm flex items-start"
-                          style={{ width: item.width || "auto" }} // Set column width
+                          style={{
+                            minWidth: item.width || "auto",
+                            maxWidth: item.width,
+                          }} // Set column width
                           onClick={() => onSortClick(item.accessor as string)}>
                           <span className="font-bold">
                             {item.header}
@@ -64,7 +66,11 @@ const ReusableList = <T extends {}>({
                           </span>
                         </th>
                       ) : (
-                        <th style={{ width: item.width || "auto" }}></th> // Set column width
+                        <th
+                          style={{
+                            minWidth: item.width || "auto",
+                            maxWidth: item.width,
+                          }}></th> // Set column width
                       )}
                     </Fragment>
                   ))}
@@ -74,20 +80,23 @@ const ReusableList = <T extends {}>({
                 {data?.map((item, key) => (
                   <tr
                     key={key}
-                    className="flex flex-row gap-3 w-fit cursor-pointer mt-1 h-full"
+                    className="flex flex-row gap-3 cursor-pointer mt-1 h-full"
                     onClick={() => onRowClick(item)}>
                     {columns.map((column, colIndex) => (
                       <td
                         key={colIndex}
-                        style={{ width: column.width || "auto" }}
+                        style={{
+                          minWidth: column.width || "auto",
+                          maxWidth: column.width,
+                        }}
                         className={`text-sm h-full ${
                           column.header === "icon"
                             ? ""
                             : "border-b-2 border-graycustom"
-                        } flex justify-start items-start h-full truncate text-ellipsis`}>
+                        } flex justify-start items-start h-full  truncate`}>
                         {column.header !== "icon" ? (
                           column.accessor !== "id" ? (
-                            item[column.accessor] as ReactNode as string
+                            (item[column.accessor] as ReactNode as string)
                           ) : (
                             key + 1
                           )
@@ -95,32 +104,41 @@ const ReusableList = <T extends {}>({
                           <div className="flex justify-between items-start h-full">
                             {onEditClick && (
                               <CreateIcon
-                                className={`text-gray-500`}
+                                className={`${
+                                  item.isDisabledIcon === true &&
+                                  "text-gray cursor-not-allowed"
+                                }`}
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  onEditClick(item);
+                                  !item.isDisabledIcon && onEditClick(item);
                                 }}
                               />
                             )}
 
                             {onDeleteClick && (
                               <HighlightOffIcon
+                                className={`${
+                                  item.isDisabledIcon === true &&
+                                  "text-gray cursor-not-allowed"
+                                }`}
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  onDeleteClick(item);
+                                  !item.isDisabledIcon && onDeleteClick(item);
                                 }}
                                 sx={{ color: "#cf2338" }}
-                                className="cursor-pointer"
                               />
                             )}
                             {onReturnClick && (
                               <ReplayIcon
+                                className={`${
+                                  item.isDisabledIcon === true &&
+                                  "text-gray cursor-not-allowed"
+                                }`}
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  onReturnClick(item);
+                                  !item.isDisabledIcon && onReturnClick(item);
                                 }}
                                 sx={{ color: "blue" }}
-                                className="cursor-pointer"
                               />
                             )}
                           </div>

@@ -22,7 +22,6 @@ export enum SORT_ORDER {
 export enum ASSIGNMENT_STATUS {
     WAITING_FOR_ACCEPTANCE = "WAITING_FOR_ACCEPTANCE",
     ACCEPTED = "ACCEPTED",
-    DECLINED = "DECLINED",
 }
 export enum Gender {
     Male = "MALE",

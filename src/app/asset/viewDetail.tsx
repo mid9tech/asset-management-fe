@@ -38,17 +38,17 @@ const ViewDetail = (props :any) => {
                     <div className="text-gray">
                         <div className="flex mb-2">
                             <span className="text-sm w-40">Asset Code</span>{" "}
-                            <span className="text-sm">{truncateParagraph(selectedAsset.assetCode,25)}</span>
+                            <span className="text-sm">{selectedAsset.assetCode}</span>
                         </div>
                         <div className="flex mb-2">
                             <span className="text-sm w-40">Asset Name</span>{" "}
                             <span className="text-sm">
-                                {truncateParagraph(selectedAsset.assetName,25)}
+                                {selectedAsset.assetName}
                             </span>
                         </div>
                         <div className="flex mb-2 overflow-y-auto">
                             <span className="text-sm w-40">Category</span>{" "}
-                            <span className="text-sm">{truncateParagraph(selectedAsset.category,25)}</span>
+                            <span className="text-sm">{selectedAsset.category}</span>
                         </div>
                         <div className="flex mb-2">
                             <span className="text-sm w-40">Installed Date</span>{" "}
@@ -57,17 +57,29 @@ const ViewDetail = (props :any) => {
                             </span>
                         </div>
                         <div className="flex mb-2">
+                            <span className="text-sm w-40">State</span>{" "}
+                            <span className="text-sm">
+                                {selectedAsset.state}
+                            </span>
+                        </div>
+                        <div className="flex mb-2">
+                            <span className="text-sm w-40">State</span>{" "}
+                            <span className="text-sm">
+                                {selectedAsset.state}
+                            </span>
+                        </div>
+                        <div className="flex flex-row mb-2">
                             <span className="text-sm w-40">Location</span>{" "}
                             <span className="text-sm">{selectedAsset.location}</span>
                         </div>
-                        <div className="flex mb-2">
+                        <div className="flex flex-row gap-9 mb-2">
                             <span className="text-sm w-40">Specification</span>{" "}
-                            <span className="text-sm">
+                            <span className="text-sm w-[60%]">
                                {selectedAsset.specification}
                             </span>
                         </div>
                         <div className="flex mb-2">
-                            <span className="text-sm w-40">History</span>{" "}
+                            <span className="text-sm">History</span>{" "}
                             <span className="text-sm">
                                 ...
                             </span>
