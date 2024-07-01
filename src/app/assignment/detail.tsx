@@ -20,7 +20,7 @@ export default function DetailAssignment({
       onClose={handleCloseDetailModal}
       title="Detailed Assignment Information">
       <div className="text-gray">
-        <div className="flex mb-2">
+        <div className="flex flex-row mb-2">
           <span className="text-sm w-40">Asset Code:</span>{" "}
           <span className="text-sm">{data.assetCode}</span>
         </div>
@@ -28,9 +28,9 @@ export default function DetailAssignment({
           <span className="text-sm w-40">Asset Name:</span>{" "}
           <span className="text-sm">{data.assetName}</span>
         </div>
-        <div className="flex mb-2">
-          <span className="text-sm w-40">Specification:</span>{" "}
-          <span className="text-sm">{data.asset?.specification}</span>
+        <div className="flex flex-row gap-9 mb-2">
+          <span className="text-sm w-40">Specification</span>{" "}
+          <span className="text-sm w-80">{data.asset?.specification}</span>
         </div>
         <div className="flex mb-2">
           <span className="text-sm w-40">Assigned to:</span>{" "}
@@ -48,9 +48,9 @@ export default function DetailAssignment({
           <span className="text-sm w-40">State:</span>{" "}
           <span className="text-sm">{data.state}</span>
         </div>
-        <div className="flex mb-2">
-          <span className="text-sm w-40">Note:</span>{" "}
-          <span className="text-sm">{data.note}</span>
+        <div className="flex flex-row gap-9 mb-2">
+          <span className="text-sm w-40">Note</span>{" "}
+          <span className="text-sm w-80">{data?.note}</span>
         </div>
       </div>
     </DetailModal>

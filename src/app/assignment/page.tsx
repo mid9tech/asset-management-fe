@@ -5,11 +5,12 @@ import ViewAssignment from "./view";
 import { Assignment } from "../../__generated__/graphql";
 import { gettAllAssignment, loadDetailAssignment } from "@services/assignment";
 import { useLoading } from "@providers/loading";
-import { SORT_ORDER } from "../../types/enum.type";
+import { ASSIGNMENT_STATUS, SORT_ORDER } from "../../types/enum.type";
 import { formatStateText } from "@utils/formatText";
 import { formatDate } from "@utils/timeFormat";
 import { usePushUp } from "./pushUp";
 import { loadDetailAsset } from "@services/asset";
+import { formatAssignment } from "./formatAssignment";
 
 export default function Index({
   searchParams,
@@ -65,16 +66,11 @@ export default function Index({
     let detail: any = null;
     if (pushUpId) {
       detail = await loadDetailAssignment(pushUpId);
-      console.log('detail: ', detail)
     }
     const { data }: any = await gettAllAssignment(request);
 
     if (data) {
-      const listCustom = data?.assignments.map((item: Assignment) => ({
-        ...item,
-        state: formatStateText(item.state),
-        assignedDate: formatDate(item.assignedDate),
-      }));
+      const listCustom = data?.assignments.map((item: Assignment) => (formatAssignment(item)));
 
       if (detail) {
         console.log(listCustom)

@@ -120,7 +120,7 @@ export type FindAssignmentsInput = {
   query?: InputMaybe<Scalars['String']['input']>;
   sort?: InputMaybe<Scalars['String']['input']>;
   sortOrder?: InputMaybe<Scalars['String']['input']>;
-  state?: InputMaybe<Scalars['String']['input']>;
+  state?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 export type FindAssignmentsOutput = {

@@ -6,11 +6,9 @@ import {
   Fragment,
   Suspense,
   useEffect,
-  useLayoutEffect,
   useState,
 } from "react";
 import { SORT_ORDER, USER_TYPE } from "../../types/enum.type";
-import { formatDate } from "@utils/timeFormat";
 import { loadData, loadDetail } from "@services/user";
 import { User } from "../../__generated__/graphql";
 import { redirect, usePathname, useRouter } from "next/navigation";

@@ -13,6 +13,7 @@ import Search from "@components/search";
 import CustomDatePicker from "@components/datepicker";
 import ReusableList from "@components/list";
 import DetailAssignment from "./detail";
+import EmptyComponent from "@components/empty";
 
 interface ViewAssignmentProps {
   listData: Assignment[];
@@ -25,34 +26,34 @@ interface ViewAssignmentProps {
 }
 
 const tableColumns = [
-  { header: "No.", accessor: "id" as keyof Assignment, width: 55 },
+  { header: "No.", accessor: "id" as keyof Assignment, width: "5%" },
   {
     header: "Asset Code",
     accessor: "assetCode" as keyof Assignment,
-    width: 122,
+    width: "10%",
   },
   {
     header: "Asset Name",
     accessor: "assetName" as keyof Assignment,
-    width: 120,
+    width: "18%",
   },
   {
     header: "Assigned To",
     accessor: "assignedToUsername" as keyof Assignment,
-    width: 120,
+    width: "12%",
   },
   {
     header: "Assigned By",
     accessor: "assignedByUsername" as keyof Assignment,
-    width: 120,
+    width: "12%",
   },
   {
     header: "Assigned Date",
     accessor: "assignedDate" as keyof Assignment,
-    width: 140,
+    width: "13%",
   },
-  { header: "State", accessor: "state" as keyof Assignment, width: 158 },
-  { header: "icon", accessor: "" as keyof Assignment },
+  { header: "State", accessor: "state" as keyof Assignment, width: "15%" },
+  { header: "icon", accessor: "" as keyof Assignment, width: "10%" },
 ];
 
 const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
@@ -125,8 +126,10 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
         sortBy={sortBy}
         sortOrder={sortOrder}
       />
-      {listData?.length > 0 && (
+      {listData?.length > 0 ? (
         <Paginate currentPage={currentPage} totalPages={totalPages} />
+      ) : (
+        <EmptyComponent />
       )}
 
       {selected && (

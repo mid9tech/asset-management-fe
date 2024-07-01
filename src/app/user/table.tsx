@@ -24,11 +24,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-}
-  from "@components/ui/table";
+} from "@components/ui/table";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import { truncateParagraph } from "@utils/truncate";
+import EmptyComponent from "@components/empty";
 
 interface UserManagementProps {
   data: User[];
@@ -42,11 +42,12 @@ interface UserManagementProps {
 }
 
 const userColumns = [
-  { header: "Staff Code", accessor: "staffCode" as keyof User, width: 120 },
-  { header: "Full Name", accessor: "fullName" as keyof User, width: 250 },
-  { header: "Username", accessor: "username" as keyof User, width: 150 },
-  { header: "Joined Date", accessor: "joinedDate" as keyof User, width: 120 },
-  { header: "Type", accessor: "type" as keyof User, width: 100 },
+  { header: "Staff Code", accessor: "staffCode" as keyof User, width: "10%" },
+  { header: "Full Name", accessor: "fullName" as keyof User, width: "30%" },
+  { header: "Username", accessor: "username" as keyof User, width: "20%" },
+  { header: "Joined Date", accessor: "joinedDate" as keyof User, width: "20%" },
+  { header: "Type", accessor: "type" as keyof User, width: "10%" },
+  { header: "icon", accessor: "" as keyof User, width: "10%" },
 ];
 
 const UserManagement: React.FC<UserManagementProps> = (props) => {
@@ -58,7 +59,7 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
     sortBy,
     setSortBy,
     setSortOder,
-    loadUserList
+    loadUserList,
   } = props;
   const [showModalRemoveUser, setShowModalRemoveUser] = useState(false);
   const [showModalDetailUser, setShowModalDetailUser] = useState(false);
@@ -148,7 +149,7 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
             </button>
           </div>
         </div>
-        {/* <ReusableList
+        <ReusableList
           columns={userColumns}
           data={data ?? []}
           onRowClick={handleRowClick}
@@ -157,104 +158,11 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
           onEditClick={handleNavigateEditUser}
           sortBy={sortBy === "firstName" ? "fullName" : sortBy}
           sortOrder={sortOrder}
-        /> */}
-        <div>
-          <div className="bg-white h-auto">
-            <div>
-              <div className="mt-5">
-                <table className="w-full table-fixed">
-                  {" "}
-                  {/* Add table-fixed class */}
-                  <thead>
-                    <tr className="flex flex-row gap-3">
-                      {userColumns.map((item, key) => (
-                        <Fragment key={key}>
-                          {item.header !== "icon" ? (
-                            <th
-                              className="border-b-2 border-black cursor-pointer text-sm flex items-start"
-                              style={{ width: item.width || "auto" }} // Set column width
-                              onClick={() => handleSortClick(item.accessor as string)}>
-                              <span className="font-bold">
-                                {item.header}
-                                {sortBy === item.accessor &&
-                                  sortOrder === SORT_ORDER.ASC ? (
-                                  <ArrowDropUpIcon />
-                                ) : (
-                                  <ArrowDropDownIcon />
-                                )}
-                              </span>
-                            </th>
-                          ) : (
-                            <th style={{ width: item.width || "auto" }}></th> // Set column width
-                          )}
-                        </Fragment>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {data?.map((item, key: number) => (
-                      <>
-                        <tr
-                          key={key}
-                          className="flex flex-row gap-3 w-fit cursor-pointer mt-1 h-full"
-                          onClick={() => handleRowClick(item)}>
-                          {userColumns.map((column, colIndex) => (
-                            <>
-                              <td
-                                key={colIndex}
-                                style={{ width: column.width || "auto" }}
-                                className={`text-sm h-full ${column.header === "icon"
-                                  ? ""
-                                  : "border-b-2 border-graycustom"
-                                  } flex justify-start items-start h-full`}>
-                                {column.header !== "icon" ? (
-                                  column.accessor !== "id" ? (
-                                    (truncateParagraph(item[column.accessor] as ReactNode as string, 25))
-                                  ) : (
-                                    key + 1
-                                  )
-                                ) : (
-                                  <>
-
-                                  </>
-                                )}
-                              </td>
-                            </>
-                          ))}
-                          <div className="">
-                            <CreateIcon
-                              className={`text-gray-500 ${item.type === 'Admin' ? 'text-gray cursor-not-allowed' : ''}`}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleNavigateEditUser(item);
-                              }}
-                            />
-                            <button disabled={item.type === 'Admin'}>
-                            <HighlightOffIcon
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleDeleteClick(item);
-                              }}
-                              sx={{ color: "#cf2338" }}
-                              className={`text-gray-500 ${item.type === 'Admin' ? 'text-gray cursor-not-allowed' : ''}`}
-                            />
-                            </button>
-                            
-                          </div>
-                        </tr>
-
-                      </>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
+        />
         {data?.length > 0 ? (
           <Paginate totalPages={totalPages} currentPage={currentPage} />
         ) : (
-          ""
+          <EmptyComponent />
         )}
       </div>
       <ModalConfirmUser
