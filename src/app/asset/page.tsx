@@ -31,7 +31,6 @@ export default function Index({
   const [listAsset, setListAssets] = useState<Asset[]>([]);
   const filterState = searchParams?.State || null;
   useEffect(() => {
-    console.log(1)
     const defaultState = [
       ASSET_TYPE.Assigned,
       ASSET_TYPE.Available,

@@ -13,7 +13,7 @@ import { SORT_ORDER, USER_TYPE } from "../../types/enum.type";
 import { formatDate } from "@utils/timeFormat";
 import { loadData, loadDetail } from "@services/user";
 import { User } from "../../__generated__/graphql";
-import { redirect } from "next/navigation";
+import { redirect, usePathname, useRouter } from "next/navigation";
 import { ACCESS_TOKEN } from "../../constants";
 import { formatText } from "@utils/formatText";
 import { usePushUp } from "./pushUp";
@@ -43,14 +43,21 @@ export default function Index({
   const [totalPages, setTotalPages] = useState<number>();
   const [newestUserId, setNewestUserId] = useState<string>("0");
   const { pushUpId, pushUp }: any = usePushUp()
-
+  const router = useRouter();
+  const pathname = usePathname();
   useEffect(() => {
+    const params = new URLSearchParams();
+    Object.values(USER_TYPE).forEach((type) => {
+      params.append("Type", type);
+    })
+    router.replace(`${pathname}?${params.toString()}`);
     const newUserId = JSON.parse(localStorage.getItem("newUserId") || "0");
     setNewestUserId(newUserId);
   }, []);
 
   useEffect(() => {
     setLoading(true);
+
     loadUserList();
     pushUp(null)
   }, [searchParams, sortBy, sortOrder]);
@@ -61,18 +68,11 @@ export default function Index({
     request.page = parseInt(currentPage);
     request.sort = sortBy;
     request.sortOrder = sortOrder;
+    request.type = filterType;
     if (queryString) {
       request.query = queryString;
     }
-    if (filterType) {
-      if (filterType.includes(defaultChoice)) {
-        delete request.type;
-      } else {
-        request.type = filterType;
-      }
-    }
     let detailUser: any = null;
-
     //push item up
     if (newUserId) {
       detailUser = await loadDetail(newUserId);
