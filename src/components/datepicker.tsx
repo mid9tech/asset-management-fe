@@ -60,7 +60,7 @@ const DatePicker: FC<Props> = ({ label, name }) => {
 
   return (
     <Fragment>
-      <div className="relative w-52 h-full">
+      <div className="relative w-52 h-full" onClick={() => datePickerRef.current && datePickerRef.current.focus()}>
         <input
           ref={datePickerRef}
           placeholder={label}
