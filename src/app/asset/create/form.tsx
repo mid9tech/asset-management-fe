@@ -45,9 +45,9 @@ const FormCreateAsset = () => {
         name: z.string().min(1, { message: "Asset Name is missing" }).max(128, {
             message: "Asset Name can't be more than 128 characters",
         })
-        .refine((val) => /[a-zA-Z]/.test(val), {
-            message: "Asset Name is invalid",
-        }),
+            .refine((val) => /[a-zA-Z]/.test(val), {
+                message: "Asset Name is invalid",
+            }),
         categoryId: z.string().min(1, { message: "Category is missing" }),
         specification: z.string().min(1, { message: "Specification is missing" }).max(128, {
             message: "Specification can't be more than 128 characters",
@@ -175,7 +175,7 @@ const FormCreateAsset = () => {
                                             {...field}
                                             id="specification"
                                             rows={5}
-                                            className={`flex h-auto w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 ${fieldState.error ? "border-nashtech" : ""}`}
+                                            className={`flex h-auto w-full rounded-md border border-input bg-transparent px-3 py-3 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 ${fieldState.error ? "border-nashtech" : ""}`}
                                         />
                                     </FormControl>
                                 </div>
@@ -220,21 +220,31 @@ const FormCreateAsset = () => {
                                             value={field.value}
                                             onValueChange={field.onChange}
                                             className="cursor-pointer">
-                                            <div className="flex items-center space-x-2">
-                                                <RadioGroupItem
-                                                    value={State.AVAILABLE}
-                                                    id="option-one"
-                                                    className={field.value === State.AVAILABLE ? "focus:ring text-nashtech" : ""}
-                                                />
-                                                <Label htmlFor="option-one">Available</Label>
+                                             <div className="flex items-center space-x-2">
+                                                <label className="custom-radio flex h-[20px]">
+                                                    <input
+                                                        type="radio"
+                                                        value={State.AVAILABLE}
+                                                        checked={field.value === State.AVAILABLE}
+                                                        onChange={field.onChange}
+                                                        className={`focus:ring ${field.value === State.AVAILABLE ? "border-nashtech" : ""}`}
+                                                    />
+                                                    <div className="checkmark mt-2"></div>
+                                                    <Label htmlFor="option-one">Available</Label>
+                                                </label>
                                             </div>
                                             <div className="flex items-center space-x-2">
-                                                <RadioGroupItem
-                                                    value={State.NOT_AVAILABLE}
-                                                    id="option-two"
-                                                    className={field.value === State.NOT_AVAILABLE ? "focus:ring text-nashtech" : ""}
-                                                />
-                                                <Label htmlFor="option-two">Not Available</Label>
+                                                <label className="custom-radio flex items-center">
+                                                    <input
+                                                        type="radio"
+                                                        value={State.NOT_AVAILABLE}
+                                                        checked={field.value === State.NOT_AVAILABLE}
+                                                        onChange={field.onChange}
+                                                        className={`focus:ring ${field.value === State.NOT_AVAILABLE ? "border-nashtech" : ""}`}
+                                                    />
+                                                    <span className="checkmark mt-2"></span>
+                                                    <Label htmlFor="option-two">Not Available</Label>
+                                                </label>
                                             </div>
                                         </RadioGroup>
                                     </FormControl>
