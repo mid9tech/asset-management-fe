@@ -29,10 +29,10 @@ export default function RootLayout({
             <ApolloCustomProvider>
               <Navbar />
               <div className="flex flex-grow justify-evenly items-start gap-10 px-10">
-                <div className="w-1/5">
+                <div className="w-1/6">
                   <Sidebar />
                 </div>
-                <div className="w-4/5">
+                <div className="w-5/6">
                   <div className="mt-10">{children}</div>
                 </div>
               </div>

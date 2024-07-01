@@ -28,10 +28,10 @@ interface AssetManagementProps {
 }
 
 const assetColumns = [
-  { header: "Asset Code", accessor: "assetCode" as keyof Asset, width: "10%" },
+  { header: "Asset Code", accessor: "assetCode" as keyof Asset, width: "15%" },
   { header: "Asset Name", accessor: "assetName" as keyof Asset, width: "40%" },
   { header: "Category", accessor: "category" as keyof Asset, width: "20%" },
-  { header: "State", accessor: "state" as keyof Asset, width: "20%" },
+  { header: "State", accessor: "state" as keyof Asset, width: "15%" },
   { header: "icon", accessor: "" as keyof Asset },
 ];
 

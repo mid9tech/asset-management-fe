@@ -12,10 +12,10 @@ import { convertEnumToMap } from "@utils/enumToMap";
 import Search from "@components/search";
 import CustomDatePicker from "@components/datepicker";
 import ReusableList from "@components/list";
-import DetailAssignment from "./detail";
+// import DetailAssignment from "./detail";
 import EmptyComponent from "@components/empty";
 
-interface ViewAssignmentProps {
+interface ViewRequestReturnProps {
   listData: Assignment[];
   sortOrder: SORT_ORDER;
   sortBy: string;
@@ -38,17 +38,22 @@ const tableColumns = [
     width: "15%",
   },
   {
-    header: "Assigned To",
+    header: "Request By",
     accessor: "assignedToUsername" as keyof Assignment,
     width: "12%",
   },
   {
-    header: "Assigned By",
+    header: "Assigned Date",
     accessor: "assignedByUsername" as keyof Assignment,
     width: "12%",
   },
   {
-    header: "Assigned Date",
+    header: "Accepted By",
+    accessor: "assignedDate" as keyof Assignment,
+    width: "13%",
+  },
+  {
+    header: "Returned Date",
     accessor: "assignedDate" as keyof Assignment,
     width: "13%",
   },
@@ -56,7 +61,7 @@ const tableColumns = [
   { header: "icon", accessor: "" as keyof Assignment, width: "10%" },
 ];
 
-const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
+const ViewRequestReturn: FC<ViewRequestReturnProps> = (props) => {
   const {
     listData,
     totalPages,
@@ -98,21 +103,21 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
 
   return (
     <div className="container mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4 text-nashtech">Assignment List</h2>
+      <h2 className="text-2xl font-bold mb-4 text-nashtech">Request List</h2>
       <div className="flex justify-between items-start mb-4">
         <div className="flex items-start space-x-2">
           <div className="relative w-auto flex flex-row items-center justify-start gap-3">
             <Filter label="State" data={convertEnumToMap(ASSIGNMENT_STATUS)} />
-            <CustomDatePicker name="assignedDate" label="Assigned date" />
+            <CustomDatePicker name="returnedDate" label="Returned Date" />
           </div>
         </div>
         <div className="flex gap-3">
           <Search />
-          <button
+          {/* <button
             className="bg-red-600 text-white rounded px-4 py-1 cursor-pointer hover:opacity-75"
             onClick={handleNavigateCreate}>
             Create new assignment
-          </button>
+          </button> */}
         </div>
       </div>
       <ReusableList
@@ -132,15 +137,15 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
         <EmptyComponent />
       )}
 
-      {selected && (
+      {/* {selected && (
         <DetailAssignment
           showModalDetailUser={showModalDetail}
           handleCloseDetailModal={handleCloseDetailModal}
           data={selected}
         />
-      )}
+      )} */}
     </div>
   );
 };
 
-export default ViewAssignment;
+export default ViewRequestReturn;
