@@ -24,6 +24,9 @@ export type Asset = {
   categoryId: Scalars['Int']['output'];
   id: Scalars['ID']['output'];
   installedDate: Scalars['String']['output'];
+  isAllowRemoved: Scalars['Boolean']['output'];
+  isReadyAssigned: Scalars['Boolean']['output'];
+  isRemoved: Scalars['Boolean']['output'];
   location: Scalars['String']['output'];
   specification?: Maybe<Scalars['String']['output']>;
   state: Scalars['String']['output'];
@@ -157,6 +160,7 @@ export type Mutation = {
   createCategory: Category;
   createRequestReturn: RequestReturn;
   createUser: User;
+  deleteAsset: Asset;
   disableUser: Scalars['Boolean']['output'];
   removeRequestReturn: RequestReturn;
   updateAsset: Asset;
@@ -187,6 +191,11 @@ export type MutationCreateRequestReturnArgs = {
 
 export type MutationCreateUserArgs = {
   createUserInput: CreateUserInput;
+};
+
+
+export type MutationDeleteAssetArgs = {
+  id: Scalars['Int']['input'];
 };
 
 

@@ -12,9 +12,9 @@ export const CREATE_ASSET_MUTATION = gql`
       location
       specification
       category {
-          id
-          categoryName
-          categoryCode
+        id
+        categoryName
+        categoryCode
       }
     }
   }
@@ -89,6 +89,9 @@ export const FIND_ASSETS_QUERY = gql`
         state
         location
         specification
+        isRemoved
+        isAllowRemoved
+        isReadyAssigned
         category {
           id
           categoryName
