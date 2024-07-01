@@ -87,12 +87,14 @@ const Category = () => {
   };
 
   return (
-    <SelectContent className="bg-graycustom2 text-black w-full h-[200px] overflow-scroll">
+    <SelectContent className="bg-graycustom2 text-black w-full">
+      <div className="h-[100px] overflow-scroll">
       {data?.getCategories.map((category: any) => (
         <SelectItem key={category?.id} value={category?.id}>
           {truncateParagraph(`${category?.categoryName}`, 25)}
         </SelectItem>
       ))}
+      </div>
       {showNewCategoryInput ? (
         <div className="relative text-nashtech mt-4 border-t-2 border-black bg-input-gray flex flex-col items-center">
           <div className="flex w-2/3">
@@ -125,12 +127,12 @@ const Category = () => {
           </div>
         </div>
       ) : (
-        <p
+        <div
           className="p-2 text-nashtech border-t-2 border-gray bg-input-gray text-sm italic underline py-1 cursor-pointer"
           onClick={handleAddNewCategory}
         >
           Add New Category
-        </p>
+        </div>
       )}
     </SelectContent>
   );
