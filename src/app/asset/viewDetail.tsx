@@ -72,9 +72,9 @@ const ViewDetail = (props :any) => {
                                {selectedAsset.specification}
                             </span>
                         </div>
-                        <div className="flex mb-2">
-                            <span className="text-sm">History</span>{" "}
-                            <span className="text-sm">
+                        <div className="flex gap-9 mb-2">
+                            <span className="text-sm w-40">History</span>{" "}
+                            <span className="text-sm w-80">
                                 ...
                             </span>
                         </div>
