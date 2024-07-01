@@ -14,7 +14,7 @@ const CreateAssignment = () => {
     <>
       <div className="ml-14 w-1/2 space-y-6">
         <h1 className="text-nashtech font-semibold mb-5">
-          Edit New Assignment
+          Edit Assignment
         </h1>
         <EditForm setShowModalConfirm={setShowModalConfirm} />
         <ModalConfirmAssignment
