@@ -47,16 +47,14 @@ const Paginate = ({ totalPages, totalItem, currentPage, itemsPerPage }: Props) =
         const regex = /\D/;
 
         const params = new URLSearchParams(searchParams);
-
         if (newPage <= 0) {
             params.set("page", "1");
-        }
-        if (newPage > totalPages) {
+        } else if (newPage > totalPages) {
             params.set("page", totalPages.toString());
-        }
-        params.set("page", newPage.toString());
-        if (regex.test(newPage.toString())) {
+        } else if (regex.test(newPage.toString())) {
             params.set("page", "1");
+        } else {
+            params.set("page", newPage.toString());
         }
         replace(`${pathname}?${params.toString()}`);
     };
