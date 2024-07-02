@@ -190,7 +190,55 @@ export const DELETE_ASSIGNMENT = gql`
     removeAssignment(id: $id)
   }
 `;
+export const EDIT_ASSIGNMENT_MUTATION = gql`
+  mutation UpdateAssignment ($id: Int!, $updateAssignmentInput: UpdateAssignmentInput!) {
+    updateAssignment(
+        id: $id
+        updateAssignmentInput: $updateAssignmentInput
+    ) {
+        id
+        assetCode
+        assetName
+        assigner {
+            id
+            staffCode
+            username
+            type
+        }
+        assignee {
+            id
+            staffCode
+            username
+            type
+            state
+        }
+        state
+        note
+        assignedDate
+        asset {
+            id
+            assetCode
+            assetName
+            categoryId
+            installedDate
+            isRemoved
+            isAllowRemoved
+            isReadyAssigned
+            state
+            location
+            specification
+            category {
+                id
+                categoryName
+                categoryCode
+            }
+        }
+        assignedByUsername
+        assignedToUsername
+    }
+}
 
+`;
 
 export const UPDATE_STATUS_ASSIGNMENT = gql`
   mutation UpdateStatusAssignment($updateStatusAssignmentInput: UpdateStatusAssignmentInput!) {

@@ -2,10 +2,12 @@ import client from "@libs/graphQl/apolloClient";
 import {
   CreateAssignmentInput,
   FindAssignmentsInput,
+  UpdateAssignmentInput,
 } from "../__generated__/graphql";
 import {
   CREATE_ASSIGNMENT_MUTATION,
   DELETE_ASSIGNMENT,
+  EDIT_ASSIGNMENT_MUTATION,
   GET_ALL_ASSIGNMENT_QUERY,
   GET_ALL_OWN_ASSIGNMENT_QUERY,
   GET_DETAIL_ASSIGNMENT_QUERY,
@@ -68,3 +70,16 @@ export const deleteAssignment = async (id: number) => {
   }
 };
 
+export const updateAssignment = async (id: number, value: UpdateAssignmentInput) => {
+  try {
+    const result = await client.query({
+      query: EDIT_ASSIGNMENT_MUTATION,
+      variables: { id, updateAssignmentInput: value },
+    });
+    console.log("updateAssignment",result.data);
+    return result.data.updateAssignment
+  } catch (error) {
+    console.log("updateAssignment", error)
+    return null
+  }
+}
