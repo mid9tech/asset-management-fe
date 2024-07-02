@@ -16,3 +16,10 @@ export interface IAssignmentForm {
   asset: Asset | null;
   assignedDate: string;
 }
+
+export interface IAssignmentEditForm {
+  user: User | null;
+  asset: Asset | null;
+  assignedDate: string;
+  note: string;
+}

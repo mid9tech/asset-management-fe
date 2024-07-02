@@ -96,6 +96,16 @@ export const GET_DETAIL_ASSIGNMENT_QUERY = gql`
       note
       assignedDate
       asset {
+        id
+        assetCode
+        assetName
+        categoryId
+        installedDate
+        isRemoved
+        isAllowRemoved
+        isReadyAssigned
+        state
+        location
         specification
       }
       assigner {
@@ -126,4 +136,54 @@ export const GET_DETAIL_ASSIGNMENT_QUERY = gql`
       }
     }
   }
+`;
+
+export const EDIT_ASSIGNMENT_MUTATION = gql`
+  mutation UpdateAssignment ($id: Int!, $updateAssignmentInput: UpdateAssignmentInput!) {
+    updateAssignment(
+        id: $id
+        updateAssignmentInput: $updateAssignmentInput
+    ) {
+        id
+        assetCode
+        assetName
+        assigner {
+            id
+            staffCode
+            username
+            type
+        }
+        assignee {
+            id
+            staffCode
+            username
+            type
+            state
+        }
+        state
+        note
+        assignedDate
+        asset {
+            id
+            assetCode
+            assetName
+            categoryId
+            installedDate
+            isRemoved
+            isAllowRemoved
+            isReadyAssigned
+            state
+            location
+            specification
+            category {
+                id
+                categoryName
+                categoryCode
+            }
+        }
+        assignedByUsername
+        assignedToUsername
+    }
+}
+
 `;

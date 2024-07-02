@@ -12,8 +12,7 @@ export const validateCreateSchema: ZodSchema = z
           return !isWeekend(date);
         },
         {
-          message:
-            "Assigned date cannot be Saturday or Sunday.",
+          message: "Assigned date cannot be Saturday or Sunday.",
         }
       ),
   })

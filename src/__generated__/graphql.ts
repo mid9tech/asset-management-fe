@@ -24,6 +24,9 @@ export type Asset = {
   categoryId: Scalars['Int']['output'];
   id: Scalars['ID']['output'];
   installedDate: Scalars['String']['output'];
+  isAllowRemoved: Scalars['Boolean']['output'];
+  isReadyAssigned: Scalars['Boolean']['output'];
+  isRemoved: Scalars['Boolean']['output'];
   location: Scalars['String']['output'];
   specification?: Maybe<Scalars['String']['output']>;
   state: Scalars['String']['output'];
@@ -80,8 +83,10 @@ export type CreateCategoryInput = {
 };
 
 export type CreateRequestReturnInput = {
-  /** Example field (placeholder) */
-  exampleField: Scalars['Int']['input'];
+  assetId: Scalars['Int']['input'];
+  assignedDate: Scalars['String']['input'];
+  assignmentId: Scalars['Int']['input'];
+  requestedById: Scalars['Int']['input'];
 };
 
 export type CreateUserInput = {
@@ -132,6 +137,25 @@ export type FindAssignmentsOutput = {
   totalPages?: Maybe<Scalars['Int']['output']>;
 };
 
+export type FindRequestReturnsInput = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  query?: InputMaybe<Scalars['String']['input']>;
+  returnedDateFilter?: InputMaybe<Scalars['String']['input']>;
+  sortField?: InputMaybe<Scalars['String']['input']>;
+  sortOrder?: InputMaybe<Scalars['String']['input']>;
+  stateFilter?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+export type FindRequestReturnsOutput = {
+  __typename?: 'FindRequestReturnsOutput';
+  limit?: Maybe<Scalars['Int']['output']>;
+  page?: Maybe<Scalars['Int']['output']>;
+  requestReturns: Array<RequestReturn>;
+  total?: Maybe<Scalars['Int']['output']>;
+  totalPages?: Maybe<Scalars['Int']['output']>;
+};
+
 export type FindUsersInput = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   page?: InputMaybe<Scalars['Int']['input']>;
@@ -152,16 +176,25 @@ export type FindUsersOutput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  completeRequestReturn: RequestReturn;
   createAsset: Asset;
   createAssignment: Assignment;
   createCategory: Category;
   createRequestReturn: RequestReturn;
   createUser: User;
+  deleteAsset: Asset;
+  deleteRequestReturn: RequestReturn;
   disableUser: Scalars['Boolean']['output'];
-  removeRequestReturn: RequestReturn;
+  removeAssignment: Scalars['Boolean']['output'];
   updateAsset: Asset;
-  updateRequestReturn: RequestReturn;
+  updateAssignment: Assignment;
+  updateStatusAssignment: Scalars['Boolean']['output'];
   updateUser: User;
+};
+
+
+export type MutationCompleteRequestReturnArgs = {
+  id: Scalars['Int']['input'];
 };
 
 
@@ -181,7 +214,7 @@ export type MutationCreateCategoryArgs = {
 
 
 export type MutationCreateRequestReturnArgs = {
-  createRequestReturnInput: CreateRequestReturnInput;
+  request: CreateRequestReturnInput;
 };
 
 
@@ -190,12 +223,22 @@ export type MutationCreateUserArgs = {
 };
 
 
+export type MutationDeleteAssetArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type MutationDeleteRequestReturnArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
 export type MutationDisableUserArgs = {
   id: Scalars['Int']['input'];
 };
 
 
-export type MutationRemoveRequestReturnArgs = {
+export type MutationRemoveAssignmentArgs = {
   id: Scalars['Int']['input'];
 };
 
@@ -206,8 +249,14 @@ export type MutationUpdateAssetArgs = {
 };
 
 
-export type MutationUpdateRequestReturnArgs = {
-  updateRequestReturnInput: UpdateRequestReturnInput;
+export type MutationUpdateAssignmentArgs = {
+  id: Scalars['Int']['input'];
+  updateAssignmentInput: UpdateAssignmentInput;
+};
+
+
+export type MutationUpdateStatusAssignmentArgs = {
+  updateStatusAssignmentInput: UpdateStatusAssignmentInput;
 };
 
 
@@ -222,10 +271,12 @@ export type Query = {
   findAssets: FindAssetsOutput;
   findAssignments: FindAssignmentsOutput;
   findOneAsset: Asset;
+  findOneRequestReturn: RequestReturn;
+  findRequestReturns: FindRequestReturnsOutput;
   findUsers: FindUsersOutput;
   getCategories: Array<Category>;
-  requestReturn: RequestReturn;
-  requestReturns: Array<RequestReturn>;
+  getListOwnAssignment: FindAssignmentsOutput;
+  getReport: ReportResponse;
   user: User;
 };
 
@@ -250,13 +301,28 @@ export type QueryFindOneAssetArgs = {
 };
 
 
+export type QueryFindOneRequestReturnArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QueryFindRequestReturnsArgs = {
+  request: FindRequestReturnsInput;
+};
+
+
 export type QueryFindUsersArgs = {
   request: FindUsersInput;
 };
 
 
-export type QueryRequestReturnArgs = {
-  id: Scalars['Int']['input'];
+export type QueryGetListOwnAssignmentArgs = {
+  findAssignmentsInput: FindAssignmentsInput;
+};
+
+
+export type QueryGetReportArgs = {
+  reportInput: ReportInput;
 };
 
 
@@ -264,10 +330,44 @@ export type QueryUserArgs = {
   id: Scalars['Int']['input'];
 };
 
+export type ReportElement = {
+  __typename?: 'ReportElement';
+  assigned: Scalars['Int']['output'];
+  available: Scalars['Int']['output'];
+  categoryName: Scalars['String']['output'];
+  notAvailable: Scalars['Int']['output'];
+  recycled: Scalars['Int']['output'];
+  total: Scalars['Int']['output'];
+  waitingForRecycling: Scalars['Int']['output'];
+};
+
+export type ReportInput = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  sort?: InputMaybe<Scalars['String']['input']>;
+  sortOrder?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type ReportResponse = {
+  __typename?: 'ReportResponse';
+  data: Array<ReportElement>;
+  limit?: Maybe<Scalars['Int']['output']>;
+  page?: Maybe<Scalars['Int']['output']>;
+  total?: Maybe<Scalars['Int']['output']>;
+  totalPages?: Maybe<Scalars['Int']['output']>;
+};
+
 export type RequestReturn = {
   __typename?: 'RequestReturn';
-  /** Example field (placeholder) */
-  exampleField: Scalars['Int']['output'];
+  acceptedById: Scalars['Int']['output'];
+  assetId: Scalars['Int']['output'];
+  assignedDate: Scalars['String']['output'];
+  assignmentId: Scalars['Int']['output'];
+  id: Scalars['Int']['output'];
+  isRemoved: Scalars['Boolean']['output'];
+  requestedById: Scalars['Int']['output'];
+  returnedDate: Scalars['String']['output'];
+  state: Scalars['String']['output'];
 };
 
 export type UpdateAssetInput = {
@@ -281,10 +381,20 @@ export type UpdateAssetInput = {
   state: Scalars['String']['input'];
 };
 
-export type UpdateRequestReturnInput = {
-  /** Example field (placeholder) */
-  exampleField?: InputMaybe<Scalars['Int']['input']>;
+export type UpdateAssignmentInput = {
+  assetCode?: InputMaybe<Scalars['String']['input']>;
+  assetId?: InputMaybe<Scalars['Int']['input']>;
+  assetName?: InputMaybe<Scalars['String']['input']>;
+  assignedDate?: InputMaybe<Scalars['String']['input']>;
+  assignedToId?: InputMaybe<Scalars['Int']['input']>;
+  assignedToUsername?: InputMaybe<Scalars['String']['input']>;
+  note?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateStatusAssignmentInput = {
   id: Scalars['Int']['input'];
+  /** assignment status */
+  state: Scalars['String']['input'];
 };
 
 export type UpdateUserInput = {

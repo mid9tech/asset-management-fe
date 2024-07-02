@@ -1,9 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-import { Fragment, ReactNode, useState } from "react";
+import {useState } from "react";
 import { useRouter } from "next/navigation";
-import CreateIcon from "@mui/icons-material/Create";
-import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { disableUser } from "@services/user";
 import { convertEnumToMap } from "@utils/enumToMap";
 import Filter from "@components/filter";
@@ -17,17 +15,6 @@ import Paginate from "@components/paginate";
 import ModalConfirmUser from "./modal/modalConfirm";
 import ModalError from "./modal/modalError";
 import ReusableList from "@components/list";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@components/ui/table";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
-import { truncateParagraph } from "@utils/truncate";
 import EmptyComponent from "@components/empty";
 
 interface UserManagementProps {

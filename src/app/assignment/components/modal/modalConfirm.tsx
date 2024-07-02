@@ -21,7 +21,7 @@ const ModalConfirmAssignment: FC<ModalConfirmProps> = (props) => {
       onClose={() => setShowModalConfirm(false)}
       title="Are you sure ?">
       <div className="bg-white sm:p-6 sm:pb-4">
-        <p className="text-md text-gray-500">Do you want to cancel changes ?</p>
+        <p className="text-md text-gray-500">Do you want to discard changes ?</p>
       </div>
       <div className="bg-gray-50 sm:flex sm:flex-row-reverse gap-4">
         <Button
