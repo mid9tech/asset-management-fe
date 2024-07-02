@@ -184,3 +184,12 @@ export const DELETE_ASSIGNMENT = gql`
     removeAssignment(id: $id)
   }
 `;
+
+export const CHANGE_STATUS_ASSIGNMENT_USER = gql`
+  mutation UpdateStatusAssignment($id: Int!, $state: state!) {
+    updateStatusAssignment(updateStatusAssignmentInput: $state) {
+        id, 
+        state 
+    }
+  }
+`
