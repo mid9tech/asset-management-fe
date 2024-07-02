@@ -88,7 +88,7 @@ const EditForm: FC<FormProps> = (props) => {
       assignedDate: value.assignedDate || "",
       note: noteValue || "",
     };
-    console.log("data: ", variables);
+    console.log("variables: ", variables);
     // const { data }: any = await createAssignment(variables);
 
     // if (data) {
@@ -116,7 +116,7 @@ const EditForm: FC<FormProps> = (props) => {
                     className="w-full flex justify-start"
                     onClick={() => setOpenModalUser(true)}>
                     {userSelected
-                      ? userSelected.firstName + " " + userSelected.lastName
+                      ? userSelected.lastName + " " + userSelected.firstName
                       : ""}
                   </Button>
                 </FormControl>
