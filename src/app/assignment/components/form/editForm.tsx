@@ -102,17 +102,16 @@ const EditForm: FC<FormProps> = (props) => {
           : undefined,
       assignedToId: parseInt(userSelected?.id as string),
       assignedToUsername: userSelected?.username || "",
-      assignedDate: `${new Date(value.assignedDate)}`,
+      assignedDate: value.assignedDate || assignment?.assignedDate,
       note: noteValue || "",
     };
-    console.log("variables: ", value);
-    const { data }: any = await updateAssignment(
+    const data = await updateAssignment(
       assignment?.id as number,
       variables
     );
 
     if (data) {
-      pushUp(assignment?.id);
+      pushUp(data?.id);
       setLoading(false);
       toast.success("Assignment update success");
       route.push("/assignment");

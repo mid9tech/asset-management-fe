@@ -9,9 +9,9 @@ export const formatDateCustome = (
   const year = date.getFullYear();
 
   if (format === "DMY") {
-    return `${day}-${month}-${year}`;
+    return `${day}/${month}/${year}`;
   } else if (format === "YMD") {
-    return `${year}-${month}-${day}`;
+    return `${year}/${month}/${day}`;
   } else if (format === "ISO") {
     return new Date(date)
       .toLocaleDateString("pt-br")
