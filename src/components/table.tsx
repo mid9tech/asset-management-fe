@@ -83,12 +83,11 @@ const ReusableTable = <T extends {type?: string}>({
                   }}
                 />
                 <HighlightOffIcon
-                  sx={{ color: "#cf2338" }}
                   onClick={(e) => {
                     e.stopPropagation();
                     onDeleteClick(row);
                   }}
-                  className="cursor-pointer"
+                  className={`text-gray-500 ${row.type === 'Admin' ? 'text-gray cursor-not-allowed' : ''}`}
                 />
               </TableCell>
             ) : (
