@@ -15,6 +15,13 @@ interface AssetManagementProps {
     setSortBy: (value: any) => void;
     setSortOrder: (value: any) => void;
 }
+
+interface Props {
+    asset: Asset
+    showModalDetailAsset: boolean
+    handleCloseDetailModal: () => void
+
+}
 const ViewDetail = (props :any) => {
     // const [showModalDetailAsset, setShowModalDetailAsset] = useState(false);
     const {selectedAsset,showModalDetailAsset,setShowModalDetailAsset} = props;
