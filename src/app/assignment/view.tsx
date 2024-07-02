@@ -15,6 +15,8 @@ import ReusableList from "@components/list";
 import DetailAssignment from "./detail";
 import EmptyComponent from "@components/empty";
 import ModalConfirmDeleteAssignment from "./components/modal/confirmDelete";
+import { deleteAssignment } from "@services/assignment";
+import { toast } from "react-toastify";
 
 interface ViewAssignmentProps {
   listData: Assignment[];
@@ -100,7 +102,7 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
     setShowModalDetail(false);
   };
 
-  const handleDeleteAssignment = (ass: Assignment) => {
+  const handleModalDeleteAssignment = (ass: Assignment) => {
     setSelected(ass);
     setShowModalConfirmDelete(true);
   };
@@ -114,6 +116,22 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
     setLoading(true);
     setSelected(item);
     route.push(`/assignment/${item.id}`);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      setLoading(true);
+      const response = await deleteAssignment(selected?.id as number);
+      if (response) {
+        setShowModalConfirmDelete(false);
+        toast.success("Delete Assignment Successfully");
+        reloadTableData();
+        setLoading(false);
+      }
+    } catch (error: any) {
+      setShowModalConfirmDelete(false);
+      setLoading(false);
+    }
   };
 
   return (
@@ -130,8 +148,7 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
           <Search />
           <button
             className="bg-red-600 text-white rounded px-4 py-1 cursor-pointer hover:opacity-75"
-            onClick={handleNavigateCreate}
-          >
+            onClick={handleNavigateCreate}>
             Create new assignment
           </button>
         </div>
@@ -140,7 +157,7 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
         columns={tableColumns}
         data={listData}
         onRowClick={handleRowClick}
-        onDeleteClick={handleDeleteAssignment}
+        onDeleteClick={handleModalDeleteAssignment}
         onSortClick={handleSortClick}
         onEditClick={handleNavigateEditPage}
         onReturnClick={() => {}}
@@ -165,8 +182,7 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
         <ModalConfirmDeleteAssignment
           showModalConfirm={showModalConfirmDelete}
           setShowModalConfirm={handleCloseConfirmDeleteAssignment}
-          reloadTableData={reloadTableData}
-          id={selected.id as number}
+          handleDelete={() => confirmDelete()}
         />
       )}
     </div>

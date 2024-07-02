@@ -1,22 +1,16 @@
 import DetailModal from "@components/modal";
 import { Button } from "@components/ui/button";
-import { deleteAssignment } from "@services/assignment";
 import React, { FC } from "react";
 
 interface ModalConfirmProps {
   showModalConfirm: boolean;
   setShowModalConfirm: (value: boolean) => void;
-  reloadTableData: () => void;
-  id: number;
+  handleDelete: () => void;
 }
 
 const ModalConfirmDeleteAssignment: FC<ModalConfirmProps> = (props) => {
-  const { showModalConfirm, setShowModalConfirm, id, reloadTableData } = props;
-  const confirmDelete = () => {
-    deleteAssignment(id);
-    setShowModalConfirm(false);
-    reloadTableData();
-  };
+  const { showModalConfirm, setShowModalConfirm, handleDelete } = props;
+  
   return (
     <DetailModal
       isOpen={showModalConfirm}
@@ -38,7 +32,7 @@ const ModalConfirmDeleteAssignment: FC<ModalConfirmProps> = (props) => {
         </Button>
         <Button
           type="button"
-          onClick={confirmDelete}
+          onClick={handleDelete}
           className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
         >
           Delete
