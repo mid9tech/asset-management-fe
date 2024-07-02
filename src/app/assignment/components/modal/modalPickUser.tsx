@@ -193,7 +193,7 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
                 <div className="col-span-3 border-b-2 border-graycustom">
                   <span>
                     {truncateParagraph(
-                      `${item.lastName} ${item.firstName}`,
+                      `${item.firstName} ${item.lastName}`,
                       30
                     )}
                   </span>

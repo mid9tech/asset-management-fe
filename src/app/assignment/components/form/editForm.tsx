@@ -15,6 +15,7 @@ import {
   Asset,
   Assignment,
   CreateAssignmentInput,
+  UpdateAssignmentInput,
   User,
 } from "../../../../__generated__/graphql";
 import ModalUserPicker from "../modal/modalPickUser";
@@ -26,14 +27,16 @@ import { useRouter } from "next/navigation";
 import { usePushUp } from "../../pushUp";
 import { DatePicker } from "@components/datepickerInput";
 import { Input } from "@components/ui/input";
+import { updateAssignment } from "@services/assignment";
+import { toast } from "react-toastify";
 
 interface FormProps {
   setShowModalConfirm: (value: boolean) => void;
-  data: Assignment | undefined;
+  assignment: Assignment | undefined;
 }
 
 const EditForm: FC<FormProps> = (props) => {
-  const { setShowModalConfirm, data } = props;
+  const { setShowModalConfirm, assignment } = props;
   const { setLoading }: any = useLoading();
   const { pushUp }: any = usePushUp();
 
@@ -52,24 +55,19 @@ const EditForm: FC<FormProps> = (props) => {
   );
 
   useEffect(() => {
-    if (data) {
-      console.log("data", data);
-      setUserSelected(data.assignee);
-      setAssetSelected(data.asset);
-      setNoteValue(data?.note);
-    }
-  }, [data]);
-
-  useEffect(() => {
-    if (data) {
+    if (assignment) {
+      console.log("data", assignment);
+      setUserSelected(assignment.assignee);
+      setAssetSelected(assignment.asset);
+      setNoteValue(assignment?.note);
       setDataUpdate({
-        assignedDate: data.assignedDate,
-        note: data?.note || "",
-        user: data.assignee,
-        asset: data.asset,
+        assignedDate: assignment.assignedDate,
+        note: assignment?.note || "",
+        user: assignment.assignee,
+        asset: assignment.asset,
       });
     }
-  }, [data]);
+  }, [assignment]);
 
   useEffect(() => {
     if (dataUpdate) {
@@ -84,6 +82,7 @@ const EditForm: FC<FormProps> = (props) => {
       asset: null,
       user: null,
       assignedDate: new Date().toISOString().slice(0, 10),
+      note: "",
     },
   });
 
@@ -94,28 +93,30 @@ const EditForm: FC<FormProps> = (props) => {
     if (submissionInProgress) return;
     setSubmissionInProgress(true);
     setLoading(true);
-    const variables: CreateAssignmentInput = {
+    const variables: UpdateAssignmentInput = {
       assetCode: assetSelected?.assetCode || "",
       assetName: assetSelected?.assetName || "",
-      assetId: parseInt(assetSelected?.id as string),
+      assetId:
+        assetSelected?.id !== assignment?.asset.id
+          ? parseInt(assetSelected?.id as string)
+          : undefined,
       assignedToId: parseInt(userSelected?.id as string),
       assignedToUsername: userSelected?.username || "",
-      assignedDate: value.assignedDate || "",
+      assignedDate: `${new Date(value.assignedDate)}`,
       note: noteValue || "",
     };
-    console.log("variables: ", variables);
-    // const { data }: any = await createAssignment(variables);
+    console.log("variables: ", value);
+    const { data }: any = await updateAssignment(
+      assignment?.id as number,
+      variables
+    );
 
-    // if (data) {
-    //   pushUp(data?.id);
-    //   setLoading(false);
-    //   toast.success("Assignment created success");
-    //   route.push("/assignment");
-    // }
-  };
-
-  const handleChangeDate = (value: string) => {
-    console.log("date: ", value);
+    if (data) {
+      pushUp(assignment?.id);
+      setLoading(false);
+      toast.success("Assignment update success");
+      route.push("/assignment");
+    }
   };
   return (
     <Form {...form}>
@@ -210,7 +211,7 @@ const EditForm: FC<FormProps> = (props) => {
           <label>Note</label>
           <textarea
             onChange={(e) => setNoteValue(e.target.value)}
-            defaultValue={data?.note || ""}
+            defaultValue={assignment?.note || ""}
             id="note-assignment"
             rows={5}
             className="flex h-auto w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
