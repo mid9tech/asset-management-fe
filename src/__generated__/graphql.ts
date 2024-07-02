@@ -162,9 +162,12 @@ export type Mutation = {
   createUser: User;
   deleteAsset: Asset;
   disableUser: Scalars['Boolean']['output'];
+  removeAssignment: Scalars['Boolean']['output'];
   removeRequestReturn: RequestReturn;
   updateAsset: Asset;
+  updateAssignment: Scalars['Boolean']['output'];
   updateRequestReturn: RequestReturn;
+  updateStatusAssignment: Scalars['Boolean']['output'];
   updateUser: User;
 };
 
@@ -204,6 +207,11 @@ export type MutationDisableUserArgs = {
 };
 
 
+export type MutationRemoveAssignmentArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
 export type MutationRemoveRequestReturnArgs = {
   id: Scalars['Int']['input'];
 };
@@ -215,8 +223,19 @@ export type MutationUpdateAssetArgs = {
 };
 
 
+export type MutationUpdateAssignmentArgs = {
+  id: Scalars['Int']['input'];
+  updateAssignmentInput: UpdateAssignmentInput;
+};
+
+
 export type MutationUpdateRequestReturnArgs = {
   updateRequestReturnInput: UpdateRequestReturnInput;
+};
+
+
+export type MutationUpdateStatusAssignmentArgs = {
+  updateStatusAssignmentInput: UpdateStatusAssignmentInput;
 };
 
 
@@ -233,6 +252,7 @@ export type Query = {
   findOneAsset: Asset;
   findUsers: FindUsersOutput;
   getCategories: Array<Category>;
+  getListOwnAssignment: Scalars['Boolean']['output'];
   requestReturn: RequestReturn;
   requestReturns: Array<RequestReturn>;
   user: User;
@@ -264,6 +284,11 @@ export type QueryFindUsersArgs = {
 };
 
 
+export type QueryGetListOwnAssignmentArgs = {
+  findAssignmentsInput: FindAssignmentsInput;
+};
+
+
 export type QueryRequestReturnArgs = {
   id: Scalars['Int']['input'];
 };
@@ -290,10 +315,26 @@ export type UpdateAssetInput = {
   state: Scalars['String']['input'];
 };
 
+export type UpdateAssignmentInput = {
+  assetCode?: InputMaybe<Scalars['String']['input']>;
+  assetId?: InputMaybe<Scalars['Int']['input']>;
+  assetName?: InputMaybe<Scalars['String']['input']>;
+  assignedDate?: InputMaybe<Scalars['String']['input']>;
+  assignedToId?: InputMaybe<Scalars['Int']['input']>;
+  assignedToUsername?: InputMaybe<Scalars['String']['input']>;
+  note?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type UpdateRequestReturnInput = {
   /** Example field (placeholder) */
   exampleField?: InputMaybe<Scalars['Int']['input']>;
   id: Scalars['Int']['input'];
+};
+
+export type UpdateStatusAssignmentInput = {
+  id: Scalars['Int']['input'];
+  /** assignment status */
+  state: Scalars['String']['input'];
 };
 
 export type UpdateUserInput = {

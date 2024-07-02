@@ -8,13 +8,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@components/ui/form";
-import { Input } from "@components/ui/input";
 import React, { FC, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import {
-  IAssignmentEditForm,
-  IAssignmentForm,
-} from "../../../../types/assignment.type";
+import { IAssignmentEditForm } from "../../../../types/assignment.type";
 import {
   Asset,
   Assignment,
@@ -26,11 +22,10 @@ import ModalPikcAsset from "../modal/modalPickAsset";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { validateCreateSchema } from "../../create/validation";
 import { useLoading } from "@providers/loading";
-import { createAssignment } from "@services/assignment";
-import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { usePushUp } from "../../pushUp";
-import DatePickerInput from "@components/datepickerInput";
+import { DatePicker } from "@components/datepickerInput";
+import { Input } from "@components/ui/input";
 
 interface FormProps {
   setShowModalConfirm: (value: boolean) => void;
@@ -52,6 +47,10 @@ const EditForm: FC<FormProps> = (props) => {
   const [assetSelected, setAssetSelected] = useState<Asset>();
   const [noteValue, setNoteValue] = useState<string | null>();
 
+  const [dataUpdate, setDataUpdate] = useState<IAssignmentEditForm | null>(
+    null
+  );
+
   useEffect(() => {
     if (data) {
       console.log("data", data);
@@ -61,19 +60,35 @@ const EditForm: FC<FormProps> = (props) => {
     }
   }, [data]);
 
+  useEffect(() => {
+    if (data) {
+      setDataUpdate({
+        assignedDate: data.assignedDate,
+        note: data?.note || "",
+        user: data.assignee,
+        asset: data.asset,
+      });
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (dataUpdate) {
+      form.reset(dataUpdate);
+    }
+  }, [dataUpdate]);
+
   const form = useForm({
     resolver: zodResolver(validateCreateSchema),
     mode: "onChange",
-    defaultValues: {
-      asset: assetSelected || null,
-      user: userSelected || null,
-      assignedDate: data?.assignedDate || "",
-      note: data?.note || "",
+    defaultValues: dataUpdate || {
+      asset: null,
+      user: null,
+      assignedDate: new Date().toISOString().slice(0, 10),
     },
   });
 
   const allFieldsFilled =
-    !userSelected && !assetSelected && !form.watch("assignedDate");
+    !!userSelected && !!assetSelected && !!form.watch("assignedDate");
 
   const onSubmit = async (value: IAssignmentEditForm) => {
     if (submissionInProgress) return;
@@ -97,6 +112,10 @@ const EditForm: FC<FormProps> = (props) => {
     //   toast.success("Assignment created success");
     //   route.push("/assignment");
     // }
+  };
+
+  const handleChangeDate = (value: string) => {
+    console.log("date: ", value);
   };
   return (
     <Form {...form}>
@@ -169,7 +188,15 @@ const EditForm: FC<FormProps> = (props) => {
               <div className="flex items-center">
                 <FormLabel className="w-[150px]">Assigned Date</FormLabel>
                 <FormControl>
-                  <DatePickerInput defaultValue={data?.assignedDate as string} />
+                  <Input
+                    id="assigned-date-assignment-edit"
+                    placeholder="Select a date"
+                    {...field}
+                    type="date"
+                    className={`flex justify-end cursor-pointer flex-col ${
+                      fieldState.error ? "border-nashtech" : ""
+                    }`}
+                  />
                 </FormControl>
               </div>
               <FormMessage className="text-nashtech float-left ml-26">
@@ -178,11 +205,12 @@ const EditForm: FC<FormProps> = (props) => {
             </FormItem>
           )}
         />
+
         <div className="flex flex-row justify-between items-start w-full gap-20">
           <label>Note</label>
           <textarea
             onChange={(e) => setNoteValue(e.target.value)}
-            value={data?.note || ""}
+            defaultValue={data?.note || ""}
             id="note-assignment"
             rows={5}
             className="flex h-auto w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
