@@ -7,6 +7,7 @@ import {
   CREATE_ASSIGNMENT_MUTATION,
   DELETE_ASSIGNMENT,
   GET_ALL_ASSIGNMENT_QUERY,
+  GET_ALL_OWN_ASSIGNMENT_QUERY,
   GET_DETAIL_ASSIGNMENT_QUERY,
 } from "./query/assignment.query";
 
@@ -29,6 +30,17 @@ export const gettAllAssignment = async (value: FindAssignmentsInput) => {
     data: result.data.findAssignments,
   };
 };
+
+export const getAllOwnAssignment = async (value: FindAssignmentsInput) => {
+  const result = await client.query({
+    query: GET_ALL_OWN_ASSIGNMENT_QUERY,
+    variables: value,
+  });
+  return {
+    data: result.data.getListOwnAssignment,
+  };
+};
+
 export const loadDetailAssignment = async (id: number) => {
   try {
     const result = await client.query({

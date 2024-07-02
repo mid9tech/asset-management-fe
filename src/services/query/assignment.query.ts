@@ -86,6 +86,57 @@ export const GET_ALL_ASSIGNMENT_QUERY = gql`
     }
   }
 `;
+
+export const GET_ALL_OWN_ASSIGNMENT_QUERY = gql`
+  query FindOwnAssignments(
+    $page: Int
+    $query: String
+    $sortOrder: String
+    $sort: String
+    $limit: Int
+    $assignedDate: String
+    $state: [String!]
+  ) {
+    getListOwnAssignment(
+      findAssignmentsInput: {
+        page: $page
+        limit: $limit
+        query: $query
+        sortOrder: $sortOrder
+        state: $state
+        sort: $sort
+        assignedDate: $assignedDate
+      }
+    ) {
+      page
+      limit
+      total
+      totalPages
+      assignments {
+        id
+        assetCode
+        assetName
+        state
+        note
+        assignedDate
+        assignedByUsername
+        assignedToUsername
+        asset {
+          specification
+        }
+        assigner {
+          staffCode
+          username
+        }
+        assignee {
+          staffCode
+          username
+        }
+      }
+    }
+  }
+`;
+
 export const GET_DETAIL_ASSIGNMENT_QUERY = gql`
   query Assignment($id: Int!) {
     assignment(id: $id) {
