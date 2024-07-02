@@ -100,6 +100,8 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
     setOpenModal(false);
   };
 
+  
+
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
       <div
@@ -193,7 +195,7 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
                 <div className="col-span-3 border-b-2 border-graycustom">
                   <span>
                     {truncateParagraph(
-                      `${item.lastName} ${item.firstName}`,
+                      `${item.firstName} ${item.lastName} `,
                       30
                     )}
                   </span>
