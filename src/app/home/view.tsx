@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-"use client";
 import React, { FC, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLoading } from "@providers/loading";
@@ -12,6 +10,9 @@ import DetailOwnAssignment from "./detail";
 import ModalConfirmDeclineAssignment from "./components/modal/confirmDecline";
 import ModalConfirmAcceptAssignment from "./components/modal/confirmAccept";
 import HomeList from "./components/table/homeList";
+import { useMutation } from "@apollo/client";
+import { UPDATE_STATUS_ASSIGNMENT, updateStatusAssignment } from "@services/query/assignment.query";
+import { toast } from "react-toastify";
 
 interface ViewAssignmentProps {
   listData: Assignment[];
@@ -73,11 +74,7 @@ const ViewOwnAssignment: FC<ViewAssignmentProps> = (props) => {
   const [showModalDetail, setShowModalDetail] = useState(false);
   const [showModalConfirmDecline, setShowModalConfirmDecline] = useState(false);
   const [showModalConfirmAccept, setShowModalConfirmAccept] = useState(false);
-
-  const handleNavigateCreate = () => {
-    setLoading(true);
-    route.push("assignment/create");
-  };
+  const [changeStatus] = useMutation(UPDATE_STATUS_ASSIGNMENT);
 
   const handleSortClick = (item: string) => {
     let defaultOrder = SORT_ORDER.ASC;
@@ -98,10 +95,6 @@ const ViewOwnAssignment: FC<ViewAssignmentProps> = (props) => {
     setShowModalDetail(false);
   };
 
-  const handleOpenAcceptModal = () => {
-    setShowModalDetail(true);
-  };
-
   const handleDeclineAssignment = (ass: Assignment) => {
     setSelected(ass);
     setShowModalConfirmDecline(true);
@@ -112,11 +105,52 @@ const ViewOwnAssignment: FC<ViewAssignmentProps> = (props) => {
     setShowModalConfirmAccept(true);
   };
 
-  const handleNavigateEditPage = (item: Assignment) => {
-    if (item.state === ASSIGNMENT_STATUS.ACCEPTED) return;
-    setLoading(true);
-    setSelected(item);
-    route.push(`/assignment/${item.id}`);
+  const handleConfirmAccept = async () => {
+    if (selected?.id === undefined) {
+      toast.error("Selected assignment ID is undefined. Please try again.");
+      return;
+    }
+
+    console.log("selected: ",selected.id, selected.state);
+    // try {
+    //   setLoading(true);
+    //   const response = await disableUser(parseInt(selectedUser?.id as string));
+    //   if (response) {
+    //     setShowModalRemoveUser(false);
+    //     toast.success("Disable User Successfully");
+    //     loadUserList();
+    //     setLoading(false);
+    //   }
+    // } catch (error: any) {
+    //   setShowModalRemoveUser(false);
+    //   setLoading(false);
+    //   setShowModalError(true);
+    // }
+
+    try {
+      setLoading(true);
+      // const acceptOptions = {
+      //   variables: {
+      //     id: selected.id,
+      //     state: ASSIGNMENT_STATUS.ACCEPTED, 
+      //   },
+      // };
+      const response = await updateStatusAssignment(selected?.id);
+      console.log("res: ",response);
+      
+
+      if (response && response.data.updateStatusAssignment) {
+        setShowModalConfirmAccept(false);
+        toast.success("Accept Asset Successfully");
+        reloadTableData(); 
+      } else {
+        toast.error("Failed to accept the assignment. Please try again.");
+      }
+    } catch (error: any) {
+      toast.error("An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -160,6 +194,7 @@ const ViewOwnAssignment: FC<ViewAssignmentProps> = (props) => {
         <ModalConfirmAcceptAssignment
           showModalConfirm={showModalConfirmAccept}
           setShowModalConfirm={setShowModalConfirmAccept}
+          handleConfirmAccept={handleConfirmAccept}
           reloadTableData={reloadTableData}
           id={selected.id as number}
         />

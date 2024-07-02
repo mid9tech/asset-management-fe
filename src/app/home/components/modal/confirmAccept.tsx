@@ -7,10 +7,11 @@ interface ModalConfirmProps {
   setShowModalConfirm: (value: boolean) => void;
   reloadTableData: () => void;
   id: number;
+  handleConfirmAccept:() => void
 }
 
 const ModalConfirmAcceptAssignment: FC<ModalConfirmProps> = (props) => {
-  const { showModalConfirm, setShowModalConfirm, id, reloadTableData } = props;
+  const { showModalConfirm, setShowModalConfirm, id, reloadTableData,handleConfirmAccept } = props;
   const confirmAccept = () => {
     setShowModalConfirm(false);
     reloadTableData();
@@ -36,7 +37,7 @@ const ModalConfirmAcceptAssignment: FC<ModalConfirmProps> = (props) => {
         </Button>
         <Button
           type="button"
-          onClick={confirmAccept}
+          onClick={handleConfirmAccept}
           className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
         >
           Accept

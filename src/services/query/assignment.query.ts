@@ -1,4 +1,5 @@
 import { gql } from "@apollo/client";
+import client from "@libs/graphQl/apolloClient";
 
 export const CREATE_ASSIGNMENT_MUTATION = gql`
   mutation CreateAssignment(
@@ -185,11 +186,20 @@ export const DELETE_ASSIGNMENT = gql`
   }
 `;
 
-export const CHANGE_STATUS_ASSIGNMENT_USER = gql`
-  mutation UpdateStatusAssignment($id: Int!, $state: state!) {
-    updateStatusAssignment(updateStatusAssignmentInput: $state) {
-        id, 
-        state 
-    }
+
+export const UPDATE_STATUS_ASSIGNMENT = gql`
+  mutation UpdateStatusAssignment($updateStatusAssignmentInput: UpdateStatusAssignmentInput!) {
+    updateStatusAssignment(updateStatusAssignmentInput: $updateStatusAssignmentInput)
   }
-`
+`;
+
+export const updateStatusAssignment = async (request: any) => {
+  const result = await client.mutate({
+    mutation: UPDATE_STATUS_ASSIGNMENT,
+    variables: request,
+  });
+  return {
+    data: result.data.updateStatusAssignment,
+  };
+};
+
