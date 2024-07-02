@@ -14,6 +14,7 @@ import CustomDatePicker from "@components/datepicker";
 import ReusableList from "@components/list";
 import DetailAssignment from "./detail";
 import EmptyComponent from "@components/empty";
+import ModalConfirmDeleteAssignment from "./components/modal/confirmDelete";
 
 interface ViewAssignmentProps {
   listData: Assignment[];
@@ -23,6 +24,7 @@ interface ViewAssignmentProps {
   setSortOder: (value: any) => void;
   totalPages: number;
   currentPage: number;
+  reloadTableData: () => void;
 }
 
 const tableColumns = [
@@ -65,12 +67,14 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
     setSortOder,
     sortOrder,
     sortBy,
+    reloadTableData,
   } = props;
   const route = useRouter();
   const { setLoading }: any = useLoading();
 
   const [selected, setSelected] = useState<Assignment>();
   const [showModalDetail, setShowModalDetail] = useState(false);
+  const [showModalConfirmDelete, setShowModalConfirmDelete] = useState(false);
 
   const handleNavigateCreate = () => {
     setLoading(true);
@@ -96,6 +100,15 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
     setShowModalDetail(false);
   };
 
+  const handleDeleteAssignment = (ass: Assignment) => {
+    setSelected(ass);
+    setShowModalConfirmDelete(true);
+  };
+
+  const handleCloseConfirmDeleteAssignment = () => {
+    setShowModalConfirmDelete(false);
+  };
+
   const handleNavigateEditPage = (item: Assignment) => {
     if (item.state === ASSIGNMENT_STATUS.ACCEPTED) return;
     setLoading(true);
@@ -117,7 +130,8 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
           <Search />
           <button
             className="bg-red-600 text-white rounded px-4 py-1 cursor-pointer hover:opacity-75"
-            onClick={handleNavigateCreate}>
+            onClick={handleNavigateCreate}
+          >
             Create new assignment
           </button>
         </div>
@@ -126,7 +140,7 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
         columns={tableColumns}
         data={listData}
         onRowClick={handleRowClick}
-        onDeleteClick={() => {}}
+        onDeleteClick={handleDeleteAssignment}
         onSortClick={handleSortClick}
         onEditClick={handleNavigateEditPage}
         onReturnClick={() => {}}
@@ -144,6 +158,15 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
           showModalDetailUser={showModalDetail}
           handleCloseDetailModal={handleCloseDetailModal}
           data={selected}
+        />
+      )}
+
+      {selected && (
+        <ModalConfirmDeleteAssignment
+          showModalConfirm={showModalConfirmDelete}
+          setShowModalConfirm={handleCloseConfirmDeleteAssignment}
+          reloadTableData={reloadTableData}
+          id={selected.id as number}
         />
       )}
     </div>

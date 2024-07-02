@@ -127,3 +127,9 @@ export const GET_DETAIL_ASSIGNMENT_QUERY = gql`
     }
   }
 `;
+
+export const DELETE_ASSIGNMENT = gql`
+  mutation DeleteAssignment($id: Int!) {
+    removeAssignment(id: $id)
+  }
+`;

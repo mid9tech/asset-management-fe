@@ -20,10 +20,9 @@ export default function Index({
     State?: string;
     assignedDate?: string;
     page?: string;
-
   };
 }) {
-  const { pushUpId, pushUp }: any = usePushUp()
+  const { pushUpId, pushUp }: any = usePushUp();
   const { setLoading }: any = useLoading();
   const [listData, setListData] = useState<Assignment[]>();
 
@@ -38,8 +37,7 @@ export default function Index({
 
   useEffect(() => {
     handleGetAllAssignment();
-    pushUp(null)
-
+    pushUp(null);
   }, [sortBy, sortOrder, searchParams]);
 
   const handleGetAllAssignment = async () => {
@@ -70,14 +68,16 @@ export default function Index({
     const { data }: any = await gettAllAssignment(request);
 
     if (data) {
-      const listCustom = data?.assignments.map((item: Assignment) => (formatAssignment(item)));
+      const listCustom = data?.assignments.map((item: Assignment) =>
+        formatAssignment(item)
+      );
 
       if (detail) {
-        console.log(listCustom)
+        console.log(listCustom);
         const index = listCustom.findIndex(
           (assignment: Assignment) => assignment.id === pushUpId
         );
-        console.log(index)
+        console.log(index);
 
         if (index !== -1) {
           listCustom.splice(index, 1);
@@ -99,6 +99,7 @@ export default function Index({
   return (
     <Fragment>
       <ViewAssignment
+        reloadTableData={handleGetAllAssignment}
         listData={listData as Assignment[]}
         totalPages={totlaPage as number}
         currentPage={parseInt(currentPage)}
