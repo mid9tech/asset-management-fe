@@ -67,3 +67,4 @@ export const deleteAssignment = async (id: number) => {
     return null;
   }
 };
+
