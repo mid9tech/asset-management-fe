@@ -22,6 +22,9 @@ const Sidebar = () => {
       </div>
       {menuItems?.map((item) => (
         <Link
+        style={{
+          pointerEvents: (pathname === item.path[0]) ? "none" : "auto",
+        }}
           href={item.path[0]}
           key={item.name}
           onClick={() => setActiveItem(item)}
