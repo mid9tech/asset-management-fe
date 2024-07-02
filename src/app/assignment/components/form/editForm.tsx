@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Button } from "@components/ui/button";
 import {
   Form,
@@ -8,13 +9,15 @@ import {
   FormMessage,
 } from "@components/ui/form";
 import { Input } from "@components/ui/input";
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
+  IAssignmentEditForm,
   IAssignmentForm,
 } from "../../../../types/assignment.type";
 import {
   Asset,
+  Assignment,
   CreateAssignmentInput,
   User,
 } from "../../../../__generated__/graphql";
@@ -27,13 +30,15 @@ import { createAssignment } from "@services/assignment";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { usePushUp } from "../../pushUp";
+import DatePickerInput from "@components/datepickerInput";
 
 interface FormProps {
   setShowModalConfirm: (value: boolean) => void;
+  data: Assignment | undefined;
 }
 
 const EditForm: FC<FormProps> = (props) => {
-  const { setShowModalConfirm } = props;
+  const { setShowModalConfirm, data } = props;
   const { setLoading }: any = useLoading();
   const { pushUp }: any = usePushUp();
 
@@ -45,22 +50,32 @@ const EditForm: FC<FormProps> = (props) => {
 
   const [userSelected, setUserSelected] = useState<User>();
   const [assetSelected, setAssetSelected] = useState<Asset>();
-  const [noteValue, setNoteValue] = useState<string>();
+  const [noteValue, setNoteValue] = useState<string | null>();
+
+  useEffect(() => {
+    if (data) {
+      console.log("data", data);
+      setUserSelected(data.assignee);
+      setAssetSelected(data.asset);
+      setNoteValue(data?.note);
+    }
+  }, [data]);
 
   const form = useForm({
     resolver: zodResolver(validateCreateSchema),
     mode: "onChange",
     defaultValues: {
-      asset: null,
-      user: null,
-      assignedDate: new Date().toISOString().slice(0, 10),
+      asset: assetSelected || null,
+      user: userSelected || null,
+      assignedDate: data?.assignedDate || "",
+      note: data?.note || "",
     },
   });
 
   const allFieldsFilled =
-    !!userSelected && !!assetSelected && !!form.watch("assignedDate");
+    !userSelected && !assetSelected && !form.watch("assignedDate");
 
-  const onSubmit = async (value: IAssignmentForm) => {
+  const onSubmit = async (value: IAssignmentEditForm) => {
     if (submissionInProgress) return;
     setSubmissionInProgress(true);
     setLoading(true);
@@ -70,19 +85,18 @@ const EditForm: FC<FormProps> = (props) => {
       assetId: parseInt(assetSelected?.id as string),
       assignedToId: parseInt(userSelected?.id as string),
       assignedToUsername: userSelected?.username || "",
-      assignedDate: value.assignedDate,
+      assignedDate: value.assignedDate || "",
       note: noteValue || "",
     };
-    const { data }: any = await createAssignment(variables);
-    console.log();
-    
-    if (data) {
-      pushUp(data?.id);
-      setLoading(false);
-      toast.success("Assignment created success");
-      route.push("/assignment");
-    }
-    
+    console.log("data: ", variables);
+    // const { data }: any = await createAssignment(variables);
+
+    // if (data) {
+    //   pushUp(data?.id);
+    //   setLoading(false);
+    //   toast.success("Assignment created success");
+    //   route.push("/assignment");
+    // }
   };
   return (
     <Form {...form}>
@@ -155,15 +169,7 @@ const EditForm: FC<FormProps> = (props) => {
               <div className="flex items-center">
                 <FormLabel className="w-[150px]">Assigned Date</FormLabel>
                 <FormControl>
-                  <Input
-                    id="assigned-date-assignment"
-                    placeholder="Select a date"
-                    {...field}
-                    type="date"
-                    className={`flex justify-end cursor-pointer flex-col ${
-                      fieldState.error ? "border-nashtech" : ""
-                    }`}
-                  />
+                  <DatePickerInput defaultValue={data?.assignedDate as string} />
                 </FormControl>
               </div>
               <FormMessage className="text-nashtech float-left ml-26">
@@ -175,7 +181,7 @@ const EditForm: FC<FormProps> = (props) => {
         <div className="flex flex-row justify-between items-start w-full gap-20">
           <label>Note</label>
           <textarea
-          onChange={(e) => setNoteValue(e.target.value)}
+            onChange={(e) => setNoteValue(e.target.value)}
             id="note-assignment"
             rows={5}
             className="flex h-auto w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"

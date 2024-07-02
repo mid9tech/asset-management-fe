@@ -96,6 +96,16 @@ export const GET_DETAIL_ASSIGNMENT_QUERY = gql`
       note
       assignedDate
       asset {
+        id
+        assetCode
+        assetName
+        categoryId
+        installedDate
+        isRemoved
+        isAllowRemoved
+        isReadyAssigned
+        state
+        location
         specification
       }
       assigner {
