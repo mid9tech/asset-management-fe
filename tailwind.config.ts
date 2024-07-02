@@ -20,6 +20,7 @@ const config: Config = {
         'graycustom': '#949494',
         'graycustom2': '#f5f5f5',
         'gray': '#707070',
+        'blue' :'#5AB1EC',
         'disable': '#F0F1F4',
         'header-modal': '#EFF1F5',
         'input-gray': '#EFF1F5',

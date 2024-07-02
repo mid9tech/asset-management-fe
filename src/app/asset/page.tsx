@@ -123,6 +123,7 @@ export default function Index({
           sortOrder={sortOrder}
           setSortBy={setSortBy}
           setSortOrder={setSortOrder}
+          loadAssetList={loadAssetList}
         />
       </Suspense>
     </Fragment>

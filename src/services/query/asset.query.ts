@@ -98,3 +98,21 @@ export const FIND_ASSETS_QUERY = gql`
     }
   }
 `;
+
+export const DISABLE_ASSET_QUERY = gql`
+  mutation DeleteAsset($id: Int!) {
+    deleteAsset(id: $id) {
+      id
+      assetCode
+      assetName
+      categoryId
+      installedDate
+      isRemoved
+      isAllowRemoved
+      isReadyAssigned
+      state
+      location
+      specification
+  }
+  }
+`;
