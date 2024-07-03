@@ -54,7 +54,8 @@ const ReusableList = <T extends {}>({
                             minWidth: item.width || "auto",
                             maxWidth: item.width,
                           }} // Set column width
-                          onClick={() => onSortClick(item.accessor as string)}>
+                          onClick={() => onSortClick(item.accessor as string)}
+                        >
                           <span className="font-bold">
                             {item.header}
                             {sortBy === item.accessor &&
@@ -70,7 +71,8 @@ const ReusableList = <T extends {}>({
                           style={{
                             minWidth: item.width || "auto",
                             maxWidth: item.width,
-                          }}></th> // Set column width
+                          }}
+                        ></th> // Set column width
                       )}
                     </Fragment>
                   ))}
@@ -81,7 +83,8 @@ const ReusableList = <T extends {}>({
                   <tr
                     key={key}
                     className="flex flex-row gap-3 cursor-pointer mt-1 h-full"
-                    onClick={() => onRowClick(item)}>
+                    onClick={() => onRowClick(item)}
+                  >
                     {columns.map((column, colIndex) => (
                       <td
                         key={colIndex}
@@ -93,7 +96,8 @@ const ReusableList = <T extends {}>({
                           column.header === "icon"
                             ? ""
                             : "border-b-2 border-graycustom"
-                        } flex justify-start items-start h-full  truncate`}>
+                        } flex justify-start items-start h-full  truncate`}
+                      >
                         {column.header !== "icon" ? (
                           column.accessor !== "id" ? (
                             (item[column.accessor] as ReactNode as string)
