@@ -3,9 +3,9 @@ import { GET_REPORT } from "./query/report.query";
 
 export interface ReportInputInterface {
   page: number;
-  limit: number;
-  sortOrder: string;
-  sort: "asc" | "desc";
+  limit?: number;
+  sortOrder?: string;
+  sort?: "asc" | "desc";
 }
 
 export const GetReportService = async (reportInput: ReportInputInterface) => {

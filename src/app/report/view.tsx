@@ -5,6 +5,8 @@ import { ReportElement } from "../../__generated__/graphql";
 import Paginate from "@components/paginate";
 import ReusableList from "@components/list";
 import EmptyComponent from "@components/empty";
+import dynamic from "next/dynamic";
+const ExportButton = dynamic(() => import("./exportButton"), { ssr: false });
 
 interface UserManagementProps {
   data: ReportElement[];
@@ -82,9 +84,7 @@ const ReportManagement: React.FC<UserManagementProps> = (props) => {
         <div className="flex justify-between items-center mb-4">
           <div className="flex items-center space-x-2"></div>
           <div className="flex gap-10">
-            <button className="bg-red-600 text-white rounded px-4 py-1 cursor-pointer">
-              Export
-            </button>
+            <ExportButton />
           </div>
         </div>
         <ReusableList
