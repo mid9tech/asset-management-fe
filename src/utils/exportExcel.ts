@@ -1,18 +1,31 @@
-import * as XLSX from "xlsx";
+import ExcelJS from "exceljs";
 
-export const ExportToExcel = (data: any, fileName: string) => {
-  // Convert data to a worksheet
-  const worksheet = XLSX.utils.json_to_sheet(data);
+export const ExportToExcel = async (data: any, fileName: string) => {
+  // Create a new workbook and add a worksheet
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet("Report");
 
-  // Create a new workbook and append the worksheet
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Report");
+  // Assuming `data` is an array of objects with consistent keys
+  if (data.length > 0) {
+    // Add headers
+    const headers = Object.keys(data[0]);
+    worksheet.columns = headers.map((header) => ({
+      header,
+      key: header,
+      width: 15, // Adjust the width as necessary
+    }));
+
+    // Add rows
+    data.forEach((item: any) => {
+      worksheet.addRow(item);
+    });
+  }
 
   // Create a binary string representation of the workbook
-  const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+  const buffer = await workbook.xlsx.writeBuffer();
 
-  // Create a Blob from the binary string
-  const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+  // Create a Blob from the buffer
+  const blob = new Blob([buffer], { type: "application/octet-stream" });
 
   // Create a link element and click it to trigger the download
   const link = document.createElement("a");
