@@ -72,6 +72,7 @@ const ModalPikcAsset: React.FC<ModalPickerProps> = ({
         limit: 10,
         sortField: sortBy,
         sortOrder: sortOrder,
+        stateFilter: [ASSET_TYPE.Available]
       });
 
       document.addEventListener("mousedown", handleClickOutside);
@@ -169,16 +170,16 @@ const ModalPikcAsset: React.FC<ModalPickerProps> = ({
               <div
                 key={key}
                 className={`grid grid-cols-6 gap-4 ${
-                  (item.isReadyAssigned == false || item.state !== ASSET_TYPE.Available)
+                  item.isReadyAssigned == false
                     ? "opacity-50 cursor-not-allowed"
                     : "cursor-pointer"
                 }`}
-                onClick={(item.isReadyAssigned == false || item.state !== ASSET_TYPE.Available)? () => {} : () => handleSelected(item)}>
+                onClick={item.isReadyAssigned == false ? () => {} : () => handleSelected(item)}>
                 <div className="flex justify-end items-center">
                   <label className="custom-radio">
                     <input
                       type="radio"
-                      disabled={(item.isReadyAssigned == false || item.state !== ASSET_TYPE.Available)}
+                      disabled={item.isReadyAssigned == false}
                       checked={selected?.id === item.id}
                       onChange={() => handleSelected(item)}
                     />
