@@ -2,7 +2,7 @@
 "use client";
 import { Fragment, useEffect, useState } from "react";
 import ViewAssignment from "./view";
-import { Assignment } from "../../__generated__/graphql";
+import { Assignment, RequestReturn } from "../../__generated__/graphql";
 import { gettAllAssignment, loadDetailAssignment } from "@services/assignment";
 import { useLoading } from "@providers/loading";
 import { ASSIGNMENT_STATUS, SORT_ORDER } from "../../types/enum.type";
@@ -26,7 +26,7 @@ export default function Index({
 }) {
   // const { pushUpId, pushUp }: any = usePushUp()
   const { setLoading }: any = useLoading();
-  const [listData, setListData] = useState<ReuqestReturn[]>();
+  const [listData, setListData] = useState<RequestReturn[]>();
 
   const queryString = searchParams?.query || "";
   const state = searchParams?.State || "";
@@ -99,7 +99,7 @@ export default function Index({
   return (
     <Fragment>
       <ViewRequestReturn
-        listData={listData as ReuestReturn[]}
+        listData={listData as RequestReturn[]}
         totalPages={totlaPage as number}
         currentPage={parseInt(currentPage)}
         sortBy={sortBy}

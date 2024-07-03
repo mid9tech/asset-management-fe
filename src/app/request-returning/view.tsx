@@ -4,7 +4,7 @@ import React, { FC, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLoading } from "@providers/loading";
 
-import { Assignment } from "../../__generated__/graphql";
+import { Assignment, RequestReturn } from "../../__generated__/graphql";
 import { ASSIGNMENT_STATUS, SORT_ORDER } from "../../types/enum.type";
 import Paginate from "@components/paginate";
 import Filter from "@components/filter";
@@ -16,7 +16,7 @@ import ReusableList from "@components/list";
 import EmptyComponent from "@components/empty";
 
 interface ViewRequestReturnProps {
-  listData: Assignment[];
+  listData: RequestReturn[];
   sortOrder: SORT_ORDER;
   sortBy: string;
   setSortBy: (value: any) => void;
@@ -26,39 +26,39 @@ interface ViewRequestReturnProps {
 }
 
 const tableColumns = [
-  { header: "No.", accessor: "id" as keyof Assignment, width: "5%" },
+  { header: "No.", accessor: "id" as keyof RequestReturn, width: "5%" },
   {
     header: "Asset Code",
-    accessor: "assetCode" as keyof Assignment,
+    accessor: "assetCode" as keyof RequestReturn,
     width: "13%",
   },
   {
     header: "Asset Name",
-    accessor: "assetName" as keyof Assignment,
+    accessor: "assetName" as keyof RequestReturn,
     width: "15%",
   },
   {
     header: "Request By",
-    accessor: "assignedToUsername" as keyof Assignment,
+    accessor: "assignedToUsername" as keyof RequestReturn,
     width: "12%",
   },
   {
     header: "Assigned Date",
-    accessor: "assignedByUsername" as keyof Assignment,
+    accessor: "assignedByUsername" as keyof RequestReturn,
     width: "12%",
   },
   {
     header: "Accepted By",
-    accessor: "assignedDate" as keyof Assignment,
+    accessor: "assignedDate" as keyof RequestReturn,
     width: "13%",
   },
   {
     header: "Returned Date",
-    accessor: "assignedDate" as keyof Assignment,
+    accessor: "assignedDate" as keyof RequestReturn,
     width: "13%",
   },
-  { header: "State", accessor: "state" as keyof Assignment, width: "15%" },
-  { header: "icon", accessor: "" as keyof Assignment, width: "10%" },
+  { header: "State", accessor: "state" as keyof RequestReturn, width: "15%" },
+  { header: "icon", accessor: "" as keyof RequestReturn, width: "10%" },
 ];
 
 const ViewRequestReturn: FC<ViewRequestReturnProps> = (props) => {
@@ -74,7 +74,7 @@ const ViewRequestReturn: FC<ViewRequestReturnProps> = (props) => {
   const route = useRouter();
   const { setLoading }: any = useLoading();
 
-  const [selected, setSelected] = useState<Assignment>();
+  const [selected, setSelected] = useState<RequestReturn>();
   const [showModalDetail, setShowModalDetail] = useState(false);
 
   const handleNavigateCreate = () => {
@@ -92,7 +92,7 @@ const ViewRequestReturn: FC<ViewRequestReturnProps> = (props) => {
     setSortBy(item);
   };
 
-  const handleRowClick = (ass: Assignment) => {
+  const handleRowClick = (ass: RequestReturn) => {
     setSelected(ass);
     setShowModalDetail(true);
   };
