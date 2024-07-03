@@ -98,7 +98,6 @@ export default function Index({
           sortOrder={sortOrder}
           setSortBy={setSortBy}
           setSortOder={setSortOder}
-          loadUserList={loadUserList}
         />
       </Suspense>
     </Fragment>

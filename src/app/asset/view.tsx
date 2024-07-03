@@ -117,7 +117,7 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
       if (response) {
         setShowModalRemoveAsset(false);
         toast.success("Delete Asset Successfully");
-        loadAssetList();
+        router.refresh();
         setLoading(false);
       }
     } catch (error: any) {

@@ -1,8 +1,9 @@
-'use client'
+"use client";
 import React, { Fragment, ReactNode, useState } from "react";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import CreateIcon from "@mui/icons-material/Create";
+import CheckIcon from "@mui/icons-material/Check";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import ReplayIcon from "@mui/icons-material/Replay";
 import { SORT_ORDER } from "../types/enum.type";
@@ -12,19 +13,20 @@ import { useMutation } from "@apollo/client";
 import { CREATE_REQUEST_RETURN } from "@services/query/requestReturn.query";
 import { toast } from "react-toastify";
 
-type Column<T> = {
+type Column = {
   header: string;
-  accessor: keyof T;
+  accessor: string;
   width?: string; // Optional width property for columns
 };
 
 interface ReusableTableProps<T> {
-  columns: Column<T>[];
+  columns: Column[];
   data: any[];
   onRowClick: (item: T) => void;
   onDeleteClick?: (item: T) => void;
   onEditClick?: (item: T) => void;
   onReturnClick?: (item: T) => void;
+  onCheckClick?: (item: T) => void;
   onSortClick?: (item: string) => void;
   sortBy: string;
   sortOrder: string;
@@ -37,7 +39,8 @@ const ReusableList = <T extends {}>({
   onDeleteClick,
   onEditClick,
   onReturnClick,
-  onSortClick = () => { },
+  onCheckClick,
+  onSortClick = () => {},
   sortBy,
   sortOrder,
 }: ReusableTableProps<T>) => {
@@ -74,14 +77,23 @@ const ReusableList = <T extends {}>({
         },
       };
       const { data } = await requestReturn({ variables });
-      const successMessage = data.createRequestReturn?.message || "Request return created successfully";
+      const successMessage =
+        data.createRequestReturn?.message ||
+        "Request return created successfully";
       toast.success(successMessage);
       console.log("Request return created: ", data.createRequestReturn);
     } catch (error: any) {
-      const errorMessage = error.graphQLErrors?.[0]?.message || "Something went wrong";
+      const errorMessage =
+        error.graphQLErrors?.[0]?.message || "Something went wrong";
       toast.error(errorMessage);
       console.error("Error creating request return: ", error);
     }
+  };
+
+  // get nested value of accessor
+  // for example: accessor == category.categoryName ?? column will go through category obj to get category name and display it
+  const getNestedValue = (obj: any, path: string) => {
+    return path.split(".").reduce((acc, part) => acc && acc[part], obj);
   };
 
   return (
@@ -104,12 +116,13 @@ const ReusableList = <T extends {}>({
                               minWidth: item.width || "auto",
                               maxWidth: item.width,
                             }} // Set column width
-                            onClick={() => onSortClick(item.accessor as string)}
-                          >
+                            onClick={() =>
+                              onSortClick(item.accessor as string)
+                            }>
                             <span className="font-bold">
                               {item.header}
                               {sortBy === item.accessor &&
-                                sortOrder === SORT_ORDER.ASC ? (
+                              sortOrder === SORT_ORDER.ASC ? (
                                 <ArrowDropUpIcon />
                               ) : (
                                 <ArrowDropDownIcon />
@@ -121,8 +134,7 @@ const ReusableList = <T extends {}>({
                             style={{
                               minWidth: item.width || "auto",
                               maxWidth: item.width,
-                            }}
-                          ></th> // Set column width
+                            }}></th> // Set column width
                         )}
                       </Fragment>
                     ))}
@@ -133,8 +145,7 @@ const ReusableList = <T extends {}>({
                     <tr
                       key={key}
                       className="flex flex-row gap-3 cursor-pointer mt-1 h-full"
-                      onClick={() => onRowClick(item)}
-                    >
+                      onClick={() => onRowClick(item)}>
                       {columns.map((column, colIndex) => (
                         <td
                           key={colIndex}
@@ -142,24 +153,38 @@ const ReusableList = <T extends {}>({
                             minWidth: column.width || "auto",
                             maxWidth: column.width,
                           }}
-                          className={`text-sm h-full ${column.header === "icon"
+                          className={`text-sm h-full min-h-6 ${
+                            column.header === "icon"
                               ? ""
                               : "border-b-2 border-graycustom"
-                            } flex justify-start items-start h-full  truncate`}
-                        >
+                          } flex justify-start items-start h-full  truncate`}>
                           {column.header !== "icon" ? (
                             column.accessor !== "id" ? (
-                              (item[column.accessor] as ReactNode as string)
+                              (getNestedValue(item, column.accessor) as string)
                             ) : (
                               key + 1
                             )
                           ) : (
                             <div className="flex justify-between items-start h-full">
+                              {onCheckClick && (
+                                <CheckIcon
+                                  className={`${
+                                    item.isDisabledIcon === true &&
+                                    "text-gray cursor-not-allowed"
+                                  }`}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    !item.isDisabledIcon && onCheckClick(item);
+                                  }}
+                                />
+                              )}
+
                               {onEditClick && (
                                 <CreateIcon
-                                  className={`${item.isDisabledIcon === true &&
+                                  className={`${
+                                    item.isDisabledIcon === true &&
                                     "text-gray cursor-not-allowed"
-                                    }`}
+                                  }`}
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     !item.isDisabledIcon && onEditClick(item);
@@ -169,9 +194,10 @@ const ReusableList = <T extends {}>({
 
                               {onDeleteClick && (
                                 <HighlightOffIcon
-                                  className={`${item.isDisabledIcon === true &&
+                                  className={`${
+                                    item.isDisabledIcon === true &&
                                     "text-gray cursor-not-allowed"
-                                    }`}
+                                  }`}
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     !item.isDisabledIcon && onDeleteClick(item);
@@ -181,12 +207,13 @@ const ReusableList = <T extends {}>({
                               )}
                               {onReturnClick && (
                                 <ReplayIcon
-                                  className={`${item.state == 'Waiting for acceptance' &&
+                                  className={`${
+                                    item.state == "Waiting for acceptance" &&
                                     "text-gray cursor-not-allowed"
-                                    }`}
+                                  }`}
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    if (item.state === 'Accepted') {
+                                    if (item.state === "Accepted") {
                                       setSelectedItem(item);
                                       setShowModalCancel(true);
                                     }
@@ -209,8 +236,7 @@ const ReusableList = <T extends {}>({
       <DetailModal
         isOpen={showModalCancel}
         onClose={handleCloseCancelModal}
-        title="Are you sure?"
-      >
+        title="Are you sure?">
         <div className="bg-white sm:p-6 sm:pb-4">
           <div className="sm:flex sm:items-start">
             <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
@@ -224,15 +250,13 @@ const ReusableList = <T extends {}>({
           <Button
             type="button"
             className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-            onClick={handleCloseCancelModal}
-          >
+            onClick={handleCloseCancelModal}>
             Cancel
           </Button>
           <Button
             type="button"
             className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
-            onClick={handleConfirm}
-          >
+            onClick={handleConfirm}>
             Confirm
           </Button>
         </div>

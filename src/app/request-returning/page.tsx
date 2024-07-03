@@ -1,16 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import { Fragment, useEffect, useState } from "react";
-import ViewAssignment from "./view";
 import { Assignment, RequestReturn } from "../../__generated__/graphql";
-import { gettAllAssignment, loadDetailAssignment } from "@services/assignment";
 import { useLoading } from "@providers/loading";
-import { ASSIGNMENT_STATUS, SORT_ORDER } from "../../types/enum.type";
-import { formatStateText } from "@utils/formatText";
-import { formatDate } from "@utils/timeFormat";
+import { SORT_ORDER } from "../../types/enum.type";
 // import { usePushUp } from "./pushUp";
-import { loadDetailAsset } from "@services/asset";
 import ViewRequestReturn from "./view";
+import { loadDataRequest } from "@services/requestForReturn";
+import { formatRequestReturn } from "./formatRequestReturn";
+import { toast } from "react-toastify";
 // import { formatAssignment } from "./formatAssignment";
 
 export default function Index({
@@ -19,9 +17,8 @@ export default function Index({
   searchParams?: {
     query?: string;
     State?: string;
-    assignedDate?: string;
+    returnedDate?: string;
     page?: string;
-
   };
 }) {
   // const { pushUpId, pushUp }: any = usePushUp()
@@ -29,72 +26,52 @@ export default function Index({
   const [listData, setListData] = useState<RequestReturn[]>();
 
   const queryString = searchParams?.query || "";
-  const state = searchParams?.State || "";
-  const assignedDate = searchParams?.assignedDate || "";
+  const type = searchParams?.State || "";
+  const returnedDate = searchParams?.returnedDate || "";
   const currentPage = searchParams?.page || "1";
 
   const [sortOrder, setSortOder] = useState(SORT_ORDER.ASC);
   const [totlaPage, setTotalPages] = useState<number>();
-  const [sortBy, setSortBy] = useState("assetName");
+  const [sortBy, setSortBy] = useState("updatedAt");
 
   useEffect(() => {
     handleGetAllReuqestReturn();
-    // pushUp(null)
-
   }, [sortBy, sortOrder, searchParams]);
 
   const handleGetAllReuqestReturn = async () => {
-    // setLoading(true);
+    setLoading(true);
     let request: { [k: string]: any } = {};
 
     request.page = parseInt(currentPage);
-    request.sort = sortBy;
+    request.sortField = sortBy;
     request.sortOrder = sortOrder;
 
     if (queryString) {
       request.query = queryString;
     }
 
-    if (assignedDate) {
-      request.assignedDate = assignedDate;
+    if (returnedDate) {
+      request.returnedDateFilter = new Date(returnedDate);
     }
 
-    if (state) {
-      request.state = state;
+    if (type) {
+      request.stateFilter = type;
     }
-    //push item up
+    try {
+      const { data }: any = await loadDataRequest(request);
 
-    let detail: any = null;
-    // if (pushUpId) {
-    //   detail = await loadDetailReuqestReturn(pushUpId);
-    // }
-    // const { data }: any = await gettAllReuqestReturn(request);
-
-    // if (data) {
-    //   const listCustom = data?.assignments.map((item: Assignment) => (formatAssignment(item)));
-
-    //   if (detail) {
-    //     console.log(listCustom)
-    //     const index = listCustom.findIndex(
-    //       (assignment: Assignment) => assignment.id === pushUpId
-    //     );
-    //     console.log(index)
-
-    //     if (index !== -1) {
-    //       listCustom.splice(index, 1);
-    //     }
-    //     detail.assignedByUsername = detail.assigner?.username;
-    //     detail.assignedToUsername = detail.assignee?.username;
-    //     detail.state = formatStateText(detail.state);
-    //     detail.assignedDate = formatDate(parseInt(detail.assignedDate));
-    //     listCustom.unshift(detail);
-    //   } else {
-    //     pushUp(null);
-    //   }
-    //   setListData(listCustom);
-    //   setTotalPages(data.totalPages);
-    //   setLoading(false);
-    // }
+      if (data) {
+        const listCustom = data?.requestReturns.map((item: RequestReturn) =>
+          formatRequestReturn(item)
+        );
+        setListData(listCustom);
+        setTotalPages(data.totalPages);
+        setLoading(false);
+      }
+    } catch (error) {
+      toast.error("Something went wrong");
+      setLoading(false);
+    }
   };
   return (
     <Fragment>

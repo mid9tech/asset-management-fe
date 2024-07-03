@@ -18,7 +18,7 @@ import ErrorPage from "../app/error/page";
 import { USER_TYPE } from "../types/enum.type";
 import { changePasswordFirstTimeLogin, logout } from "@services/auth";
 import { UserStoreType } from "../types/user.type";
-import { ASSET_PATH_DEFAULT, ASSIGNMENT_PATH_DEFAULT, USER, USER_PATH_DEFAULT } from "../constants";
+import { ASSET_PATH_DEFAULT, ASSIGNMENT_PATH_DEFAULT, REQUEST_RETURN_PATH_DEFAULT, USER, USER_PATH_DEFAULT } from "../constants";
 import { menuItem } from "../types/menu.type";
 import { findMenuItem } from "@utils/findMenuItem";
 
@@ -43,8 +43,8 @@ const menuForAdmin: menuItem[] = [
   { name: "Manage Assignment", path: [`${ASSIGNMENT_PATH_DEFAULT}`, "/assignment/create", "/assignment/:id"], component: "Assignment" },
   {
     name: "Request For Return",
-    path: ["/request-returning"],
-    component: "Request For Return",
+    path: [REQUEST_RETURN_PATH_DEFAULT],
+    component: "request-returning",
   },
   { name: "Report", path: ["/report"], component: "Report" },
 ];

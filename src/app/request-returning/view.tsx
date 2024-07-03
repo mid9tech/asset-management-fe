@@ -4,8 +4,12 @@ import React, { FC, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLoading } from "@providers/loading";
 
-import { Assignment, RequestReturn } from "../../__generated__/graphql";
-import { ASSIGNMENT_STATUS, SORT_ORDER } from "../../types/enum.type";
+import { RequestReturn } from "../../__generated__/graphql";
+import {
+  ASSIGNMENT_STATUS,
+  REQUEST_RETURN_STATUS,
+  SORT_ORDER,
+} from "../../types/enum.type";
 import Paginate from "@components/paginate";
 import Filter from "@components/filter";
 import { convertEnumToMap } from "@utils/enumToMap";
@@ -14,6 +18,7 @@ import CustomDatePicker from "@components/datepicker";
 import ReusableList from "@components/list";
 // import DetailAssignment from "./detail";
 import EmptyComponent from "@components/empty";
+import { checkSortOrder } from "@utils/checkSortField";
 
 interface ViewRequestReturnProps {
   listData: RequestReturn[];
@@ -29,35 +34,35 @@ const tableColumns = [
   { header: "No.", accessor: "id" as keyof RequestReturn, width: "5%" },
   {
     header: "Asset Code",
-    accessor: "assetCode" as keyof RequestReturn,
-    width: "13%",
+    accessor: `asset.assetCode` as keyof RequestReturn,
+    width: "10%",
   },
   {
     header: "Asset Name",
-    accessor: "assetName" as keyof RequestReturn,
-    width: "15%",
+    accessor: "asset.assetName" as keyof RequestReturn,
+    width: "10%",
   },
   {
-    header: "Request By",
-    accessor: "assignedToUsername" as keyof RequestReturn,
-    width: "12%",
+    header: "Requested By",
+    accessor: "requestedBy.username" as keyof RequestReturn,
+    width: "11%",
   },
   {
     header: "Assigned Date",
-    accessor: "assignedByUsername" as keyof RequestReturn,
+    accessor: "assignedDate" as keyof RequestReturn,
     width: "12%",
   },
   {
     header: "Accepted By",
-    accessor: "assignedDate" as keyof RequestReturn,
-    width: "13%",
+    accessor: "acceptedBy.username" as keyof RequestReturn,
+    width: "10%",
   },
   {
     header: "Returned Date",
-    accessor: "assignedDate" as keyof RequestReturn,
+    accessor: "returnedDate" as keyof RequestReturn,
     width: "13%",
   },
-  { header: "State", accessor: "state" as keyof RequestReturn, width: "15%" },
+  { header: "State", accessor: "state" as keyof RequestReturn, width: "13%" },
   { header: "icon", accessor: "" as keyof RequestReturn, width: "10%" },
 ];
 
@@ -77,28 +82,31 @@ const ViewRequestReturn: FC<ViewRequestReturnProps> = (props) => {
   const [selected, setSelected] = useState<RequestReturn>();
   const [showModalDetail, setShowModalDetail] = useState(false);
 
-  const handleNavigateCreate = () => {
-    setLoading(true);
-    route.push("assignment/create");
-  };
-
   const handleSortClick = (item: string) => {
-    let defaultOrder = SORT_ORDER.ASC;
-    if (sortBy === item) {
-      defaultOrder =
-        sortOrder === SORT_ORDER.ASC ? SORT_ORDER.DESC : SORT_ORDER.ASC;
+    switch (item) {
+      case "asset.assetCode":
+        let defaultOrder = checkSortOrder(sortBy, item, sortOrder);
+        setSortOder(defaultOrder);
+        setSortBy("assetCode");
+        break;
+      case "asset.assetName":
+        setSortBy("assetName");
+        break;
+      case "requestedBy.username":
+        setSortBy("requestedBy");
+        break;
+      case "acceptedBy.username":
+        setSortBy("acceptedBy");
+        break;
+      default:
+        setSortBy(item);
+        break;
     }
-    setSortOder(defaultOrder);
-    setSortBy(item);
   };
 
   const handleRowClick = (ass: RequestReturn) => {
     setSelected(ass);
     setShowModalDetail(true);
-  };
-
-  const handleCloseDetailModal = () => {
-    setShowModalDetail(false);
   };
 
   return (
@@ -107,27 +115,24 @@ const ViewRequestReturn: FC<ViewRequestReturnProps> = (props) => {
       <div className="flex justify-between items-start mb-4">
         <div className="flex items-start space-x-2">
           <div className="relative w-auto flex flex-row items-center justify-start gap-3">
-            <Filter label="State" data={convertEnumToMap(ASSIGNMENT_STATUS)} />
+            <Filter
+              label="State"
+              data={convertEnumToMap(REQUEST_RETURN_STATUS)}
+            />
             <CustomDatePicker name="returnedDate" label="Returned Date" />
           </div>
         </div>
         <div className="flex gap-3">
           <Search />
-          {/* <button
-            className="bg-red-600 text-white rounded px-4 py-1 cursor-pointer hover:opacity-75"
-            onClick={handleNavigateCreate}>
-            Create new assignment
-          </button> */}
         </div>
       </div>
       <ReusableList
         columns={tableColumns}
         data={listData}
         onRowClick={handleRowClick}
-        onDeleteClick={() => {}}
         onSortClick={handleSortClick}
-        onEditClick={() => {}}
-        onReturnClick={() => {}}
+        onCheckClick={() => {}}
+        onDeleteClick={() => {}}
         sortBy={sortBy}
         sortOrder={sortOrder}
       />
@@ -136,14 +141,6 @@ const ViewRequestReturn: FC<ViewRequestReturnProps> = (props) => {
       ) : (
         <EmptyComponent />
       )}
-
-      {/* {selected && (
-        <DetailAssignment
-          showModalDetailUser={showModalDetail}
-          handleCloseDetailModal={handleCloseDetailModal}
-          data={selected}
-        />
-      )} */}
     </div>
   );
 };

@@ -17,6 +17,7 @@ import ModalError from "./modal/modalError";
 import ReusableList from "@components/list";
 import EmptyComponent from "@components/empty";
 import { LABEL_TYPE } from "../../constants/label";
+import { USER_PATH_DEFAULT } from "../../constants";
 import { userColumns } from "./userColumn";
 
 interface UserManagementProps {
@@ -27,7 +28,6 @@ interface UserManagementProps {
   sortBy: string;
   setSortBy: (value: any) => void;
   setSortOder: (value: any) => void;
-  loadUserList: () => void;
 }
 
 
@@ -41,7 +41,6 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
     sortBy,
     setSortBy,
     setSortOder,
-    loadUserList,
   } = props;
   const [showModalRemoveUser, setShowModalRemoveUser] = useState(false);
   const [showModalDetailUser, setShowModalDetailUser] = useState(false);
@@ -84,7 +83,7 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
       if (response) {
         setShowModalRemoveUser(false);
         toast.success("Disable User Successfully");
-        router.refresh();
+        router.push(USER_PATH_DEFAULT);
         setLoading(false);
       }
     } catch (error: any) {

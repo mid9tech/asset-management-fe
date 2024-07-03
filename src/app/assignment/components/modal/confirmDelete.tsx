@@ -14,6 +14,7 @@ const ModalConfirmDeleteAssignment: FC<ModalConfirmProps> = (props) => {
   return (
     <DetailModal
       isOpen={showModalConfirm}
+      isShowCloseIcon={false}
       onClose={() => setShowModalConfirm(false)}
       title="Are you sure ?"
     >
