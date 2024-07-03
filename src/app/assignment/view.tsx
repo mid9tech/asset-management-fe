@@ -18,6 +18,7 @@ import ModalConfirmDeleteAssignment from "./components/modal/confirmDelete";
 import { deleteAssignment } from "@services/assignment";
 import { toast } from "react-toastify";
 import { LABEL_STATE } from "../../constants/label";
+import { tableColumns } from "./tableColumn";
 
 interface ViewAssignmentProps {
   listData: Assignment[];
@@ -30,36 +31,6 @@ interface ViewAssignmentProps {
   reloadTableData: () => void;
 }
 
-const tableColumns = [
-  { header: "No.", accessor: "id" as keyof Assignment, width: "5%" },
-  {
-    header: "Asset Code",
-    accessor: "assetCode" as keyof Assignment,
-    width: "13%",
-  },
-  {
-    header: "Asset Name",
-    accessor: "assetName" as keyof Assignment,
-    width: "15%",
-  },
-  {
-    header: "Assigned To",
-    accessor: "assignedToUsername" as keyof Assignment,
-    width: "12%",
-  },
-  {
-    header: "Assigned By",
-    accessor: "assignedByUsername" as keyof Assignment,
-    width: "12%",
-  },
-  {
-    header: "Assigned Date",
-    accessor: "assignedDate" as keyof Assignment,
-    width: "13%",
-  },
-  { header: "State", accessor: "state" as keyof Assignment, width: "15%" },
-  { header: "icon", accessor: "" as keyof Assignment, width: "10%" },
-];
 
 const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
   const {
