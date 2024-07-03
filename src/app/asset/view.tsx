@@ -18,6 +18,7 @@ import ReusableList from "@components/list";
 import EmptyComponent from "@components/empty";
 import { DISABLE_ASSET_QUERY } from "@services/query/asset.query";
 import { toast } from "react-toastify";
+import { LABEL_CATEGORY, LABEL_STATE } from "../../constants/label";
 
 interface AssetManagementProps {
   data: Asset[];
@@ -156,7 +157,7 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
             <div className="relative w-70 flex">
               <div className="relative">
                 <Filter
-                  label="State"
+                  label={LABEL_STATE}
                   data={convertEnumToMap(ASSET_TYPE)}
                   height={170}
                 />
@@ -167,7 +168,7 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
                   <div>Loading...</div>
                 ) : (
                   <Filter
-                    label="Category"
+                    label={LABEL_CATEGORY}
                     data={convertToMap(categoryData?.getCategories)}
                     height={300}
                   />

@@ -4,7 +4,7 @@ import { useLoading } from "@providers/loading";
 import { Fragment, Suspense, useEffect, useState } from "react";
 import { ASSET_TYPE, SORT_ORDER } from "../../types/enum.type";
 import { Asset } from "../../__generated__/graphql";
-import AssetManagement from "./table";
+import AssetManagement from "./view";
 import { loadDataAsset, loadDetailAsset } from "@services/asset";
 import { defaultChoice } from "@components/filter";
 import { usePushUp } from "./pushUp";
@@ -26,19 +26,7 @@ export default function Index({
   const pathname = usePathname();
   const { setLoading }: any = useLoading();
   const [listAsset, setListAssets] = useState<Asset[]>([]);
-  const filterState = searchParams?.State || null;
-  useEffect(() => {
-    const defaultState = [
-      ASSET_TYPE.Assigned,
-      ASSET_TYPE.Available,
-      ASSET_TYPE.Not_available,
-    ];
-    const params = new URLSearchParams();
-    defaultState.forEach((state) => {
-      params.append("State", state);
-    });
-    router.replace(`${pathname}?${params.toString()}`);
-  }, [])
+  const filterState = searchParams?.State || [];
   const filterCategory = searchParams?.Category || null;
   const currentPage = searchParams?.page || '1';
 

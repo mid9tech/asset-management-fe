@@ -20,6 +20,7 @@ import DetailModal from '@components/modal';
 import { usePushUp } from '../pushUp';
 import { z } from "zod";
 import { zodResolver } from '@hookform/resolvers/zod';
+import { ASSET_PATH_DEFAULT } from '../../../constants';
 
 enum State {
     AVAILABLE = "AVAILABLE",
@@ -75,7 +76,7 @@ const FormCreateAsset = () => {
     const handleDiscard = () => {
         form.reset();
         setShowModalCancel(false);
-        router.push("/asset");
+        router.back();
     };
 
     const onSubmit = async (data: FormData) => {
@@ -102,7 +103,7 @@ const FormCreateAsset = () => {
                 const assetId = response.data.createAsset.id;
                 pushUp(parseInt(assetId));
                 toast.success("Asset created successfully");
-                router.push('/asset');
+                router.push(`${ASSET_PATH_DEFAULT}`);
             }
         } catch (error) {
             toast.error("Something went wrong! Please try again");

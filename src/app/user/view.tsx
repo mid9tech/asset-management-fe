@@ -16,6 +16,7 @@ import ModalConfirmUser from "./modal/modalConfirm";
 import ModalError from "./modal/modalError";
 import ReusableList from "@components/list";
 import EmptyComponent from "@components/empty";
+import { LABEL_TYPE } from "../../constants/label";
 
 interface UserManagementProps {
   data: User[];
@@ -89,7 +90,7 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
       if (response) {
         setShowModalRemoveUser(false);
         toast.success("Disable User Successfully");
-        loadUserList();
+        router.refresh();
         setLoading(false);
       }
     } catch (error: any) {
@@ -121,7 +122,7 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
           <div className="flex items-center space-x-2">
             <div className="relative w-auto">
               <Filter
-                label="Type"
+                label={LABEL_TYPE}
                 data={convertEnumToMap(USER_TYPE)}
                 height={110}
               />

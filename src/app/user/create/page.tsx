@@ -33,6 +33,7 @@ import { useLoading } from "@providers/loading";
 import { Gender, Type, Location } from "../../../types/enum.type";
 import { formSchema } from "./create-user-schema";
 import { usePushUp, PushUp } from '../pushUp';
+import { USER_PATH_DEFAULT } from "../../../constants";
 
 
 
@@ -65,7 +66,7 @@ const CreateUser = () => {
   const handleDiscard = () => {
     form.reset();
     setShowModalCancel(false);
-    router.push("/user");
+    router.back();
   };
 
 
@@ -129,7 +130,7 @@ const CreateUser = () => {
         pushUp(parseInt(userId))
         // localStorage.setItem("newUserId", '"' + userId.toString() + '"');
         toast.success("Create User Successfully");
-        router.push("/user");
+        router.push(USER_PATH_DEFAULT);
       }
     } catch (error) {
       toast.error("Something went wrong! Please try again");

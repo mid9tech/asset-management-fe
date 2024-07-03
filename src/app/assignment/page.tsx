@@ -27,7 +27,7 @@ export default function Index({
   const [listData, setListData] = useState<Assignment[]>();
 
   const queryString = searchParams?.query || "";
-  const state = searchParams?.State || "";
+  const state = searchParams?.State || [];
   const assignedDate = searchParams?.assignedDate || "";
   const currentPage = searchParams?.page || "1";
 

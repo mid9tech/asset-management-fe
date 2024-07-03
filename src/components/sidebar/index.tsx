@@ -10,8 +10,14 @@ const Sidebar = () => {
   const pathname = usePathname();
 
   const matchPath = (pattern: string, path: string) => {
-    const regex = new RegExp(`^${pattern.replace(/:[^\s/]+/g, "([^\\s/]+)")}$`);
-    return regex.test(path);
+    const queryStringIndex = path.indexOf('?');
+    path = queryStringIndex !== -1 ? path.substring(0, queryStringIndex) : path;
+
+    // Split the URL path by '/'
+    const parts = path.split('/');
+
+    // Return the first part after the initial empty string
+    return parts[1] === pattern;
   };
 
   return (
@@ -22,17 +28,16 @@ const Sidebar = () => {
       </div>
       {menuItems?.map((item) => (
         <Link
-        style={{
-          pointerEvents: (pathname === item.path[0]) ? "none" : "auto",
-        }}
           href={item.path[0]}
           key={item.name}
-          onClick={() => setActiveItem(item)}
-          className={`p-3 cursor-pointer font-bold ${
-            item.path.some((p) => matchPath(p, pathname))
-              ? "bg-nashtech text-white"
-              : "bg-bluegray hover:opacity-75"
-          }`}>
+          onClick={() => {
+            setActiveItem(item)
+            console.log(item)
+          }}
+          className={`p-3 cursor-pointer font-bold ${matchPath(item.component.toLocaleLowerCase(), pathname)
+            ? "bg-nashtech text-white"
+            : "bg-bluegray hover:opacity-75"
+            }`}>
           {item.name}
         </Link>
       ))}
