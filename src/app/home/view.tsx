@@ -2,9 +2,8 @@ import React, { FC, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLoading } from "@providers/loading";
 import { Assignment } from "../../__generated__/graphql";
-import { ASSIGNMENT_STATUS, SORT_ORDER } from "../../types/enum.type";
+import { SORT_ORDER } from "../../types/enum.type";
 import Paginate from "@components/paginate";
-import ReusableList from "@components/list";
 import EmptyComponent from "@components/empty";
 import DetailOwnAssignment from "./detail";
 import ModalConfirmDeclineAssignment from "./components/modal/confirmDecline";
@@ -112,20 +111,6 @@ const ViewOwnAssignment: FC<ViewAssignmentProps> = (props) => {
     }
 
     console.log("selected: ",selected.id, selected.state);
-    // try {
-    //   setLoading(true);
-    //   const response = await disableUser(parseInt(selectedUser?.id as string));
-    //   if (response) {
-    //     setShowModalRemoveUser(false);
-    //     toast.success("Disable User Successfully");
-    //     loadUserList();
-    //     setLoading(false);
-    //   }
-    // } catch (error: any) {
-    //   setShowModalRemoveUser(false);
-    //   setLoading(false);
-    //   setShowModalError(true);
-    // }
 
     try {
       setLoading(true);
