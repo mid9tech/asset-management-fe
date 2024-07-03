@@ -16,7 +16,7 @@ import {
 export const createAssignment = async (value: CreateAssignmentInput) => {
   const result = await client.mutate({
     mutation: CREATE_ASSIGNMENT_MUTATION,
-    variables: value,
+    variables: {createAssignmentInput: value},
   });
   return {
     data: result.data.createAssignment,

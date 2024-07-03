@@ -2,37 +2,24 @@ import { gql } from "@apollo/client";
 import client from "@libs/graphQl/apolloClient";
 
 export const CREATE_ASSIGNMENT_MUTATION = gql`
-  mutation CreateAssignment(
-    $assetCode: String!
-    $assetName: String!
-    $assignedToId: Int!
-    $assignedToUsername: String!
-    $assignedById: Int!
-    $state: String!
-    $assignedDate: String!
-    $note: String!
-    $assetId: Int!
-  ) {
-    createAssignment(
-      createAssignmentInput: {
-        assetCode: $assetCode
-        assetName: $assetName
-        assignedToId: $assignedToId
-        assignedToUsername: $assignedToUsername
-        assignedById: $assignedById
-        state: $state
-        assignedDate: $assignedDate
-        note: $note
-        assetId: $assetId
-      }
-    ) {
+  mutation CreateAssignment($createAssignmentInput: CreateAssignmentInput!) {
+    createAssignment(createAssignmentInput: $createAssignmentInput) {
       id
       assetCode
       assetName
       state
       note
       assignedDate
-      assetId
+      asset {
+        id
+        assetCode
+        assetName
+        isRemoved
+        isAllowRemoved
+        isReadyAssigned
+        state
+        specification
+      }
       assignee {
         username
       }
@@ -191,58 +178,61 @@ export const DELETE_ASSIGNMENT = gql`
   }
 `;
 export const EDIT_ASSIGNMENT_MUTATION = gql`
-  mutation UpdateAssignment ($id: Int!, $updateAssignmentInput: UpdateAssignmentInput!) {
-    updateAssignment(
-        id: $id
-        updateAssignmentInput: $updateAssignmentInput
-    ) {
+  mutation UpdateAssignment(
+    $id: Int!
+    $updateAssignmentInput: UpdateAssignmentInput!
+  ) {
+    updateAssignment(id: $id, updateAssignmentInput: $updateAssignmentInput) {
+      id
+      assetCode
+      assetName
+      assigner {
+        id
+        staffCode
+        username
+        type
+      }
+      assignee {
+        id
+        staffCode
+        username
+        type
+        state
+      }
+      state
+      note
+      assignedDate
+      asset {
         id
         assetCode
         assetName
-        assigner {
-            id
-            staffCode
-            username
-            type
-        }
-        assignee {
-            id
-            staffCode
-            username
-            type
-            state
-        }
+        categoryId
+        installedDate
+        isRemoved
+        isAllowRemoved
+        isReadyAssigned
         state
-        note
-        assignedDate
-        asset {
-            id
-            assetCode
-            assetName
-            categoryId
-            installedDate
-            isRemoved
-            isAllowRemoved
-            isReadyAssigned
-            state
-            location
-            specification
-            category {
-                id
-                categoryName
-                categoryCode
-            }
+        location
+        specification
+        category {
+          id
+          categoryName
+          categoryCode
         }
-        assignedByUsername
-        assignedToUsername
+      }
+      assignedByUsername
+      assignedToUsername
     }
-}
-
+  }
 `;
 
 export const UPDATE_STATUS_ASSIGNMENT = gql`
-  mutation UpdateStatusAssignment($updateStatusAssignmentInput: UpdateStatusAssignmentInput!) {
-    updateStatusAssignment(updateStatusAssignmentInput: $updateStatusAssignmentInput)
+  mutation UpdateStatusAssignment(
+    $updateStatusAssignmentInput: UpdateStatusAssignmentInput!
+  ) {
+    updateStatusAssignment(
+      updateStatusAssignmentInput: $updateStatusAssignmentInput
+    )
   }
 `;
 
@@ -255,4 +245,3 @@ export const updateStatusAssignment = async (request: any) => {
     data: result.data.updateStatusAssignment,
   };
 };
-
