@@ -140,6 +140,13 @@ export const GET_DETAIL_ASSIGNMENT_QUERY = gql`
       note
       assignedDate
       asset {
+        id
+        assetCode
+        assetName
+        isRemoved
+        isAllowRemoved
+        isReadyAssigned
+        state
         specification
       }
       assigner {
