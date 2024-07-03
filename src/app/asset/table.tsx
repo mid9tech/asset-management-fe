@@ -79,7 +79,7 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
   const handleNavigateEditAsset = (asset: Asset) => {
     setDataUpdate(asset);
     router.push(`/asset/${asset.id}`);
-  };
+  }
 
   const handleSortClick = (item: string) => {
     let defaultOrder = SORT_ORDER.ASC;
@@ -223,7 +223,8 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
             variant="outline"
             type="button"
             className="text-gray"
-            onClick={() => setShowModalRemoveAsset(false)}>
+            onClick={() => setShowModalRemoveAsset(false)}
+            >
             Cancel
           </Button>
         </div>
@@ -238,7 +239,7 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
             <p className="text-md text-gray-500">
               Cannot delete the asset because it belongs to one or more historical assignments.
               <div>
-              If the asset is not able to be used anymore, please update its state in <a href="#" className="text-blue underline">Edit Asset page</a>
+              If the asset is not able to be used anymore, please update its state in <a href="/asset" className="text-blue underline">Edit Asset page</a>
               </div>
             </p>
           </div>

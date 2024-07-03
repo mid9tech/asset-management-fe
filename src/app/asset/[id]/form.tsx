@@ -319,7 +319,7 @@ const FormEdit = ({ params }: { params: { id: string } }) => {
                             >
                                 Save
                             </Button>
-                            <Button type="button" onClick={() => setShowModalCancel(true)}>
+                            <Button type="button" onClick={() => router.push('/asset')}>
                                 Cancel
                             </Button>
                         </div>
