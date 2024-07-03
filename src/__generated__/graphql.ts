@@ -334,11 +334,11 @@ export type ReportElement = {
   __typename?: 'ReportElement';
   assigned: Scalars['Int']['output'];
   available: Scalars['Int']['output'];
-  category_name: Scalars['String']['output'];
-  not_available: Scalars['Int']['output'];
+  categoryName: Scalars['String']['output'];
+  notAvailable: Scalars['Int']['output'];
   recycled: Scalars['Int']['output'];
   total: Scalars['Int']['output'];
-  waiting_for_recycling: Scalars['Int']['output'];
+  waitingForRecycling: Scalars['Int']['output'];
 };
 
 export type ReportInput = {
