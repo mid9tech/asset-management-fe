@@ -334,11 +334,11 @@ export type ReportElement = {
   __typename?: 'ReportElement';
   assigned: Scalars['Int']['output'];
   available: Scalars['Int']['output'];
-  categoryName: Scalars['String']['output'];
-  notAvailable: Scalars['Int']['output'];
+  category_name: Scalars['String']['output'];
+  not_available: Scalars['Int']['output'];
   recycled: Scalars['Int']['output'];
   total: Scalars['Int']['output'];
-  waitingForRecycling: Scalars['Int']['output'];
+  waiting_for_recycling: Scalars['Int']['output'];
 };
 
 export type ReportInput = {
@@ -359,12 +359,16 @@ export type ReportResponse = {
 
 export type RequestReturn = {
   __typename?: 'RequestReturn';
+  acceptedBy: User;
   acceptedById: Scalars['Int']['output'];
+  asset: Asset;
   assetId: Scalars['Int']['output'];
   assignedDate: Scalars['String']['output'];
+  assignment: Assignment;
   assignmentId: Scalars['Int']['output'];
   id: Scalars['Int']['output'];
   isRemoved: Scalars['Boolean']['output'];
+  requestedBy: User;
   requestedById: Scalars['Int']['output'];
   returnedDate: Scalars['String']['output'];
   state: Scalars['String']['output'];
