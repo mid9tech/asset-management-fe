@@ -15,6 +15,7 @@ import { useLoading } from "@providers/loading";
 import { SORT_ORDER, USER_TYPE } from "../../../../types/enum.type";
 import { FindUsersInput, User } from "../../../../__generated__/graphql";
 import { formatText } from "@utils/formatText";
+import Pagination from "@components/paginationByState";
 
 interface ModalPickerProps {
   isOpen: boolean;
@@ -34,6 +35,8 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("firstName");
   const [sortOrder, setSortOrder] = useState<SORT_ORDER>(SORT_ORDER.ASC);
+  const [currenPage, setCurrenPage] = useState<number>(1)
+  const [totalPage, setTotalPage] = useState<number>(0)
 
   const handleSearch = useDebouncedCallback((term: string) => {
     setSearchTerm(term);
@@ -51,16 +54,26 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
 
   const loadUserList = async (filter: FindUsersInput) => {
     setLoading(true);
-    const { data }: any = await loadData(filter);
-    const listUserCustom = data?.users.map(
-      (item: { type: USER_TYPE; lastName: any; firstName: any }) => ({
-        ...item,
-        fullName: `${item.lastName} ${item.firstName}`,
-        type: item.type === USER_TYPE.STAFF ? "STAFF" : item.type,
-      })
-    );
-    setListUser(listUserCustom);
-    setLoading(false);
+
+    try {
+      const { data }: any = await loadData(filter);
+      const listUserCustom = data?.users.map(
+        (item: { type: USER_TYPE; lastName: any; firstName: any }) => ({
+          ...item,
+          fullName: `${item.lastName} ${item.firstName}`,
+          type: item.type === USER_TYPE.STAFF ? "STAFF" : item.type,
+        })
+      );
+      console.log(data)
+      setTotalPage(data.totalPages)
+      setListUser(listUserCustom);
+    } catch (error) {
+
+    } finally {
+      setLoading(false);
+
+    }
+
   };
 
   useEffect(() => {
@@ -74,7 +87,7 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
     };
     if (isOpen) {
       loadUserList({
-        page: 1,
+        page: currenPage,
         query: searchTerm,
         limit: 10,
         sort: sortBy,
@@ -87,7 +100,7 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isOpen, searchTerm, sortBy, sortOrder]);
+  }, [isOpen, searchTerm, sortBy, sortOrder, currenPage]);
 
   if (!isOpen) return null;
 
@@ -100,7 +113,7 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
     setOpenModal(false);
   };
 
-  
+
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
@@ -206,6 +219,9 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
                 <div></div>
               </div>
             ))}
+            {totalPage > 1 &&
+              <Pagination totalPages={totalPage} currentPage={currenPage} setCurrentPage={setCurrenPage} />
+            }
           </div>
           <div className="px-4 py-4 sm:px-6 flex justify-end gap-3">
             <Button

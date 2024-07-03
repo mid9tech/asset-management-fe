@@ -14,6 +14,7 @@ import { useLoading } from "@providers/loading";
 import { ASSET_TYPE, SORT_ORDER } from "../../../../types/enum.type";
 import { Asset, FindAssetsInput } from "../../../../__generated__/graphql";
 import { loadDataAsset } from "@services/asset";
+import Pagination from "@components/paginationByState";
 
 interface ModalPickerProps {
   isOpen: boolean;
@@ -33,6 +34,8 @@ const ModalPikcAsset: React.FC<ModalPickerProps> = ({
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("assetCode");
   const [sortOrder, setSortOrder] = useState<SORT_ORDER>(SORT_ORDER.ASC);
+  const [currenPage, setCurrenPage] = useState<number>(1)
+  const [totalPage, setTotalPage] = useState<number>(0)
 
   const handleSearch = useDebouncedCallback((term: string) => {
     setSearchTerm(term);
@@ -67,7 +70,7 @@ const ModalPikcAsset: React.FC<ModalPickerProps> = ({
     };
     if (isOpen) {
       loadData({
-        page: 1,
+        page: currenPage,
         query: searchTerm,
         limit: 10,
         sortField: sortBy,
@@ -169,12 +172,11 @@ const ModalPikcAsset: React.FC<ModalPickerProps> = ({
             {list?.map((item, key) => (
               <div
                 key={key}
-                className={`grid grid-cols-6 gap-4 ${
-                  item.isReadyAssigned == false
+                className={`grid grid-cols-6 gap-4 ${item.isReadyAssigned == false
                     ? "opacity-50 cursor-not-allowed"
                     : "cursor-pointer"
-                }`}
-                onClick={item.isReadyAssigned == false ? () => {} : () => handleSelected(item)}>
+                  }`}
+                onClick={item.isReadyAssigned == false ? () => { } : () => handleSelected(item)}>
                 <div className="flex justify-end items-center">
                   <label className="custom-radio">
                     <input
@@ -200,6 +202,9 @@ const ModalPikcAsset: React.FC<ModalPickerProps> = ({
                 <div></div>
               </div>
             ))}
+            {totalPage > 1 &&
+              <Pagination totalPages={totalPage} currentPage={currenPage} setCurrentPage={setCurrenPage} />
+            }
           </div>
           <div className="px-4 py-4 sm:px-6 flex justify-end gap-3">
             <Button
