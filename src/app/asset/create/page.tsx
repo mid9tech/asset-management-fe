@@ -38,12 +38,6 @@ const CreateAsset = () => {
         },
     });
 
-    const handleDiscard = () => {
-        form.reset();
-        setShowModalCancel(false);
-        router.push("/asset");
-    };
-
     return (
         <>
             <div className="ml-14 w-1/2 space-y-6">

@@ -2,6 +2,7 @@ import DetailModal from "@components/modal";
 import { Button } from "@components/ui/button";
 import { useRouter } from "next/navigation";
 import React, { FC } from "react";
+import { ASSIGNMENT_PATH_DEFAULT } from "../../../../constants";
 
 interface ModalConfirmProps {
   showModalConfirm: boolean;
@@ -13,7 +14,7 @@ const ModalConfirmAssignment: FC<ModalConfirmProps> = (props) => {
   const router = useRouter();
   const handleDiscard = () => {
     setShowModalConfirm(false);
-    router.push("/assignment");
+    router.push(ASSIGNMENT_PATH_DEFAULT);
   };
   return (
     <DetailModal

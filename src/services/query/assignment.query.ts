@@ -65,13 +65,16 @@ export const GET_ALL_ASSIGNMENT_QUERY = gql`
         assignedByUsername
         assignedToUsername
         asset {
+          id
           specification
         }
         assigner {
+          id
           staffCode
           username
         }
         assignee {
+          id
           staffCode
           username
         }

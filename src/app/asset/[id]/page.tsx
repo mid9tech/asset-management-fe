@@ -7,6 +7,7 @@ import DetailModal from "@components/modal";
 import FormEdit from "./form";
 import { usePushUp } from "../pushUp";
 import { ASSET_TYPE } from "../../../types/enum.type";
+import { ASSET_PATH_DEFAULT } from "../../../constants";
 
 
 
@@ -33,7 +34,7 @@ const EditAsset = ({ params }: { params: { id: string } }) => {
     const handleDiscard = () => {
         form.reset();
         setShowModalCancel(false);
-        router.push("/asset");
+        router.push(ASSET_PATH_DEFAULT);
     };
 
     const form = useForm<FormData>({

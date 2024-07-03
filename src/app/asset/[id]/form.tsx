@@ -319,7 +319,7 @@ const FormEdit = ({ params }: { params: { id: string } }) => {
                             >
                                 Save
                             </Button>
-                            <Button type="button" onClick={() => router.push('/asset')}>
+                            <Button type="button" onClick={() => router.push(ASSET_PATH_DEFAULT)}>
                                 Cancel
                             </Button>
                         </div>

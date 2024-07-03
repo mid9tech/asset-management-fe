@@ -63,8 +63,6 @@ const HomeList = <T extends {}>({
   };
 
   const onSubmit = async (item: any) => {
-    console.log("item: ", item.assignedDate);
-  
     try {
       const variables: any = {
         request: {
