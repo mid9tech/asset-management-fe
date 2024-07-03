@@ -5,7 +5,7 @@ export default function ExportButton() {
   async function handleExport() {
     const data = await GetReportService({
       page: 1,
-      limit: 20,
+      limit: undefined,
     });
 
     const cleanedData = data?.data.map(({ __typename, ...rest }: any) => rest);
