@@ -11,7 +11,7 @@ import { Button } from "@components/ui/button";
 import SearchIcon from "@public/icon/search.svg";
 import { useLoading } from "@providers/loading";
 
-import { SORT_ORDER } from "../../../../types/enum.type";
+import { ASSET_TYPE, SORT_ORDER } from "../../../../types/enum.type";
 import { Asset, FindAssetsInput } from "../../../../__generated__/graphql";
 import { loadDataAsset } from "@services/asset";
 
@@ -169,15 +169,16 @@ const ModalPikcAsset: React.FC<ModalPickerProps> = ({
               <div
                 key={key}
                 className={`grid grid-cols-6 gap-4 ${
-                  item.isReadyAssigned == false
+                  (item.isReadyAssigned == false || item.state !== ASSET_TYPE.Available)
                     ? "opacity-50 cursor-not-allowed"
                     : "cursor-pointer"
                 }`}
-                onClick={item.isReadyAssigned == false ? () => {} : () => handleSelected(item)}>
+                onClick={(item.isReadyAssigned == false || item.state !== ASSET_TYPE.Available)? () => {} : () => handleSelected(item)}>
                 <div className="flex justify-end items-center">
                   <label className="custom-radio">
                     <input
                       type="radio"
+                      disabled={(item.isReadyAssigned == false || item.state !== ASSET_TYPE.Available)}
                       checked={selected?.id === item.id}
                       onChange={() => handleSelected(item)}
                     />
