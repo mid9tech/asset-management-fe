@@ -1,6 +1,3 @@
-import { useQuery } from "@apollo/client";
-import { GET_CATEGORY_QUERY } from "@services/query/category.query";
-
 export enum USER_TYPE {
     ADMIN = 'ADMIN',
     STAFF = 'USER',
@@ -22,6 +19,7 @@ export enum SORT_ORDER {
 export enum ASSIGNMENT_STATUS {
     WAITING_FOR_ACCEPTANCE = "WAITING_FOR_ACCEPTANCE",
     ACCEPTED = "ACCEPTED",
+    DECLINED = "DECLINED",
 }
 export enum Gender {
     Male = "MALE",

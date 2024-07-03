@@ -248,13 +248,3 @@ export const UPDATE_STATUS_ASSIGNMENT = gql`
     )
   }
 `;
-
-export const updateStatusAssignment = async (request: any) => {
-  const result = await client.mutate({
-    mutation: UPDATE_STATUS_ASSIGNMENT,
-    variables: request,
-  });
-  return {
-    data: result.data.updateStatusAssignment,
-  };
-};

@@ -2,7 +2,7 @@ import React, { FC, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLoading } from "@providers/loading";
 import { Assignment } from "../../__generated__/graphql";
-import { SORT_ORDER } from "../../types/enum.type";
+import { ASSIGNMENT_STATUS, SORT_ORDER } from "../../types/enum.type";
 import Paginate from "@components/paginate";
 import EmptyComponent from "@components/empty";
 import DetailOwnAssignment from "./detail";
@@ -10,9 +10,10 @@ import ModalConfirmDeclineAssignment from "./components/modal/confirmDecline";
 import ModalConfirmAcceptAssignment from "./components/modal/confirmAccept";
 import HomeList from "./components/table/homeList";
 import { useMutation } from "@apollo/client";
-import { UPDATE_STATUS_ASSIGNMENT, updateStatusAssignment } from "@services/query/assignment.query";
+import { UPDATE_STATUS_ASSIGNMENT } from "@services/query/assignment.query";
 import { toast } from "react-toastify";
 import { tableColumns } from "./tableColumn";
+import { UpdateStatusAssignmentService } from "@services/assignment";
 
 interface ViewAssignmentProps {
   listData: Assignment[];
@@ -25,7 +26,6 @@ interface ViewAssignmentProps {
   reloadTableData: () => void;
 }
 
-
 const ViewOwnAssignment: FC<ViewAssignmentProps> = (props) => {
   const {
     listData,
@@ -37,14 +37,12 @@ const ViewOwnAssignment: FC<ViewAssignmentProps> = (props) => {
     sortBy,
     reloadTableData,
   } = props;
-  const route = useRouter();
   const { setLoading }: any = useLoading();
 
   const [selected, setSelected] = useState<Assignment>();
   const [showModalDetail, setShowModalDetail] = useState(false);
   const [showModalConfirmDecline, setShowModalConfirmDecline] = useState(false);
   const [showModalConfirmAccept, setShowModalConfirmAccept] = useState(false);
-  const [changeStatus] = useMutation(UPDATE_STATUS_ASSIGNMENT);
 
   const handleSortClick = (item: string) => {
     let defaultOrder = SORT_ORDER.ASC;
@@ -81,24 +79,46 @@ const ViewOwnAssignment: FC<ViewAssignmentProps> = (props) => {
       return;
     }
 
-    console.log("selected: ",selected.id, selected.state);
+    try {
+      setLoading(true);
+
+      const result = await UpdateStatusAssignmentService({
+        state: ASSIGNMENT_STATUS.ACCEPTED,
+        id: selected?.id,
+      });
+
+      if (result) {
+        setShowModalConfirmAccept(false);
+        toast.success("Accept Assignment Successfully");
+        reloadTableData();
+      } else {
+        toast.error("Failed to accept the assignment. Please try again.");
+      }
+    } catch (error: any) {
+      toast.error("An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleConfirmDecline = async () => {
+    if (selected?.id === undefined) {
+      toast.error("Selected assignment ID is undefined. Please try again.");
+      return;
+    }
 
     try {
       setLoading(true);
-      // const acceptOptions = {
-      //   variables: {
-      //     id: selected.id,
-      //     state: ASSIGNMENT_STATUS.ACCEPTED, 
-      //   },
-      // };
-      const response = await updateStatusAssignment(selected?.id);
-      console.log("res: ",response);
-      
 
-      if (response && response.data.updateStatusAssignment) {
-        setShowModalConfirmAccept(false);
-        toast.success("Accept Asset Successfully");
-        reloadTableData(); 
+      const result = await UpdateStatusAssignmentService({
+        state: ASSIGNMENT_STATUS.DECLINED,
+        id: selected?.id,
+      });
+
+      if (result) {
+        setShowModalConfirmDecline(false);
+        toast.success("Decline Assignment Successfully");
+        reloadTableData();
       } else {
         toast.error("Failed to accept the assignment. Please try again.");
       }
@@ -141,8 +161,7 @@ const ViewOwnAssignment: FC<ViewAssignmentProps> = (props) => {
         <ModalConfirmDeclineAssignment
           showModalConfirm={showModalConfirmDecline}
           setShowModalConfirm={setShowModalConfirmDecline}
-          reloadTableData={reloadTableData}
-          id={selected.id as number}
+          handleConfirmDecline={handleConfirmDecline}
         />
       )}
 
@@ -151,8 +170,6 @@ const ViewOwnAssignment: FC<ViewAssignmentProps> = (props) => {
           showModalConfirm={showModalConfirmAccept}
           setShowModalConfirm={setShowModalConfirmAccept}
           handleConfirmAccept={handleConfirmAccept}
-          reloadTableData={reloadTableData}
-          id={selected.id as number}
         />
       )}
     </div>

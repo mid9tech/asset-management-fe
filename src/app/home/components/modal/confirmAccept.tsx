@@ -5,17 +5,12 @@ import React, { FC } from "react";
 interface ModalConfirmProps {
   showModalConfirm: boolean;
   setShowModalConfirm: (value: boolean) => void;
-  reloadTableData: () => void;
-  id: number;
-  handleConfirmAccept:() => void
+  handleConfirmAccept: () => void;
 }
 
 const ModalConfirmAcceptAssignment: FC<ModalConfirmProps> = (props) => {
-  const { showModalConfirm, setShowModalConfirm, id, reloadTableData,handleConfirmAccept } = props;
-  const confirmAccept = () => {
-    setShowModalConfirm(false);
-    reloadTableData();
-  };
+  const { showModalConfirm, setShowModalConfirm, handleConfirmAccept } = props;
+
   return (
     <DetailModal
       isOpen={showModalConfirm}
@@ -24,7 +19,7 @@ const ModalConfirmAcceptAssignment: FC<ModalConfirmProps> = (props) => {
     >
       <div className="bg-white sm:p-6 sm:pb-4">
         <p className="text-md text-gray-500">
-        Do you want to accept this assignment?
+          Do you want to accept this assignment?
         </p>
       </div>
       <div className="bg-gray-50 sm:flex sm:flex-row-reverse gap-4">

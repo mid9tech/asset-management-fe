@@ -359,8 +359,8 @@ export type ReportResponse = {
 
 export type RequestReturn = {
   __typename?: 'RequestReturn';
-  acceptedBy: User;
-  acceptedById: Scalars['Int']['output'];
+  acceptedBy?: Maybe<User>;
+  acceptedById?: Maybe<Scalars['Int']['output']>;
   asset: Asset;
   assetId: Scalars['Int']['output'];
   assignedDate: Scalars['String']['output'];
@@ -370,7 +370,7 @@ export type RequestReturn = {
   isRemoved: Scalars['Boolean']['output'];
   requestedBy: User;
   requestedById: Scalars['Int']['output'];
-  returnedDate: Scalars['String']['output'];
+  returnedDate?: Maybe<Scalars['String']['output']>;
   state: Scalars['String']['output'];
 };
 

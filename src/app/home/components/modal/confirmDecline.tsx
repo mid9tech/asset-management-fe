@@ -5,16 +5,12 @@ import React, { FC } from "react";
 interface ModalConfirmProps {
   showModalConfirm: boolean;
   setShowModalConfirm: (value: boolean) => void;
-  reloadTableData: () => void;
-  id: number;
+  handleConfirmDecline: () => void;
 }
 
 const ModalConfirmDeclineAssignment: FC<ModalConfirmProps> = (props) => {
-  const { showModalConfirm, setShowModalConfirm, id, reloadTableData } = props;
-  const confirmDecline = () => {
-    setShowModalConfirm(false);
-    reloadTableData();
-  };
+  const { showModalConfirm, setShowModalConfirm, handleConfirmDecline } = props;
+
   return (
     <DetailModal
       isOpen={showModalConfirm}
@@ -36,7 +32,7 @@ const ModalConfirmDeclineAssignment: FC<ModalConfirmProps> = (props) => {
         </Button>
         <Button
           type="button"
-          onClick={confirmDecline}
+          onClick={handleConfirmDecline}
           className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
         >
           Decline

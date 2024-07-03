@@ -3,6 +3,7 @@ import {
   CreateAssignmentInput,
   FindAssignmentsInput,
   UpdateAssignmentInput,
+  UpdateStatusAssignmentInput,
 } from "../__generated__/graphql";
 import {
   CREATE_ASSIGNMENT_MUTATION,
@@ -11,12 +12,13 @@ import {
   GET_ALL_ASSIGNMENT_QUERY,
   GET_ALL_OWN_ASSIGNMENT_QUERY,
   GET_DETAIL_ASSIGNMENT_QUERY,
+  UPDATE_STATUS_ASSIGNMENT,
 } from "./query/assignment.query";
 
 export const createAssignment = async (value: CreateAssignmentInput) => {
   const result = await client.mutate({
     mutation: CREATE_ASSIGNMENT_MUTATION,
-    variables: {createAssignmentInput: value},
+    variables: { createAssignmentInput: value },
   });
   return {
     data: result.data.createAssignment,
@@ -70,16 +72,34 @@ export const deleteAssignment = async (id: number) => {
   }
 };
 
-export const updateAssignment = async (id: number, value: UpdateAssignmentInput) => {
+export const updateAssignment = async (
+  id: number,
+  value: UpdateAssignmentInput
+) => {
   try {
     const result = await client.query({
       query: EDIT_ASSIGNMENT_MUTATION,
       variables: { id, updateAssignmentInput: value },
     });
-    console.log("updateAssignment",result.data);
-    return result.data.updateAssignment
+    console.log("updateAssignment", result.data);
+    return result.data.updateAssignment;
   } catch (error) {
-    console.log("updateAssignment", error)
-    return null
+    console.log("updateAssignment", error);
+    return null;
   }
-}
+};
+
+export const UpdateStatusAssignmentService = async (
+  updateStatusAssignmentInput: UpdateStatusAssignmentInput
+) => {
+  try {
+    const result = await client.mutate({
+      mutation: UPDATE_STATUS_ASSIGNMENT,
+      variables: { updateStatusAssignmentInput: updateStatusAssignmentInput },
+    });
+    return result.data.updateStatusAssignment;
+  } catch (error) {
+    console.log("updateAssignment", error);
+    return null;
+  }
+};
