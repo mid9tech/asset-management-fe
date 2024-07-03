@@ -18,7 +18,7 @@ import ErrorPage from "../app/error/page";
 import { USER_TYPE } from "../types/enum.type";
 import { changePasswordFirstTimeLogin, logout } from "@services/auth";
 import { UserStoreType } from "../types/user.type";
-import { USER } from "../constants";
+import { ASSET_PATH_DEFAULT, ASSIGNMENT_PATH_DEFAULT, USER, USER_PATH_DEFAULT } from "../constants";
 import { menuItem } from "../types/menu.type";
 import { findMenuItem } from "@utils/findMenuItem";
 
@@ -36,11 +36,11 @@ const menuForAdmin: menuItem[] = [
   { name: "Home", path: ["/home"], component: "Home" },
   {
     name: "Manage User",
-    path: ["/user", "/user/create", "/user/:id"],
+    path: [ USER_PATH_DEFAULT, "/user/create", "/user/:id"],
     component: "User",
   },
-  { name: "Manage Asset", path: ["/asset", "/asset/create", "/asset/:id"], component: "Asset" },
-  { name: "Manage Assignment", path: ["/assignment", "/assignment/create", "/assignment/:id"], component: "Assignment" },
+  { name: "Manage Asset", path: [`${ASSET_PATH_DEFAULT}`, "/asset/create", "/asset/:id"], component: "Asset" },
+  { name: "Manage Assignment", path: [`${ASSIGNMENT_PATH_DEFAULT}`, "/assignment/create", "/assignment/:id"], component: "Assignment" },
   {
     name: "Request For Return",
     path: ["/request-returning"],
@@ -94,7 +94,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
     const userStorage = localStorage.getItem(USER);
     setUser(JSON.parse(userStorage as string));
-    
   }, [pathname, menu, activeItem]);
 
   const handleSubmit = async () => {

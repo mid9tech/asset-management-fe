@@ -93,13 +93,14 @@ const Navbar = () => {
 
   const renderName = () => {
     let result = activeItem?.name;
-    
     if(pathname.includes("/create")){
       result = `${activeItem?.name} > Create new ${activeItem?.component} `
+    } else {
+      if(Object.keys(params).length > 0){
+        result = `${activeItem?.name} > Edit ${activeItem?.component} `
+      }
     }
-    if(Object.keys(params).length > 0){
-      result = `${activeItem?.name} > Edit ${activeItem?.component} `
-    }
+    console.log(result)
     return (
       <>
         {result}

@@ -34,6 +34,7 @@ import { useAuth } from "@providers/auth";
 import { menuItem } from "../../../types/menu.type";
 import { usePushUp } from "../pushUp";
 import { User } from "../../../__generated__/graphql";
+import { USER_PATH_DEFAULT } from "../../../constants";
 
 enum Gender {
   Male = "MALE",
@@ -191,7 +192,7 @@ const EditUser = ({ params }: { params: { id: string } }) => {
           .substring(0, 10),
       });
       if (userData.user.type == Type.Admin) {
-        router.push("/user");
+        router.back();
       }
     }
   }, [userData]);
@@ -204,7 +205,7 @@ const EditUser = ({ params }: { params: { id: string } }) => {
   const handleDiscard = () => {
     form.reset();
     setShowModalCancel(false);
-    router.push("/user");
+    router.back();
   };
 
   const form = useForm<FormData>({
@@ -261,8 +262,7 @@ const EditUser = ({ params }: { params: { id: string } }) => {
       } else {
         const userId = response.data.updateUser.id;
         pushUp(parseInt(userId))
-        // localStorage.setItem("newUserId", '"' + userId.toString() + '"');
-        router.push("/user");
+        router.push(USER_PATH_DEFAULT);
         toast.success("Edit User Successfully");
       }
     } catch (error) {

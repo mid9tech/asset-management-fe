@@ -85,7 +85,7 @@ const Filter = ({ data, label, height = 150 }: Props) => {
         {dropdownVisible && (
           <div
             className={`absolute mt-2 bg-white border border-gray-300 rounded shadow-lg z-10 w-full overflow-scroll`}
-            style={{ height: `${height === 0 ? 'auto' : height}` }}
+            style={{ maxHeight: "350px", height: `${height === 0 ? 'auto' : height}` }}
           >
             <fieldset>
               <legend className="sr-only">{label}</legend>
