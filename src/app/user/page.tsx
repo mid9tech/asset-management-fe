@@ -14,6 +14,7 @@ import { User } from "../../__generated__/graphql";
 import { redirect, usePathname, useRouter } from "next/navigation";
 import { usePushUp } from "./pushUp";
 import { formatUser } from "./formatUser";
+import { USER_PATH_DEFAULT } from "../../constants";
 
 
 
@@ -38,15 +39,6 @@ export default function Index({
   const [totalPages, setTotalPages] = useState<number>();
   const { pushUpId, pushUp }: any = usePushUp()
   const router = useRouter();
-  const pathname = usePathname();
-  // useEffect(() => {
-  //   const params = new URLSearchParams();
-  //   Object.values(USER_TYPE).forEach((type) => {
-  //     params.append("Type", type);
-  //   })
-  //   router.replace(`${pathname}?${params.toString()}`);
-  // }, []);
-
   useEffect(() => {
     setLoading(true);
 
@@ -58,6 +50,10 @@ export default function Index({
     const newUserId = pushUpId
     let request: { [k: string]: any } = {};
     request.page = parseInt(currentPage);
+    if (isNaN(request.page) || request.page < 1) {
+      router.push(USER_PATH_DEFAULT)
+      return
+    }
     request.sort = sortBy;
     request.sortOrder = sortOrder;
     request.type = filterType;

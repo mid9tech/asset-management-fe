@@ -10,6 +10,7 @@ import { defaultChoice } from "@components/filter";
 import { usePushUp } from "./pushUp";
 import { formatAsset } from "./formatAsset";
 import { usePathname, useRouter } from "next/navigation";
+import { ASSET_PATH_DEFAULT } from "../../constants";
 
 export const dynamic = "force-dynamic";
 export default function Index({
@@ -54,6 +55,10 @@ export default function Index({
       setLoading(true);
       let request: { [k: string]: any } = {};
       request.page = parseInt(currentPage);
+      if (isNaN(request.page) || request.page < 1) {
+        router.push(ASSET_PATH_DEFAULT)
+        return
+      }
       request.sortField = sortBy;
       request.sortOrder = sortOrder;
       request.stateFilter = filterState;
