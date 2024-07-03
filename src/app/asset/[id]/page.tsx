@@ -6,19 +6,14 @@ import { useRouter } from "next/navigation";
 import DetailModal from "@components/modal";
 import FormEdit from "./form";
 import { usePushUp } from "../pushUp";
+import { ASSET_TYPE } from "../../../types/enum.type";
 
-enum State {
-    AVAILABLE = "AVAILABLE",
-    NOT_AVAILABLE = "NOT_AVAILABLE",
-    WAITING_FOR_RECYCLING = "WAITING_FOR_RECYCLING",
-    RECYCLED = "RECYCLED",
-    ASSIGNED = "ASSIGNED"
-}
+
 
 interface FormData {
     assetName: string;
     installedDate: string;
-    state: State;
+    state: ASSET_TYPE;
     specification: string;
     category: {
         categoryName: string;
@@ -30,7 +25,6 @@ const EditAsset = ({ params }: { params: { id: string } }) => {
     const [showModalCancel, setShowModalCancel] = useState(false);
     const router = useRouter();
     const [dataUpdate, setDataUpdate] = useState<FormData | null>(null);
-    const {pushUp}: any = usePushUp()
 
     const handleCloseCancelModal = () => {
         setShowModalCancel(false);
@@ -47,7 +41,7 @@ const EditAsset = ({ params }: { params: { id: string } }) => {
         defaultValues: dataUpdate || {
             assetName: "",
             installedDate: "",
-            state: State.AVAILABLE,
+            state: ASSET_TYPE.Available,
             specification: "",
             category: {
                 categoryName: "",

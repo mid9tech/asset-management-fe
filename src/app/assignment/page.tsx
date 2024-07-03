@@ -11,6 +11,8 @@ import { formatDate } from "@utils/timeFormat";
 import { usePushUp } from "./pushUp";
 import { loadDetailAsset } from "@services/asset";
 import { formatAssignment } from "./formatAssignment";
+import { useRouter } from "next/navigation";
+import { ASSIGNMENT_PATH_DEFAULT } from "../../constants";
 
 export default function Index({
   searchParams,
@@ -27,10 +29,10 @@ export default function Index({
   const [listData, setListData] = useState<Assignment[]>();
 
   const queryString = searchParams?.query || "";
-  const state = searchParams?.State || "";
+  const state = searchParams?.State || [];
   const assignedDate = searchParams?.assignedDate || "";
   const currentPage = searchParams?.page || "1";
-
+  const router = useRouter();
   const [sortOrder, setSortOder] = useState(SORT_ORDER.ASC);
   const [totlaPage, setTotalPages] = useState<number>();
   const [sortBy, setSortBy] = useState("assetName");
@@ -45,6 +47,10 @@ export default function Index({
     let request: { [k: string]: any } = {};
 
     request.page = parseInt(currentPage);
+    if (isNaN(request.page) || request.page < 1) {
+      router.push(ASSIGNMENT_PATH_DEFAULT)
+      return
+    }
     request.sort = sortBy;
     request.sortOrder = sortOrder;
 

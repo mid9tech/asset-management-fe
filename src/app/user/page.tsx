@@ -12,12 +12,10 @@ import { SORT_ORDER, USER_TYPE } from "../../types/enum.type";
 import { loadData, loadDetail } from "@services/user";
 import { User } from "../../__generated__/graphql";
 import { redirect, usePathname, useRouter } from "next/navigation";
-import { ACCESS_TOKEN } from "../../constants";
-import { formatText } from "@utils/formatText";
 import { usePushUp } from "./pushUp";
 import { formatUser } from "./formatUser";
+import { USER_PATH_DEFAULT } from "../../constants";
 
-import { defaultChoice } from "@components/filter";
 
 
 export const dynamic = "force-dynamic";
@@ -39,20 +37,8 @@ export default function Index({
   const [sortOrder, setSortOder] = useState(SORT_ORDER.ASC);
   const [sortBy, setSortBy] = useState("firstName");
   const [totalPages, setTotalPages] = useState<number>();
-  const [newestUserId, setNewestUserId] = useState<string>("0");
   const { pushUpId, pushUp }: any = usePushUp()
   const router = useRouter();
-  const pathname = usePathname();
-  useEffect(() => {
-    const params = new URLSearchParams();
-    Object.values(USER_TYPE).forEach((type) => {
-      params.append("Type", type);
-    })
-    router.replace(`${pathname}?${params.toString()}`);
-    const newUserId = JSON.parse(localStorage.getItem("newUserId") || "0");
-    setNewestUserId(newUserId);
-  }, []);
-
   useEffect(() => {
     setLoading(true);
 
@@ -64,6 +50,10 @@ export default function Index({
     const newUserId = pushUpId
     let request: { [k: string]: any } = {};
     request.page = parseInt(currentPage);
+    if (isNaN(request.page) || request.page < 1) {
+      router.push(USER_PATH_DEFAULT)
+      return
+    }
     request.sort = sortBy;
     request.sortOrder = sortOrder;
     request.type = filterType;

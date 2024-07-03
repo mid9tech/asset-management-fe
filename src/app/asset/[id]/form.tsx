@@ -29,6 +29,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import { usePushUp } from '../pushUp';
+import { ASSET_PATH_DEFAULT } from '../../../constants';
 
 enum State {
     AVAILABLE = "AVAILABLE",
@@ -108,8 +109,7 @@ const FormEdit = ({ params }: { params: { id: string } }) => {
             } else {
                 const assetId = response.data.updateAsset.id;
                 pushUp(parseInt(assetId))
-                // localStorage.setItem("newAssetId", '"' + assetId.toString() + '"');
-                router.push("/asset");
+                router.push(ASSET_PATH_DEFAULT);
                 toast.success("Edit Asset Successfully");
             }
         } catch (error) {
