@@ -64,23 +64,27 @@ const HomeList = <T extends {}>({
 
   const onSubmit = async (item: any) => {
     console.log("item: ", item.assignedDate);
-    
+  
     try {
       const variables: any = {
         request: {
           assetId: parseInt(item.asset.id),
           assignmentId: parseInt(item.id),
-          requestedById: parseInt(item.assignee.id), 
+          requestedById: parseInt(item.assignee.id),
           assignedDate: item.assignedDate,
         },
       };
       const { data } = await requestReturn({ variables });
+      const successMessage = data.createRequestReturn?.message || "Request return created successfully";
+      toast.success(successMessage);
       console.log("Request return created: ", data.createRequestReturn);
-    } catch (error) {
-      toast.error("Something went wrong")
+    } catch (error: any) {
+      const errorMessage = error.graphQLErrors?.[0]?.message || "Something went wrong";
+      toast.error(errorMessage);
       console.error("Error creating request return: ", error);
     }
   };
+  
 
   return (
     <>
@@ -156,7 +160,7 @@ const HomeList = <T extends {}>({
                                 <DoneIcon
                                   className={`${
                                     item.isDisabledIcon === true &&
-                                    "text-nashtech cursor-not-allowed"
+                                    "text-gray cursor-not-allowed"
                                   }`}
                                   onClick={(e) => {
                                     e.stopPropagation();
