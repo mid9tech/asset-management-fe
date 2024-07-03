@@ -11,7 +11,7 @@ import { Button } from "@components/ui/button";
 import SearchIcon from "@public/icon/search.svg";
 import { useLoading } from "@providers/loading";
 
-import { SORT_ORDER } from "../../../../types/enum.type";
+import { ASSET_TYPE, SORT_ORDER } from "../../../../types/enum.type";
 import { Asset, FindAssetsInput } from "../../../../__generated__/graphql";
 import { loadDataAsset } from "@services/asset";
 
@@ -72,6 +72,7 @@ const ModalPikcAsset: React.FC<ModalPickerProps> = ({
         limit: 10,
         sortField: sortBy,
         sortOrder: sortOrder,
+        stateFilter: [ASSET_TYPE.Available]
       });
 
       document.addEventListener("mousedown", handleClickOutside);
@@ -178,6 +179,7 @@ const ModalPikcAsset: React.FC<ModalPickerProps> = ({
                   <label className="custom-radio">
                     <input
                       type="radio"
+                      disabled={item.isReadyAssigned == false}
                       checked={selected?.id === item.id}
                       onChange={() => handleSelected(item)}
                     />
