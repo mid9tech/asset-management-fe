@@ -91,7 +91,7 @@ export default function Index({
           detail.assignedByUsername = detail.assigner?.username;
           detail.assignedToUsername = detail.assignee?.username;
           detail.state = formatStateText(detail.state);
-          detail.assignedDate = formatDate(detail.assignedDate);
+          detail.assignedDate = formatDate(new Date(detail.assignedDate));
           listCustom.unshift(detail);
         } else {
           pushUp(null);
