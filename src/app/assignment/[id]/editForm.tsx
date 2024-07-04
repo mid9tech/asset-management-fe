@@ -49,16 +49,16 @@ const EditForm: FC<FormProps> = (props) => {
   );
 
   useEffect(() => {
+    console.log("data update", assignment);
     if (assignment) {
-      console.log("data", assignment);
       setUserSelected(assignment.assignee);
       setAssetSelected(assignment.asset);
       setNoteValue(assignment?.note);
       setDataUpdate({
-        assignedDate: assignment.assignedDate,
+        assignedDate: new Date(assignment?.assignedDate).toISOString().slice(0, 10),
         note: assignment?.note || "",
         user: assignment.assignee,
-        asset: assignment.asset,
+        asset: assignment.asset
       });
     }
   }, [assignment]);
@@ -186,6 +186,7 @@ const EditForm: FC<FormProps> = (props) => {
                     id="assigned-date-assignment-edit"
                     placeholder="Select a date"
                     {...field}
+                    
                     type="date"
                     className={`flex justify-end cursor-pointer flex-col ${
                       fieldState.error ? "border-nashtech" : ""
@@ -206,6 +207,7 @@ const EditForm: FC<FormProps> = (props) => {
             onChange={(e) => setNoteValue(e.target.value)}
             defaultValue={assignment?.note || ""}
             id="note-assignment"
+            maxLength={200}
             rows={5}
             className="flex h-auto w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
           />

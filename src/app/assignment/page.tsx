@@ -84,7 +84,6 @@ export default function Index({
           const index = listCustom.findIndex(
             (assignment: Assignment) => assignment.id === pushUpId
           );
-          console.log(index);
 
           if (index !== -1) {
             listCustom.splice(index, 1);
@@ -92,7 +91,7 @@ export default function Index({
           detail.assignedByUsername = detail.assigner?.username;
           detail.assignedToUsername = detail.assignee?.username;
           detail.state = formatStateText(detail.state);
-          detail.assignedDate = formatDate(parseInt(detail.assignedDate));
+          detail.assignedDate = formatDate(new Date(detail.assignedDate));
           listCustom.unshift(detail);
         } else {
           pushUp(null);

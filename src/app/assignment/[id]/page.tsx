@@ -28,9 +28,7 @@ const EditAssignment = ({ params }: { params: { id: string } }) => {
     }
     const formattedAssignment = {
       ...data,
-      assignedDate: new Date(parseInt(data.assignedDate))
-        .toISOString()
-        .slice(0, 10),
+      assignedDate: new Date(data.assignedDate)
     };
     setAssignment(formattedAssignment);
   };

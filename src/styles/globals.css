@@ -124,3 +124,7 @@
     box-shadow: none !important;
     outline: none !important;
   }
+
+  .break-words {
+    word-break: break-word;
+  }

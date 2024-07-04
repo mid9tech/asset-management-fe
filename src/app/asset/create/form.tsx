@@ -1,6 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
-    Form, FormControl, FormField, FormItem, FormLabel, FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@components/ui/form";
 import { useLoading } from "@providers/loading";
 import { useMutation } from "@apollo/client";
@@ -8,12 +13,10 @@ import { CREATE_ASSET_MUTATION } from "@services/query/asset.query";
 import { useForm, Controller } from "react-hook-form";
 import { Input } from "@components/ui/input";
 import { toast } from "react-toastify";
-import {
-    Select, SelectTrigger, SelectValue,
-} from "@components/ui/select";
+import { Select, SelectTrigger, SelectValue } from "@components/ui/select";
 import { RadioGroup } from "@components/ui/radio-group";
 import { useRouter } from "next/navigation";
-import Category from './category';
+import Category from "./category";
 import { Button } from "@components/ui/button";
 import { Label } from "@components/ui/label";
 import DetailModal from '@components/modal';
@@ -26,11 +29,11 @@ import { formSchema } from './schema';
 import { Badge } from '@components/ui/badge';
 
 interface FormData {
-    name: string;
-    categoryId: string;
-    specification: string;
-    installedDate: string;
-    state: ASSET_TYPE_CREATE;
+  name: string;
+  categoryId: string;
+  specification: string;
+  installedDate: string;
+  state: ASSET_TYPE_CREATE;
 }
 
 const FormCreateAsset = () => {
@@ -48,66 +51,64 @@ const FormCreateAsset = () => {
     };
 
 
-    const form = useForm<FormData>({
-        resolver: zodResolver(formSchema),
-        mode: "onChange",
-        defaultValues: {
-            name: "",
-            categoryId: "",
-            specification: "",
-            installedDate: "",
-            state: ASSET_TYPE_CREATE.Available,
+  const form = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    mode: "onChange",
+    defaultValues: {
+      name: "",
+      categoryId: "",
+      specification: "",
+      installedDate: "",
+      state: ASSET_TYPE_CREATE.Available,
+    },
+  });
+
+  const handleCloseCancelModal = () => {
+    setShowModalCancel(false);
+  };
+
+  const handleDiscard = () => {
+    form.reset();
+    setShowModalCancel(false);
+    router.back();
+  };
+
+  const onSubmit = async (data: FormData) => {
+    if (submissionInProgress) return;
+    setSubmissionInProgress(true);
+    setLoading(true);
+    try {
+      const variables = {
+        createAssetInput: {
+          assetName: data.name,
+          categoryId: parseInt(data.categoryId),
+          specification: data.specification,
+          installedDate: data.installedDate,
+          state: data.state,
         },
-    });
+      };
 
-    const handleCloseCancelModal = () => {
-        setShowModalCancel(false);
-    };
+      const response = await createAssetMutation({ variables });
+      console.log("data: ", response.data);
 
-    const handleDiscard = () => {
-        form.reset();
-        setShowModalCancel(false);
-        router.back();
-    };
-
-    const onSubmit = async (data: FormData) => {
-        if (submissionInProgress) return;
-        setSubmissionInProgress(true);
-        setLoading(true);
-        try {
-            const variables = {
-                createAssetInput: {
-                    assetName: data.name,
-                    categoryId: parseInt(data.categoryId),
-                    specification: data.specification,
-                    installedDate: data.installedDate,
-                    state: data.state,
-                },
-            };
-
-            const response = await createAssetMutation({ variables });
-            console.log("data: ", response.data);
-
-
-            if (response.errors) {
-                response.errors.forEach((error: any) => {
-                    console.error(`GraphQL error message: ${error.message}`);
-                });
-                toast.error("Error creating asset");
-            } else {
-                const assetId = response.data.createAsset.id;
-                pushUp(parseInt(assetId));
-                toast.success("Asset created successfully");
-                router.push(`${ASSET_PATH_DEFAULT}`);
-            }
-        } catch (error) {
-            toast.error("Something went wrong! Please try again");
-            console.error('Error creating asset:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
+      if (response.errors) {
+        response.errors.forEach((error: any) => {
+          console.error(`GraphQL error message: ${error.message}`);
+        });
+        toast.error("Error creating asset");
+      } else {
+        const assetId = response.data.createAsset.id;
+        pushUp(parseInt(assetId));
+        toast.success("Asset created successfully");
+        router.push(`${ASSET_PATH_DEFAULT}`);
+      }
+    } catch (error) {
+      toast.error("Something went wrong! Please try again");
+      console.error("Error creating asset:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
     return (
         <>

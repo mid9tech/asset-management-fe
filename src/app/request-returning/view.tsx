@@ -58,7 +58,7 @@ const tableColumns = [
   {
     header: "Accepted By",
     accessor: "acceptedBy.username" as keyof RequestReturn,
-    width: "10%",
+    width: "11%",
   },
   {
     header: "Returned Date",
@@ -83,15 +83,17 @@ const ViewRequestReturn: FC<ViewRequestReturnProps> = (props) => {
 
   const { setLoading }: any = useLoading();
   const [selected, setSelected] = useState<RequestReturn>();
+  const [sortColumn, setSortColumn] = useState<string>("asset.assetCode");
   const [showModalConfirmCancel, setShowModalConfirmCancel] = useState(false);
   const [showModalConfirmComplete, setShowModalConfirmComplete] =
     useState(false);
 
   const handleSortClick = (item: string) => {
+    let defaultOrder = checkSortOrder(sortOrder);
+    setSortOder(defaultOrder);
+    setSortColumn(item);
     switch (item) {
       case "asset.assetCode":
-        let defaultOrder = checkSortOrder(sortBy, item, sortOrder);
-        setSortOder(defaultOrder);
         setSortBy("assetCode");
         break;
       case "asset.assetName":
@@ -193,7 +195,7 @@ const ViewRequestReturn: FC<ViewRequestReturnProps> = (props) => {
         onSortClick={handleSortClick}
         onCheckClick={handleOpenCompleteModal}
         onDeleteClick={handleOpenCancelModal}
-        sortBy={sortBy}
+        sortBy={sortColumn}
         sortOrder={sortOrder}
       />
       {listData?.length > 0 ? (

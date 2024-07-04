@@ -57,7 +57,7 @@ const ViewDetail = (props: any) => {
             </div>
             <div className="flex mb-2 overflow-y-auto">
               <span className="text-sm w-40">Category</span>{" "}
-              <span className="text-sm w-80">{selectedAsset.category}</span>
+              <span className="text-sm w-80 break-words">{selectedAsset.category}</span>
             </div>
             <div className="flex mb-2">
               <span className="text-sm w-40">Installed Date</span>{" "}
