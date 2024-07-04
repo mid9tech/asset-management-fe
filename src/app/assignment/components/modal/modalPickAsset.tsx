@@ -15,6 +15,7 @@ import { ASSET_TYPE, SORT_ORDER } from "../../../../types/enum.type";
 import { Asset, FindAssetsInput } from "../../../../__generated__/graphql";
 import { loadDataAsset } from "@services/asset";
 import Pagination from "@components/paginationByState";
+import { toast } from "react-toastify";
 
 interface ModalPickerProps {
   isOpen: boolean;
@@ -52,11 +53,18 @@ const ModalPikcAsset: React.FC<ModalPickerProps> = ({
   };
 
   const loadData = async (filter: FindAssetsInput) => {
-    setLoading(true);
-    const { data }: any = await loadDataAsset(filter);
+    try {
+      setLoading(true);
+      const { data }: any = await loadDataAsset(filter);
 
-    setList(data.assets);
-    setLoading(false);
+      setTotalPage(data.totalPages)
+      setList(data.assets);
+      setLoading(false);
+    } catch (error) {
+      toast.error("Something went wrong! Please try again");
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -84,7 +92,7 @@ const ModalPikcAsset: React.FC<ModalPickerProps> = ({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isOpen, searchTerm, sortBy, sortOrder]);
+  }, [isOpen, searchTerm, sortBy, sortOrder, currenPage]);
 
   if (!isOpen) return null;
 
@@ -173,8 +181,8 @@ const ModalPikcAsset: React.FC<ModalPickerProps> = ({
               <div
                 key={key}
                 className={`grid grid-cols-6 gap-4 ${item.isReadyAssigned == false
-                    ? "opacity-50 cursor-not-allowed"
-                    : "cursor-pointer"
+                  ? "opacity-50 cursor-not-allowed"
+                  : "cursor-pointer"
                   }`}
                 onClick={item.isReadyAssigned == false ? () => { } : () => handleSelected(item)}>
                 <div className="flex justify-end items-center">
@@ -202,9 +210,11 @@ const ModalPikcAsset: React.FC<ModalPickerProps> = ({
                 <div></div>
               </div>
             ))}
-            {totalPage > 1 &&
-              <Pagination totalPages={totalPage} currentPage={currenPage} setCurrentPage={setCurrenPage} />
-            }
+            <div className="flex justify-center">
+              {totalPage > 1 &&
+                <Pagination totalPages={totalPage} currentPage={currenPage} setCurrentPage={setCurrenPage} />
+              }
+            </div>
           </div>
           <div className="px-4 py-4 sm:px-6 flex justify-end gap-3">
             <Button

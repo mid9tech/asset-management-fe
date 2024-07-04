@@ -15,6 +15,7 @@ import { redirect, usePathname, useRouter } from "next/navigation";
 import { usePushUp } from "./pushUp";
 import { formatUser } from "./formatUser";
 import { USER_PATH_DEFAULT } from "../../constants";
+import { toast } from "react-toastify";
 
 
 
@@ -40,52 +41,56 @@ export default function Index({
   const { pushUpId, pushUp }: any = usePushUp()
   const router = useRouter();
   useEffect(() => {
-    setLoading(true);
-
+    pushUp(null);
     loadUserList();
-    pushUp(null)
   }, [searchParams, sortBy, sortOrder]);
   const loadUserList = async () => {
-
-    const newUserId = pushUpId
-    let request: { [k: string]: any } = {};
-    request.page = parseInt(currentPage);
-    if (isNaN(request.page) || request.page < 1) {
-      router.push(USER_PATH_DEFAULT)
-      return
-    }
-    request.sort = sortBy;
-    request.sortOrder = sortOrder;
-    request.type = filterType;
-    request.limit = 20
-    if (queryString) {
-      request.query = queryString;
-    }
-    let detailUser: any = null;
-    //push item up
-    if (newUserId) {
-      detailUser = await loadDetail(newUserId);
-    }
-
-    const { data }: any = await loadData(request);
-    const listUserCustome = data?.users.map(
-      (item: User) => (formatUser(item))
-    );
-    if (detailUser) {
-      const newUserIndex = listUserCustome.findIndex((user: User) => user.id === newUserId.toString());
-      if (newUserIndex !== -1) {
-        listUserCustome.splice(newUserIndex, 1);
+    try {
+      setLoading(true);
+      const newUserId = pushUpId
+      let request: { [k: string]: any } = {};
+      request.page = parseInt(currentPage);
+      if (isNaN(request.page) || request.page < 1) {
+        router.push(USER_PATH_DEFAULT)
+        return
       }
-      detailUser.joinedDate = parseInt(detailUser?.joinedDate);
-      detailUser.dateOfBirth = parseInt(detailUser?.dateOfBirth);
-      listUserCustome.unshift(formatUser(detailUser));
-    } else {
-      pushUp(null)
+      request.sort = sortBy;
+      request.sortOrder = sortOrder;
+      request.type = filterType;
+      request.limit = 20
+      if (queryString) {
+        request.query = queryString;
+      }
+      let detailUser: any = null;
+      //push item up
+      if (newUserId) {
+        detailUser = await loadDetail(newUserId);
+      }
+
+      const { data }: any = await loadData(request);
+      const listUserCustome = data?.users.map(
+        (item: User) => (formatUser(item))
+      );
+      if (detailUser) {
+        const newUserIndex = listUserCustome.findIndex((user: User) => user.id === newUserId.toString());
+        if (newUserIndex !== -1) {
+          listUserCustome.splice(newUserIndex, 1);
+        }
+        detailUser.joinedDate = parseInt(detailUser?.joinedDate);
+        detailUser.dateOfBirth = parseInt(detailUser?.dateOfBirth);
+        listUserCustome.unshift(formatUser(detailUser));
+      } else {
+        pushUp(null)
+      }
+      //store data
+      setTotalPages(data?.totalPages);
+      setListUsers(listUserCustome);
+    } catch (error) {
+      toast.error("An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
     }
-    //store data
-    setTotalPages(data?.totalPages);
-    setListUsers(listUserCustome);
-    setLoading(false);
+
   };
   return (
     <Fragment>

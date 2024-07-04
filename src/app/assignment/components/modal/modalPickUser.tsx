@@ -54,7 +54,6 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
 
   const loadUserList = async (filter: FindUsersInput) => {
     setLoading(true);
-
     try {
       const { data }: any = await loadData(filter);
       const listUserCustom = data?.users.map(
@@ -64,7 +63,6 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
           type: item.type === USER_TYPE.STAFF ? "STAFF" : item.type,
         })
       );
-      console.log(data)
       setTotalPage(data.totalPages)
       setListUser(listUserCustom);
     } catch (error) {
@@ -112,9 +110,6 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
     setUserSelected(selected as User);
     setOpenModal(false);
   };
-
-
-
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
       <div
@@ -187,6 +182,7 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
               </div>
               <div></div>
             </div>
+
             {listUser?.map((item, key) => (
               <div
                 key={key}
@@ -219,9 +215,12 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
                 <div></div>
               </div>
             ))}
-            {totalPage > 1 &&
-              <Pagination totalPages={totalPage} currentPage={currenPage} setCurrentPage={setCurrenPage} />
-            }
+            <div className="flex justify-center">
+              {totalPage > 1 &&
+                <Pagination totalPages={totalPage} currentPage={currenPage} setCurrentPage={setCurrenPage} />
+              }
+            </div>
+
           </div>
           <div className="px-4 py-4 sm:px-6 flex justify-end gap-3">
             <Button

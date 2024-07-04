@@ -13,6 +13,7 @@ import { loadDetailAsset } from "@services/asset";
 import { formatAssignment } from "./formatAssignment";
 import { useRouter } from "next/navigation";
 import { ASSIGNMENT_PATH_DEFAULT } from "../../constants";
+import { toast } from "react-toastify";
 
 export default function Index({
   searchParams,
@@ -44,61 +45,67 @@ export default function Index({
 
   const handleGetAllAssignment = async () => {
     setLoading(true);
-    let request: { [k: string]: any } = {};
+    try {
+      let request: { [k: string]: any } = {};
 
-    request.page = parseInt(currentPage);
-    if (isNaN(request.page) || request.page < 1) {
-      router.push(ASSIGNMENT_PATH_DEFAULT)
-      return
-    }
-    request.sort = sortBy;
-    request.sortOrder = sortOrder;
-
-    if (queryString) {
-      request.query = queryString;
-    }
-
-    if (assignedDate) {
-      request.assignedDate = assignedDate;
-    }
-
-    if (state) {
-      request.state = state;
-    }
-    //push item up
-
-    let detail: any = null;
-    if (pushUpId) {
-      detail = await loadDetailAssignment(pushUpId);
-    }
-    const { data }: any = await gettAllAssignment(request);
-
-    if (data) {
-      const listCustom = data?.assignments.map((item: Assignment) =>
-        formatAssignment(item)
-      );
-
-      if (detail) {
-        console.log(listCustom);
-        const index = listCustom.findIndex(
-          (assignment: Assignment) => assignment.id === pushUpId
-        );
-        console.log(index);
-
-        if (index !== -1) {
-          listCustom.splice(index, 1);
-        }
-        detail.assignedByUsername = detail.assigner?.username;
-        detail.assignedToUsername = detail.assignee?.username;
-        detail.state = formatStateText(detail.state);
-        detail.assignedDate = formatDate(parseInt(detail.assignedDate));
-        listCustom.unshift(detail);
-      } else {
-        pushUp(null);
+      request.page = parseInt(currentPage);
+      if (isNaN(request.page) || request.page < 1) {
+        router.push(ASSIGNMENT_PATH_DEFAULT)
+        return
       }
-      setListData(listCustom);
-      setTotalPages(data.totalPages);
+      request.sort = sortBy;
+      request.sortOrder = sortOrder;
+
+      if (queryString) {
+        request.query = queryString;
+      }
+
+      if (assignedDate) {
+        request.assignedDate = assignedDate;
+      }
+
+      if (state) {
+        request.state = state;
+      }
+      //push item up
+
+      let detail: any = null;
+      if (pushUpId) {
+        detail = await loadDetailAssignment(pushUpId);
+      }
+      const { data }: any = await gettAllAssignment(request);
+
+      if (data) {
+        const listCustom = data?.assignments.map((item: Assignment) =>
+          formatAssignment(item)
+        );
+
+        if (detail) {
+          console.log(listCustom);
+          const index = listCustom.findIndex(
+            (assignment: Assignment) => assignment.id === pushUpId
+          );
+          console.log(index);
+
+          if (index !== -1) {
+            listCustom.splice(index, 1);
+          }
+          detail.assignedByUsername = detail.assigner?.username;
+          detail.assignedToUsername = detail.assignee?.username;
+          detail.state = formatStateText(detail.state);
+          detail.assignedDate = formatDate(parseInt(detail.assignedDate));
+          listCustom.unshift(detail);
+        } else {
+          pushUp(null);
+        }
+        setListData(listCustom);
+        setTotalPages(data.totalPages);
+      }
+    } catch (error) {
+      toast.error("Something went wrong! Please try again");
+    } finally {
       setLoading(false);
+
     }
   };
 
