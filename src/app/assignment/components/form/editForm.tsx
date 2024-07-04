@@ -29,7 +29,7 @@ import { DatePicker } from "@components/datepickerInput";
 import { Input } from "@components/ui/input";
 import { updateAssignment } from "@services/assignment";
 import { toast } from "react-toastify";
-import { ASSET_PATH_DEFAULT } from "../../../../constants";
+import { ASSET_PATH_DEFAULT, ASSIGNMENT_PATH_DEFAULT } from "../../../../constants";
 
 interface FormProps {
   setShowModalConfirm: (value: boolean) => void;
@@ -115,7 +115,7 @@ const EditForm: FC<FormProps> = (props) => {
       pushUp(data?.id);
       setLoading(false);
       toast.success("Assignment update success");
-      route.push(ASSET_PATH_DEFAULT);
+      route.push(ASSIGNMENT_PATH_DEFAULT);
     }
   };
   return (

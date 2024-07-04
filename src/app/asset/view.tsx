@@ -33,12 +33,10 @@ interface AssetManagementProps {
 }
 
 interface Props {
-  asset: Asset
-  showModalDetailAsset: boolean
-  handleCloseDetailModal: () => void
-
+  asset: Asset;
+  showModalDetailAsset: boolean;
+  handleCloseDetailModal: () => void;
 }
-
 
 const AssetManagement: React.FC<AssetManagementProps> = (props) => {
   const {
@@ -49,7 +47,7 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
     sortBy,
     setSortBy,
     setSortOrder,
-    loadAssetList
+    loadAssetList,
   } = props;
 
   const [showModalRemoveAsset, setShowModalRemoveAsset] = useState(false);
@@ -61,19 +59,18 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
 
   const router = useRouter();
   const { setLoading }: any = useLoading();
-  const { data: categoryData, loading: categoryLoading } =
-    useQuery(GET_CATEGORY_QUERY);
+  const { data: categoryData, loading: categoryLoading } = useQuery(GET_CATEGORY_QUERY);
 
-  const handleNavigateEditAsset = (asset: Asset) => {
-    setDataUpdate(asset);
-    router.push(`/asset/${asset.id}`);
-  }
+  const handleNavigateEditAsset = (id: string) => {
+    setLoading(true);
+    router.push(`/asset/${id}`);
+    setLoading(false);
+  };
 
   const handleSortClick = (item: string) => {
     let defaultOrder = SORT_ORDER.ASC;
     if (sortBy === item) {
-      defaultOrder =
-        sortOrder === SORT_ORDER.ASC ? SORT_ORDER.DESC : SORT_ORDER.ASC;
+      defaultOrder = sortOrder === SORT_ORDER.ASC ? SORT_ORDER.DESC : SORT_ORDER.ASC;
     }
     setSortOrder(defaultOrder);
     setSortBy(item);
@@ -127,7 +124,6 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
     }
   };
 
-
   const convertToMap = (data: any): Map<string, string> => {
     const map = new Map<string, string>();
     for (let i = 0; i < data.length; i++) {
@@ -135,6 +131,9 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
     }
     return map;
   };
+
+  console.log("data: ", data);
+
   return (
     <>
       <div className="container mx-auto p-4">
@@ -167,7 +166,8 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
             <Search />
             <button
               className="bg-red-600 text-white rounded px-4 py-1 cursor-pointer"
-              onClick={handleNavigateCreateAsset}>
+              onClick={handleNavigateCreateAsset}
+            >
               Create new asset
             </button>
           </div>
@@ -178,7 +178,7 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
           onRowClick={handleRowClick}
           onDeleteClick={handleDeleteClick}
           onSortClick={handleSortClick}
-          onEditClick={handleNavigateEditAsset}
+          onEditClick={(asset) => handleNavigateEditAsset(asset.id)}
           sortBy={sortBy === "assetName" ? "assetCode" : sortBy}
           sortOrder={sortOrder}
         />
@@ -192,19 +192,19 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
         isOpen={showModalRemoveAsset}
         onClose={handleCloseModal}
         isShowCloseIcon={true}
-        title="Are you sure ?">
+        title="Are you sure ?"
+      >
         <div className="p-3">
           <div className="sm:flex sm:items-start">
-            <p className="text-md text-gray-500">
-              Do you want to delete this asset?
-            </p>
+            <p className="text-md text-gray-500">Do you want to delete this asset?</p>
           </div>
         </div>
         <div className="sm:flex sm:flex-row gap-4">
           <Button
             type="button"
             onClick={handleConfirmDelete}
-            className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto">
+            className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
+          >
             Delete
           </Button>
           <Button
@@ -212,7 +212,7 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
             type="button"
             className="text-gray"
             onClick={() => setShowModalRemoveAsset(false)}
-            >
+          >
             Cancel
           </Button>
         </div>
@@ -221,13 +221,20 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
         isOpen={showModalErrorAsset}
         onClose={handleCloseModalAsset}
         // isShowCloseIcon={true}
-        title="Cannot Delete asset">
+        title="Cannot Delete asset"
+      >
         <div className="p-0">
           <div className="sm:flex sm:items-start">
             <p className="text-md text-gray-500">
               Cannot delete the asset because it belongs to one or more historical assignments.
               <div>
-              If the asset is not able to be used anymore, please update its state in <a href="/asset" className="text-blue underline">Edit Asset page</a>
+                If the asset is not able to be used anymore, please update its state in{" "}
+                <a
+                  onClick={() => handleNavigateEditAsset(selectedAsset?.id as string)}
+                  className="text-blue underline"
+                >
+                  Edit Asset page
+                </a>
               </div>
             </p>
           </div>
