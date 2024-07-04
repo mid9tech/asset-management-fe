@@ -27,7 +27,6 @@ import { usePushUp } from "../pushUp";
 import { validationSchema } from "./schema";
 import ModalUserPicker from "../modal/modalPickUser";
 import ModalAssetPicker from "../modal/modalPickAsset";
-import { Badge } from '@components/ui/badge';
 
 interface CreateFormProps {
   setShowModalConfirm: (value: boolean) => void;
@@ -47,19 +46,13 @@ const CreateForm: FC<CreateFormProps> = (props) => {
   const [userSelected, setUserSelected] = useState<User>();
   const [assetSelected, setAssetSelected] = useState<Asset>();
   const [noteValue, setNoteValue] = useState<string>();
-  const [inputText, setInputText] = useState("");
-  const characterLimit = 200;
-  const handleChange = (event: any) => {
-    setInputText(event.target.value);
-    form.setValue('note', event.target.value, { shouldValidate: true });
-  };
+
   const form = useForm({
     resolver: zodResolver(validationSchema),
     mode: "onChange",
     defaultValues: {
       asset: null,
       user: null,
-      note: null,
       assignedDate: new Date().toISOString().slice(0, 10),
     },
   });
@@ -180,16 +173,13 @@ const CreateForm: FC<CreateFormProps> = (props) => {
         <div className="flex flex-row justify-between items-start w-full gap-20">
           <label>Note</label>
           <textarea
-            // onChange={(e) => setNoteValue(e.target.value)}
+            onChange={(e) => setNoteValue(e.target.value)}
             id="note-assignment"
             rows={5}
-            value={inputText}
-            onChange={handleChange}
             maxLength={200}
             className="flex h-auto w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
           />
         </div>
-          <div><Badge className='flex flex-row w-full gap-20 justify-end -mt-4 border-0 shadow-none'>{inputText.length}/{characterLimit}</Badge></div>
         <div className="float-right">
           <Button
             id="save-btn-assignment"
