@@ -1,7 +1,6 @@
 import client from "@libs/graphQl/apolloClient";
 import { FindRequestReturnsInput } from "../__generated__/graphql";
-import { toast } from "react-toastify";
-import { FIND_REQUEST_RETURN_QUERY } from "./query/requestReturn.query";
+import { CANCEL_REQUEST_RETURN, COMPLETE_RETURNING, FIND_REQUEST_RETURN_QUERY } from "./query/requestReturn.query";
 
 export const loadDataRequest = async (request: FindRequestReturnsInput) => {
   try {
@@ -15,4 +14,25 @@ export const loadDataRequest = async (request: FindRequestReturnsInput) => {
   } catch (error: any) {
     throw new Error(error);
   }
+};
+
+
+export const CompleteReturning = async (id: number) => {
+  const result = await client.query({
+    query: COMPLETE_RETURNING,
+    variables: { id },
+  });
+  return {
+    data: result.data.completeRequestReturn,
+  };
+};
+
+export const CancelRequestReturn = async (id: number) => {
+  const result = await client.query({
+    query: CANCEL_REQUEST_RETURN,
+    variables: { id },
+  });
+  return {
+    data: result.data.deleteRequestReturn,
+  };
 };
