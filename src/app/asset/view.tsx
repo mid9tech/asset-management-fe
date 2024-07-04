@@ -21,6 +21,7 @@ import { toast } from "react-toastify";
 import { LABEL_CATEGORY, LABEL_STATE } from "../../constants/label";
 import { assetColumns } from "./tableColumn";
 import { loadDetailAsset } from "@services/asset";
+import { formatAsset } from "./formatAsset";
 
 interface AssetManagementProps {
   data: Asset[];
@@ -85,7 +86,7 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
   const handleRowClick = async(asset: Asset) => {
     try {
       const data  = await loadDetailAsset(parseInt(asset.id));
-      console.log('data loaded', data);
+      const formatedData = formatAsset(data);
       if(!data){
         toast.error("Failed to load asset");
       }

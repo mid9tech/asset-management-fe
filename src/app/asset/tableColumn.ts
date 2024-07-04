@@ -10,8 +10,8 @@ export const assetColumns = [
 export const historyColumns = [
   {
     header: "Date",
-    accessor: "assignment.assignedDate" as keyof Asset,
-    width: "10%",
+    accessor: "assignedDate" as keyof Asset,
+    width: "25%",
   },
   {
     header: "Assigned To",

@@ -20,42 +20,42 @@ const ViewDetail = (props: any) => {
           title="Detailed Asset Information">
           <div className="text-gray">
             <div className="flex mb-2">
-              <span className="text-sm w-40">Asset Code</span>{" "}
-              <span className="text-sm w-80">{selectedAsset.assetCode}</span>
+              <span className="text-sm w-28">Asset Code</span>{" "}
+              <span className="text-sm w-96">{selectedAsset.assetCode}</span>
             </div>
             <div className="flex mb-2">
-              <span className="text-sm w-40">Asset Name</span>{" "}
-              <span className="text-sm w-80">{selectedAsset.assetName}</span>
+              <span className="text-sm w-28">Asset Name</span>{" "}
+              <span className="text-sm w-96">{selectedAsset.assetName}</span>
             </div>
             <div className="flex mb-2 overflow-y-auto">
-              <span className="text-sm w-40">Category</span>{" "}
-              <span className="text-sm w-80 break-words">
+              <span className="text-sm w-28">Category</span>{" "}
+              <span className="text-sm w-96 break-words">
                 {selectedAsset.category.categoryName}
               </span>
             </div>
             <div className="flex mb-2">
-              <span className="text-sm w-40">Installed Date</span>{" "}
-              <span className="text-sm w-80">
+              <span className="text-sm w-28">Installed Date</span>{" "}
+              <span className="text-sm w-96">
                 {selectedAsset.installedDate}
               </span>
             </div>
             <div className="flex mb-2">
-              <span className="text-sm w-40">State</span>{" "}
-              <span className="text-sm w-80">{selectedAsset.state}</span>
+              <span className="text-sm w-28">State</span>{" "}
+              <span className="text-sm w-96">{selectedAsset.state}</span>
             </div>
             <div className="flex flex-row mb-2">
-              <span className="text-sm w-40">Location</span>{" "}
-              <span className="text-sm w-80">{selectedAsset.location}</span>
+              <span className="text-sm w-28">Location</span>{" "}
+              <span className="text-sm w-96">{selectedAsset.location}</span>
             </div>
             <div className="flex flex-row mb-2">
-              <span className="text-sm w-40">Specification</span>{" "}
-              <span className="text-sm w-80 break-words">
+              <span className="text-sm w-28">Specification</span>{" "}
+              <span className="text-sm w-96 break-words">
                 {selectedAsset.specification}
               </span>
             </div>
             <div className="flex mb-2">
-              <span className="text-sm w-40">History</span>{" "}
-              <div className="text-sm w-80">
+              <span className="text-sm w-28">History</span>{" "}
+              <div className="text-sm w-96">
                 <ReusableList
                   fontSize={12}
                   columns={historyColumns}
