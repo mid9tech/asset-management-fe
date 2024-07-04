@@ -58,7 +58,7 @@ const tableColumns = [
   {
     header: "Accepted By",
     accessor: "acceptedBy.username" as keyof RequestReturn,
-    width: "10%",
+    width: "11%",
   },
   {
     header: "Returned Date",

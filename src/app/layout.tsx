@@ -28,7 +28,7 @@ export default function RootLayout({
           <AuthProvider>
             <ApolloCustomProvider>
               <Navbar />
-              <div className="flex flex-grow justify-evenly items-start gap-5 px-10">
+              <div className="flex flex-grow justify-evenly items-start gap-3 px-3">
                 <div className="w-1/6">
                   <Sidebar />
                 </div>
