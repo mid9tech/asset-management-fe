@@ -24,6 +24,7 @@ export type Asset = {
   assetName: Scalars['String']['output'];
   category: Category;
   categoryId: Scalars['Int']['output'];
+  history: Array<RequestReturn>;
   id: Scalars['ID']['output'];
   installedDate: Scalars['String']['output'];
   isAllowRemoved: Scalars['Boolean']['output'];

@@ -17,6 +17,7 @@ type Column = {
   header: string;
   accessor: string;
   width?: string; // Optional width property for columns
+  sortField?: string;
 };
 
 interface ReusableTableProps<T> {
@@ -30,6 +31,7 @@ interface ReusableTableProps<T> {
   onSortClick?: (item: string) => void;
   sortBy: string;
   sortOrder: string;
+  fontSize?: number;
 }
 
 const ReusableList = <T extends {}>({
@@ -43,6 +45,7 @@ const ReusableList = <T extends {}>({
   onSortClick = () => {},
   sortBy,
   sortOrder,
+  fontSize,
 }: ReusableTableProps<T>) => {
   const [showModalCancel, setShowModalCancel] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
@@ -96,6 +99,19 @@ const ReusableList = <T extends {}>({
     return path.split(".").reduce((acc, part) => acc && acc[part], obj);
   };
 
+  const genSortField = (sortField: string) => {
+    return sortBy === sortField && sortOrder === SORT_ORDER.ASC ? (
+      <ArrowDropUpIcon />
+    ) : (
+      <ArrowDropDownIcon />
+    );
+  };
+
+  const handleSortClick = (sortField: string | undefined) => {
+    if(sortField) return onSortClick(sortField);
+    else return null;
+  }
+
   return (
     <>
       <div>
@@ -115,18 +131,12 @@ const ReusableList = <T extends {}>({
                             style={{
                               minWidth: item.width || "auto",
                               maxWidth: item.width,
+                              fontSize: fontSize || 15,
                             }} // Set column width
-                            onClick={() =>
-                              onSortClick(item.accessor as string)
-                            }>
+                            onClick={() => handleSortClick(item.sortField)}>
                             <span className="font-bold">
                               {item.header}
-                              {sortBy === item.accessor &&
-                              sortOrder === SORT_ORDER.ASC ? (
-                                <ArrowDropUpIcon />
-                              ) : (
-                                <ArrowDropDownIcon />
-                              )}
+                              {item.sortField && (genSortField(item.sortField))}
                             </span>
                           </th>
                         ) : (
@@ -134,6 +144,7 @@ const ReusableList = <T extends {}>({
                             style={{
                               minWidth: item.width || "auto",
                               maxWidth: item.width,
+                              fontSize: fontSize || 15,
                             }}></th> // Set column width
                         )}
                       </Fragment>

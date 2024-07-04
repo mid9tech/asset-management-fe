@@ -20,6 +20,7 @@ import { DISABLE_ASSET_QUERY } from "@services/query/asset.query";
 import { toast } from "react-toastify";
 import { LABEL_CATEGORY, LABEL_STATE } from "../../constants/label";
 import { assetColumns } from "./tableColumn";
+import { loadDetailAsset } from "@services/asset";
 
 interface AssetManagementProps {
   data: Asset[];
@@ -30,12 +31,6 @@ interface AssetManagementProps {
   setSortBy: (value: any) => void;
   setSortOrder: (value: any) => void;
   loadAssetList: () => void;
-}
-
-interface Props {
-  asset: Asset;
-  showModalDetailAsset: boolean;
-  handleCloseDetailModal: () => void;
 }
 
 const AssetManagement: React.FC<AssetManagementProps> = (props) => {
@@ -57,16 +52,18 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
 
   const router = useRouter();
   const { setLoading }: any = useLoading();
-  const { data: categoryData, loading: categoryLoading } = useQuery(GET_CATEGORY_QUERY);
+  const { data: categoryData, loading: categoryLoading } =
+    useQuery(GET_CATEGORY_QUERY);
 
   const handleNavigateEditAsset = (id: string) => {
     router.push(`/asset/${id}`);
-  }
+  };
 
   const handleSortClick = (item: string) => {
     let defaultOrder = SORT_ORDER.ASC;
     if (sortBy === item) {
-      defaultOrder = sortOrder === SORT_ORDER.ASC ? SORT_ORDER.DESC : SORT_ORDER.ASC;
+      defaultOrder =
+        sortOrder === SORT_ORDER.ASC ? SORT_ORDER.DESC : SORT_ORDER.ASC;
     }
     setSortOrder(defaultOrder);
     setSortBy(item);
@@ -85,9 +82,20 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
     setShowModalErrorAsset(false);
   };
 
-  const handleRowClick = (asset: Asset) => {
-    setSelectedAsset(asset);
-    setShowModalDetailAsset(true);
+  const handleRowClick = async(asset: Asset) => {
+    try {
+      const data  = await loadDetailAsset(parseInt(asset.id));
+      console.log('data loaded', data);
+      if(!data){
+        toast.error("Failed to load asset");
+      }
+      setSelectedAsset(data);
+      setShowModalDetailAsset(true);
+    } catch (error) {
+      toast.error("Failed to load asset");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleNavigateCreateAsset = () => {
@@ -162,8 +170,7 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
             <Search />
             <button
               className="bg-red-600 text-white rounded px-4 py-1 cursor-pointer"
-              onClick={handleNavigateCreateAsset}
-            >
+              onClick={handleNavigateCreateAsset}>
               Create new asset
             </button>
           </div>
@@ -188,27 +195,26 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
         isOpen={showModalRemoveAsset}
         onClose={handleCloseModal}
         isShowCloseIcon={true}
-        title="Are you sure ?"
-      >
+        title="Are you sure ?">
         <div className="p-3">
           <div className="sm:flex sm:items-start">
-            <p className="text-md text-gray-500">Do you want to delete this asset?</p>
+            <p className="text-md text-gray-500">
+              Do you want to delete this asset?
+            </p>
           </div>
         </div>
         <div className="sm:flex sm:flex-row gap-4">
           <Button
             type="button"
             onClick={handleConfirmDelete}
-            className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
-          >
+            className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto">
             Delete
           </Button>
           <Button
             variant="outline"
             type="button"
             className="text-gray"
-            onClick={() => setShowModalRemoveAsset(false)}
-          >
+            onClick={() => setShowModalRemoveAsset(false)}>
             Cancel
           </Button>
         </div>
@@ -217,18 +223,20 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
         isOpen={showModalErrorAsset}
         onClose={handleCloseModalAsset}
         // isShowCloseIcon={true}
-        title="Cannot Delete asset"
-      >
+        title="Cannot Delete asset">
         <div className="p-0">
           <div className="sm:flex sm:items-start">
             <p className="text-md text-gray-500">
-              Cannot delete the asset because it belongs to one or more historical assignments.
+              Cannot delete the asset because it belongs to one or more
+              historical assignments.
               <div>
-                If the asset is not able to be used anymore, please update its state in{" "}
+                If the asset is not able to be used anymore, please update its
+                state in{" "}
                 <a
-                  onClick={() => handleNavigateEditAsset(selectedAsset?.id as string)}
-                  className="text-blue underline"
-                >
+                  onClick={() =>
+                    handleNavigateEditAsset(selectedAsset?.id as string)
+                  }
+                  className="text-blue underline">
                   Edit Asset page
                 </a>
               </div>
