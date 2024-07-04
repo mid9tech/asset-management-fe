@@ -23,7 +23,7 @@ import { ASSET_PATH_DEFAULT } from '../../../constants';
 import { ASSET_TYPE_CREATE } from '../../../types/enum.type';
 import { formatText } from '@utils/formatText';
 import { formSchema } from './schema';
-
+import { Badge } from '@components/ui/badge';
 
 interface FormData {
     name: string;
@@ -40,7 +40,12 @@ const FormCreateAsset = () => {
     const { setLoading }: any = useLoading();
     const router = useRouter();
     const { pushUp }: any = usePushUp();
-
+    const [inputText, setInputText] = useState("");
+    const characterLimit = 200;
+    const handleChange = (event: any) => {
+        setInputText(event.target.value);
+        form.setValue('specification', event.target.value, { shouldValidate: true });
+    };
 
 
     const form = useForm<FormData>({
@@ -167,10 +172,14 @@ const FormCreateAsset = () => {
                                             {...field}
                                             id="specification"
                                             rows={5}
+                                            value={inputText}
+                                            onChange={handleChange}
+                                            maxLength={200}
                                             className={`flex h-auto w-full rounded-md border border-input bg-transparent px-3 py-3 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 ${fieldState.error ? "border-nashtech" : ""}`}
                                         />
                                     </FormControl>
                                 </div>
+                                <Badge className='mt-3 float-right border-0 shadow-none'>{inputText.length}/{characterLimit}</Badge>
                                 <FormMessage className="text-nashtech float-left ml-32">
                                     {fieldState.error?.message}
                                 </FormMessage>
