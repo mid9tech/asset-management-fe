@@ -88,10 +88,10 @@ const ViewRequestReturn: FC<ViewRequestReturnProps> = (props) => {
     useState(false);
 
   const handleSortClick = (item: string) => {
+    let defaultOrder = checkSortOrder(sortOrder);
+    setSortOder(defaultOrder);
     switch (item) {
       case "asset.assetCode":
-        let defaultOrder = checkSortOrder(sortBy, item, sortOrder);
-        setSortOder(defaultOrder);
         setSortBy("assetCode");
         break;
       case "asset.assetName":

@@ -31,7 +31,7 @@ export default function DetailOwnAssignment({
         </div>
         <div className="flex flex-row gap-9 mb-2">
           <span className="text-sm w-40">Specification</span>{" "}
-          <span className="text-sm w-80">{data.asset?.specification}</span>
+          <span className="text-sm w-80 break-words">{data.asset?.specification}</span>
         </div>
         <div className="flex mb-2">
           <span className="text-sm w-40">Assigned to:</span>{" "}
@@ -51,7 +51,7 @@ export default function DetailOwnAssignment({
         </div>
         <div className="flex flex-row gap-9 mb-2">
           <span className="text-sm w-40">Note</span>{" "}
-          <span className="text-sm w-80">{data?.note}</span>
+          <span className="text-sm w-80 break-words">{data?.note}</span>
         </div>
       </div>
     </DetailModal>

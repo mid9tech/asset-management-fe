@@ -7,7 +7,7 @@ export const formatRequestReturn = (item: RequestReturn) => {
     return {
         ...item,
         assignedDate: formatDate(new Date(item.assignedDate)),
-        returnDate: item.returnedDate ? formatDate(new Date(item.returnedDate)) : null,
+        returnedDate: item.returnedDate ? formatDate(new Date(item.returnedDate)) : null,
         state: formatText(item.state),
         isDisabledIcon: item.state === REQUEST_RETURN_STATUS.COMPLETED ? true : false
     }
