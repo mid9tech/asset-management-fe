@@ -50,12 +50,11 @@ const EditForm: FC<FormProps> = (props) => {
 
   useEffect(() => {
     if (assignment) {
-      console.log("data", assignment);
       setUserSelected(assignment.assignee);
       setAssetSelected(assignment.asset);
       setNoteValue(assignment?.note);
       setDataUpdate({
-        assignedDate: assignment.assignedDate,
+        assignedDate: new Date(assignment?.assignedDate).toISOString().slice(0, 10),
         note: assignment?.note || "",
         user: assignment.assignee,
         asset: assignment.asset,

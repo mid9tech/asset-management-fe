@@ -32,7 +32,7 @@ export default function Index({
 
   const [sortOrder, setSortOder] = useState(SORT_ORDER.ASC);
   const [totlaPage, setTotalPages] = useState<number>();
-  const [sortBy, setSortBy] = useState("updatedAt");
+  const [sortBy, setSortBy] = useState("assetCode");
 
   useEffect(() => {
     handleGetAllRequestReturn();

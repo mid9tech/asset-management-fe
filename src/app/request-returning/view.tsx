@@ -83,6 +83,7 @@ const ViewRequestReturn: FC<ViewRequestReturnProps> = (props) => {
 
   const { setLoading }: any = useLoading();
   const [selected, setSelected] = useState<RequestReturn>();
+  const [sortColumn, setSortColumn] = useState<string>("asset.assetCode");
   const [showModalConfirmCancel, setShowModalConfirmCancel] = useState(false);
   const [showModalConfirmComplete, setShowModalConfirmComplete] =
     useState(false);
@@ -90,6 +91,7 @@ const ViewRequestReturn: FC<ViewRequestReturnProps> = (props) => {
   const handleSortClick = (item: string) => {
     let defaultOrder = checkSortOrder(sortOrder);
     setSortOder(defaultOrder);
+    setSortColumn(item);
     switch (item) {
       case "asset.assetCode":
         setSortBy("assetCode");
@@ -193,7 +195,7 @@ const ViewRequestReturn: FC<ViewRequestReturnProps> = (props) => {
         onSortClick={handleSortClick}
         onCheckClick={handleOpenCompleteModal}
         onDeleteClick={handleOpenCancelModal}
-        sortBy={sortBy}
+        sortBy={sortColumn}
         sortOrder={sortOrder}
       />
       {listData?.length > 0 ? (
