@@ -7,7 +7,7 @@ export const formatAssignment = (item: Assignment) => {
   return {
     ...item,
     state: formatStateText(item.state),
-    assignedDate: formatDate(item.assignedDate),
+    assignedDate: formatDate(new Date(item.assignedDate)),
     isDisabledIcon: item.state === ASSIGNMENT_STATUS.ACCEPTED ? true : false
   };
 };
