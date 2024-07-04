@@ -1,5 +1,4 @@
 import React, { FC, useState } from "react";
-import { useRouter } from "next/navigation";
 import { useLoading } from "@providers/loading";
 import { Assignment } from "../../__generated__/graphql";
 import { ASSIGNMENT_STATUS, SORT_ORDER } from "../../types/enum.type";
@@ -9,8 +8,6 @@ import DetailOwnAssignment from "./detail";
 import ModalConfirmDeclineAssignment from "./components/modal/confirmDecline";
 import ModalConfirmAcceptAssignment from "./components/modal/confirmAccept";
 import HomeList from "./components/table/homeList";
-import { useMutation } from "@apollo/client";
-import { UPDATE_STATUS_ASSIGNMENT } from "@services/query/assignment.query";
 import { toast } from "react-toastify";
 import { tableColumns } from "./tableColumn";
 import { UpdateStatusAssignmentService } from "@services/assignment";

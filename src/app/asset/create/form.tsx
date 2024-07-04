@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 import {
     Select, SelectTrigger, SelectValue,
 } from "@components/ui/select";
-import { RadioGroup, RadioGroupItem } from "@components/ui/radio-group";
+import { RadioGroup } from "@components/ui/radio-group";
 import { useRouter } from "next/navigation";
 import Category from './category';
 import { Button } from "@components/ui/button";
@@ -38,6 +38,7 @@ interface FormData {
 const FormCreateAsset = () => {
     const [createAssetMutation] = useMutation(CREATE_ASSET_MUTATION);
     const [showModalCancel, setShowModalCancel] = useState(false);
+    const [submissionInProgress, setSubmissionInProgress] = useState(false);
     const { setLoading }: any = useLoading();
     const router = useRouter();
     const { pushUp }: any = usePushUp();
@@ -80,6 +81,8 @@ const FormCreateAsset = () => {
     };
 
     const onSubmit = async (data: FormData) => {
+        if (submissionInProgress) return;
+        setSubmissionInProgress(true);
         setLoading(true);
         try {
             const variables = {
@@ -93,6 +96,8 @@ const FormCreateAsset = () => {
             };
 
             const response = await createAssetMutation({ variables });
+            console.log("data: ", response.data);
+
 
             if (response.errors) {
                 response.errors.forEach((error: any) => {
@@ -112,6 +117,7 @@ const FormCreateAsset = () => {
             setLoading(false);
         }
     };
+
 
     return (
         <>
@@ -221,7 +227,7 @@ const FormCreateAsset = () => {
                                             value={field.value}
                                             onValueChange={field.onChange}
                                             className="cursor-pointer">
-                                             <div className="flex items-center space-x-2">
+                                            <div className="flex items-center space-x-2">
                                                 <label className="custom-radio flex h-[20px]">
                                                     <input
                                                         type="radio"

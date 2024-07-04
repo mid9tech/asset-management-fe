@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 export const CREATE_REQUEST_RETURN = gql`
-mutation CreateRequestReturn($request: CreateRequestReturnInput!) {
+  mutation CreateRequestReturn($request: CreateRequestReturnInput!) {
     createRequestReturn(request: $request) {
       id
       assetId
@@ -65,6 +65,39 @@ export const FIND_REQUEST_RETURN_QUERY = gql`
           username
         }
       }
+    }
+  }
+`;
+
+export const COMPLETE_RETURNING = gql`
+  mutation CompleteReturning($id: Int!) {
+    completeRequestReturn(id: $id) {
+      id
+      assetId
+      assignmentId
+      requestedById
+      acceptedById
+      assignedDate
+      returnedDate
+      state
+      assetId
+      isRemoved
+    }
+  }
+`;
+
+export const CANCEL_REQUEST_RETURN = gql`
+  mutation CancelRequestReturn($id: Int!) {
+    deleteRequestReturn(id: $id) {
+      id
+      assetId
+      assignmentId
+      requestedById
+      acceptedById
+      assignedDate
+      returnedDate
+      isRemoved
+      state
     }
   }
 `;

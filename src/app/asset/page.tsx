@@ -2,7 +2,7 @@
 "use client";
 import { useLoading } from "@providers/loading";
 import { Fragment, Suspense, useEffect, useState } from "react";
-import { ASSET_TYPE, SORT_ORDER } from "../../types/enum.type";
+import { SORT_ORDER } from "../../types/enum.type";
 import { Asset } from "../../__generated__/graphql";
 import AssetManagement from "./view";
 import { loadDataAsset, loadDetailAsset } from "@services/asset";
@@ -24,30 +24,22 @@ export default function Index({
   };
 }) {
   const router = useRouter();
-  const pathname = usePathname();
   const { setLoading }: any = useLoading();
   const [listAsset, setListAssets] = useState<Asset[]>([]);
   const filterState = searchParams?.State || [];
   const filterCategory = searchParams?.Category || null;
-  const currentPage = searchParams?.page || '1';
+  const currentPage = searchParams?.page || "1";
 
   const queryString = searchParams?.query || "";
   const [sortOrder, setSortOrder] = useState(SORT_ORDER.ASC);
   const [sortBy, setSortBy] = useState("assetCode");
   const [totalPage, setTotalPages] = useState<number>(0);
-  const [newestAssetId, setNewestAssetId] = useState<string>("0");
   const { pushUpId, pushUp }: any = usePushUp();
-
-  useEffect(() => {
-    const newAssetId = JSON.parse(localStorage.getItem("newAssetId") || "0");
-    setNewestAssetId(newAssetId);
-  }, []);
 
   useEffect(() => {
     setLoading(true);
     loadAssetList();
-    pushUp(null)
-
+    pushUp(null);
   }, [searchParams, sortOrder, sortBy]);
 
   const loadAssetList = async () => {
@@ -56,8 +48,8 @@ export default function Index({
       let request: { [k: string]: any } = {};
       request.page = parseInt(currentPage);
       if (isNaN(request.page) || request.page < 1) {
-        router.push(ASSET_PATH_DEFAULT)
-        return
+        router.push(ASSET_PATH_DEFAULT);
+        return;
       }
       request.sortField = sortBy;
       request.sortOrder = sortOrder;
@@ -86,11 +78,12 @@ export default function Index({
         formatAsset(item)
       );
       if (detail) {
-        const newAssetIndex = listAssetCustom.findIndex((asset: Asset) => asset.id === pushUpId.toString());
+        const newAssetIndex = listAssetCustom.findIndex(
+          (asset: Asset) => asset.id === pushUpId.toString()
+        );
         if (newAssetIndex !== -1) {
           listAssetCustom.splice(newAssetIndex, 1);
         }
-        detail.installedDate = parseInt(detail?.installedDate);
         listAssetCustom.unshift(formatAsset(detail));
       } else {
         pushUp(null);

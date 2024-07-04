@@ -30,8 +30,7 @@ import { Input } from "@components/ui/input";
 import { updateAssignment } from "@services/assignment";
 import { toast } from "react-toastify";
 import {
-  ASSET_PATH_DEFAULT,
-  ASSIGNMENT_PATH_DEFAULT,
+  ASSET_PATH_DEFAULT, ASSIGNMENT_PATH_DEFAULT
 } from "../../../../constants";
 
 interface FormProps {
