@@ -1,15 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import React, { FC, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useLoading } from "@providers/loading";
 
 import { RequestReturn } from "../../__generated__/graphql";
-import {
-  ASSIGNMENT_STATUS,
-  REQUEST_RETURN_STATUS,
-  SORT_ORDER,
-} from "../../types/enum.type";
+import { REQUEST_RETURN_STATUS, SORT_ORDER } from "../../types/enum.type";
 import Paginate from "@components/paginate";
 import Filter from "@components/filter";
 import { convertEnumToMap } from "@utils/enumToMap";
@@ -19,6 +13,14 @@ import ReusableList from "@components/list";
 // import DetailAssignment from "./detail";
 import EmptyComponent from "@components/empty";
 import { checkSortOrder } from "@utils/checkSortField";
+import ModalCancelRequestReturn from "./components/model/cancel";
+import ModalCompleteRequestReturn from "./components/model/complete";
+import { toast } from "react-toastify";
+import { useLoading } from "@providers/loading";
+import {
+  CancelRequestReturnService,
+  CompleteReturningService,
+} from "@services/requestForReturn";
 
 interface ViewRequestReturnProps {
   listData: RequestReturn[];
@@ -28,6 +30,7 @@ interface ViewRequestReturnProps {
   setSortOder: (value: any) => void;
   totalPages: number;
   currentPage: number;
+  reloadTableData: () => void;
 }
 
 const tableColumns = [
@@ -75,12 +78,14 @@ const ViewRequestReturn: FC<ViewRequestReturnProps> = (props) => {
     setSortOder,
     sortOrder,
     sortBy,
+    reloadTableData,
   } = props;
-  const route = useRouter();
-  const { setLoading }: any = useLoading();
 
+  const { setLoading }: any = useLoading();
   const [selected, setSelected] = useState<RequestReturn>();
-  const [showModalDetail, setShowModalDetail] = useState(false);
+  const [showModalConfirmCancel, setShowModalConfirmCancel] = useState(false);
+  const [showModalConfirmComplete, setShowModalConfirmComplete] =
+    useState(false);
 
   const handleSortClick = (item: string) => {
     switch (item) {
@@ -104,10 +109,65 @@ const ViewRequestReturn: FC<ViewRequestReturnProps> = (props) => {
     }
   };
 
-  const handleRowClick = (ass: RequestReturn) => {
-    setSelected(ass);
-    setShowModalDetail(true);
-  };
+  async function handleConfirmCancel(): Promise<void> {
+    if (selected?.id === undefined) {
+      toast.error("Selected request return ID is undefined. Please try again.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const result = await CancelRequestReturnService(selected?.id);
+
+      if (result) {
+        setShowModalConfirmCancel(false);
+        toast.success("Cancel Request Returning Successfully");
+        reloadTableData();
+      } else {
+        toast.error("Failed to cancel request returning. Please try again.");
+      }
+    } catch (error: any) {
+      toast.error("An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleConfirmComplete(): Promise<void> {
+    if (selected?.id === undefined) {
+      toast.error("Selected request return ID is undefined. Please try again.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const result = await CompleteReturningService(selected?.id);
+
+      if (result) {
+        setShowModalConfirmComplete(false);
+        toast.success("Complete Request Returning Successfully");
+        reloadTableData();
+      } else {
+        toast.error("Failed to complete request returning. Please try again.");
+      }
+    } catch (error: any) {
+      toast.error("An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function handleOpenCompleteModal(item: RequestReturn): void {
+    setSelected(item);
+    setShowModalConfirmComplete(true);
+  }
+
+  function handleOpenCancelModal(item: RequestReturn): void {
+    setSelected(item);
+    setShowModalConfirmCancel(true);
+  }
 
   return (
     <div className="container mx-auto p-4">
@@ -129,10 +189,10 @@ const ViewRequestReturn: FC<ViewRequestReturnProps> = (props) => {
       <ReusableList
         columns={tableColumns}
         data={listData}
-        onRowClick={handleRowClick}
+        onRowClick={() => {}}
         onSortClick={handleSortClick}
-        onCheckClick={() => {}}
-        onDeleteClick={() => {}}
+        onCheckClick={handleOpenCompleteModal}
+        onDeleteClick={handleOpenCancelModal}
         sortBy={sortBy}
         sortOrder={sortOrder}
       />
@@ -141,6 +201,18 @@ const ViewRequestReturn: FC<ViewRequestReturnProps> = (props) => {
       ) : (
         <EmptyComponent />
       )}
+
+      <ModalCancelRequestReturn
+        showModalConfirm={showModalConfirmCancel}
+        setShowModalConfirm={setShowModalConfirmCancel}
+        handleConfirmCancel={handleConfirmCancel}
+      />
+
+      <ModalCompleteRequestReturn
+        showModalConfirm={showModalConfirmComplete}
+        setShowModalConfirm={setShowModalConfirmComplete}
+        handleConfirmComplete={handleConfirmComplete}
+      />
     </div>
   );
 };

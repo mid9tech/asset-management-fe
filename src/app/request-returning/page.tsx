@@ -35,10 +35,10 @@ export default function Index({
   const [sortBy, setSortBy] = useState("updatedAt");
 
   useEffect(() => {
-    handleGetAllReuqestReturn();
+    handleGetAllRequestReturn();
   }, [sortBy, sortOrder, searchParams]);
 
-  const handleGetAllReuqestReturn = async () => {
+  const handleGetAllRequestReturn = async () => {
     setLoading(true);
     let request: { [k: string]: any } = {};
 
@@ -76,6 +76,7 @@ export default function Index({
   return (
     <Fragment>
       <ViewRequestReturn
+        reloadTableData={handleGetAllRequestReturn}
         listData={listData as RequestReturn[]}
         totalPages={totlaPage as number}
         currentPage={parseInt(currentPage)}
