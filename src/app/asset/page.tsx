@@ -2,7 +2,7 @@
 "use client";
 import { useLoading } from "@providers/loading";
 import { Fragment, Suspense, useEffect, useState } from "react";
-import { ASSET_TYPE, SORT_ORDER } from "../../types/enum.type";
+import { SORT_ORDER } from "../../types/enum.type";
 import { Asset } from "../../__generated__/graphql";
 import AssetManagement from "./view";
 import { loadDataAsset, loadDetailAsset } from "@services/asset";
@@ -24,7 +24,6 @@ export default function Index({
   };
 }) {
   const router = useRouter();
-  const pathname = usePathname();
   const { setLoading }: any = useLoading();
   const [listAsset, setListAssets] = useState<Asset[]>([]);
   const filterState = searchParams?.State || [];
@@ -35,13 +34,7 @@ export default function Index({
   const [sortOrder, setSortOrder] = useState(SORT_ORDER.ASC);
   const [sortBy, setSortBy] = useState("assetCode");
   const [totalPage, setTotalPages] = useState<number>(0);
-  const [newestAssetId, setNewestAssetId] = useState<string>("0");
   const { pushUpId, pushUp }: any = usePushUp();
-
-  useEffect(() => {
-    const newAssetId = JSON.parse(localStorage.getItem("newAssetId") || "0");
-    setNewestAssetId(newAssetId);
-  }, []);
 
   useEffect(() => {
     setLoading(true);
@@ -77,7 +70,6 @@ export default function Index({
       //push item up
       if (pushUpId) {
         detail = await loadDetailAsset(pushUpId);
-        console.log("detail", detail);
       }
 
       const { data }: any = await loadDataAsset(request);
