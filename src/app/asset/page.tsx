@@ -29,7 +29,7 @@ export default function Index({
   const [listAsset, setListAssets] = useState<Asset[]>([]);
   const filterState = searchParams?.State || [];
   const filterCategory = searchParams?.Category || null;
-  const currentPage = searchParams?.page || '1';
+  const currentPage = searchParams?.page || "1";
 
   const queryString = searchParams?.query || "";
   const [sortOrder, setSortOrder] = useState(SORT_ORDER.ASC);
@@ -46,8 +46,7 @@ export default function Index({
   useEffect(() => {
     setLoading(true);
     loadAssetList();
-    pushUp(null)
-
+    pushUp(null);
   }, [searchParams, sortOrder, sortBy]);
 
   const loadAssetList = async () => {
@@ -56,8 +55,8 @@ export default function Index({
       let request: { [k: string]: any } = {};
       request.page = parseInt(currentPage);
       if (isNaN(request.page) || request.page < 1) {
-        router.push(ASSET_PATH_DEFAULT)
-        return
+        router.push(ASSET_PATH_DEFAULT);
+        return;
       }
       request.sortField = sortBy;
       request.sortOrder = sortOrder;
@@ -78,6 +77,7 @@ export default function Index({
       //push item up
       if (pushUpId) {
         detail = await loadDetailAsset(pushUpId);
+        console.log("detail", detail);
       }
 
       const { data }: any = await loadDataAsset(request);
@@ -86,11 +86,12 @@ export default function Index({
         formatAsset(item)
       );
       if (detail) {
-        const newAssetIndex = listAssetCustom.findIndex((asset: Asset) => asset.id === pushUpId.toString());
+        const newAssetIndex = listAssetCustom.findIndex(
+          (asset: Asset) => asset.id === pushUpId.toString()
+        );
         if (newAssetIndex !== -1) {
           listAssetCustom.splice(newAssetIndex, 1);
         }
-        detail.installedDate = parseInt(detail?.installedDate);
         listAssetCustom.unshift(formatAsset(detail));
       } else {
         pushUp(null);
