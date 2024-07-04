@@ -10,7 +10,7 @@ export default function ExportButton() {
 
     const cleanedData = data?.data.map(({ __typename, ...rest }: any) => rest);
 
-    ExportToExcel(cleanedData, "report");
+    ExportToExcel(cleanedData);
   }
 
   return (

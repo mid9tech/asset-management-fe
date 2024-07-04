@@ -1,5 +1,4 @@
 "use client";
-import React, { useState } from "react";
 import { Disclosure } from "@headlessui/react";
 import Image from "next/image";
 

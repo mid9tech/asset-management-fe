@@ -1,6 +1,5 @@
 import React, { Fragment } from "react";
 import { Asset } from "../../__generated__/graphql";
-import { useState } from "react";
 import DetailModal from "@components/modal";
 import { useQuery } from "@apollo/client";
 import { GET_CATEGORY_QUERY } from "@services/query/category.query";

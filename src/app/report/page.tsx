@@ -1,11 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import { useLoading } from "@providers/loading";
-import { Fragment, Suspense, useState } from "react";
+import { Fragment, Suspense, useEffect, useState } from "react";
 import { SORT_ORDER } from "../../types/enum.type";
 import { ReportElement } from "../../__generated__/graphql";
 import { GetReportService } from "@services/report";
 import ReportManagement from "./view";
+import { toast } from "react-toastify";
 
 export const dynamic = "force-dynamic";
 
@@ -26,27 +27,35 @@ export default function Index({
   const [totalPages, setTotalPages] = useState<number>();
 
   const loadReport = async () => {
-    let request: { [k: string]: any } = {};
-    request.page = parseInt(currentPage);
-    request.sort = sortBy;
-    request.sortOrder = sortOrder;
-    request.limit = 20;
+    try {
+      setLoading(true);
 
-    const data = await GetReportService({
-      page: request.page,
-      limit: request.limit,
-      sort: request.sort,
-      sortOrder: request.sortOrder,
-    });
+      let request: { [k: string]: any } = {};
+      request.page = parseInt(currentPage);
+      request.sort = sortBy;
+      request.sortOrder = sortOrder;
+      request.limit = 20;
 
-    //store data
-    setTotalPages(data?.totalPages);
-    setListReportElement(data?.data);
-    setLoading(false);
+      const data = await GetReportService({
+        page: request.page,
+        limit: request.limit,
+        sort: request.sort,
+        sortOrder: request.sortOrder,
+      });
+
+      //store data
+      setTotalPages(data?.totalPages);
+      setListReportElement(data?.data);
+    } catch (error) {
+      toast.error("An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  loadReport();
-
+  useEffect(() => {
+    loadReport();
+  }, [searchParams, sortOrder, sortBy]);
   return (
     <Fragment>
       <Suspense>

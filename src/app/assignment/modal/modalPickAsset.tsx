@@ -3,37 +3,35 @@
 import { useDebouncedCallback } from "use-debounce";
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { truncateParagraph } from "@utils/truncate";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 
 import { Button } from "@components/ui/button";
-import { loadData } from "@services/user";
 import SearchIcon from "@public/icon/search.svg";
 import { useLoading } from "@providers/loading";
-
-import { SORT_ORDER, USER_TYPE } from "../../../../types/enum.type";
-import { FindUsersInput, User } from "../../../../__generated__/graphql";
-import { formatText } from "@utils/formatText";
+import { loadDataAsset } from "@services/asset";
 import Pagination from "@components/paginationByState";
+import { toast } from "react-toastify";
+import { Asset, FindAssetsInput } from "../../../__generated__/graphql";
+import { SORT_ORDER, ASSET_TYPE } from "../../../types/enum.type";
 
 interface ModalPickerProps {
   isOpen: boolean;
   setOpenModal: (value: boolean) => void;
-  setUserSelected: (value: User) => void;
+  setAssetSelected: (value: Asset) => void;
 }
 
-const ModalUserPicker: React.FC<ModalPickerProps> = ({
+const ModalAssetPicker: React.FC<ModalPickerProps> = ({
   isOpen,
   setOpenModal,
-  setUserSelected,
+  setAssetSelected,
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
   const { setLoading }: any = useLoading();
-  const [selected, setSelected] = useState<User>();
-  const [listUser, setListUser] = useState<User[]>();
+  const [selected, setSelected] = useState<Asset>();
+  const [list, setList] = useState<Asset[]>();
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState("firstName");
+  const [sortBy, setSortBy] = useState("assetCode");
   const [sortOrder, setSortOrder] = useState<SORT_ORDER>(SORT_ORDER.ASC);
   const [currenPage, setCurrenPage] = useState<number>(1)
   const [totalPage, setTotalPage] = useState<number>(0)
@@ -44,7 +42,7 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
 
   const handleSortClick = (item: any) => {
     let defaultOrder = SORT_ORDER.ASC;
-    if (sortBy === item || (sortBy === "firstName" && item === "fullName")) {
+    if (sortBy === item) {
       defaultOrder =
         sortOrder === SORT_ORDER.ASC ? SORT_ORDER.DESC : SORT_ORDER.ASC;
     }
@@ -52,26 +50,18 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
     setSortBy(item);
   };
 
-  const loadUserList = async (filter: FindUsersInput) => {
-    setLoading(true);
+  const loadData = async (filter: FindAssetsInput) => {
     try {
-      const { data }: any = await loadData(filter);
-      const listUserCustom = data?.users.map(
-        (item: { type: USER_TYPE; lastName: any; firstName: any }) => ({
-          ...item,
-          fullName: `${item.lastName} ${item.firstName}`,
-          type: item.type === USER_TYPE.STAFF ? "STAFF" : item.type,
-        })
-      );
+      setLoading(true);
+      const { data }: any = await loadDataAsset(filter);
       setTotalPage(data.totalPages)
-      setListUser(listUserCustom);
+      setList(data.assets);
+      setLoading(false);
     } catch (error) {
-
+      toast.error("Something went wrong! Please try again");
     } finally {
       setLoading(false);
-
     }
-
   };
 
   useEffect(() => {
@@ -84,12 +74,13 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
       }
     };
     if (isOpen) {
-      loadUserList({
+      loadData({
         page: currenPage,
         query: searchTerm,
         limit: 10,
-        sort: sortBy,
+        sortField: sortBy,
         sortOrder: sortOrder,
+        stateFilter: [ASSET_TYPE.Available]
       });
 
       document.addEventListener("mousedown", handleClickOutside);
@@ -102,14 +93,15 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
 
   if (!isOpen) return null;
 
-  const handleSelected = (item: User) => {
+  const handleSelected = (item: Asset) => {
     setSelected(item);
   };
 
   const handleSave = () => {
-    setUserSelected(selected as User);
+    setAssetSelected(selected as Asset);
     setOpenModal(false);
   };
+
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
       <div
@@ -119,7 +111,7 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
           <div className="flex flex-row justify-between items-center">
             <div className="px-4 py-5 sm:px-6">
               <h3 className="text-lg leading-6 text-nashtech font-bold">
-                Select User
+                Select Asset
               </h3>
             </div>
             <div className="px-4 sm:px-6">
@@ -146,10 +138,10 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
               <div></div>
               <div
                 className="col border-b-2 border-black cursor-pointer"
-                onClick={() => handleSortClick("staffCode")}>
+                onClick={() => handleSortClick("assetCode")}>
                 <span className="font-bold">
-                  Staff Code{" "}
-                  {sortBy === "staffCode" && sortOrder === SORT_ORDER.ASC ? (
+                  Asset Code{" "}
+                  {sortBy === "assetCode" && sortOrder === SORT_ORDER.ASC ? (
                     <ArrowDropUpIcon />
                   ) : (
                     <ArrowDropDownIcon />
@@ -158,10 +150,10 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
               </div>
               <div
                 className="col-span-3 border-b-2 border-black cursor-pointer"
-                onClick={() => handleSortClick("firstName")}>
+                onClick={() => handleSortClick("assetName")}>
                 <span className="font-bold">
-                  Full Name
-                  {sortBy === "firstName" && sortOrder === SORT_ORDER.ASC ? (
+                  Asset Name{" "}
+                  {sortBy === "assetName" && sortOrder === SORT_ORDER.ASC ? (
                     <ArrowDropUpIcon />
                   ) : (
                     <ArrowDropDownIcon />
@@ -170,10 +162,10 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
               </div>
               <div
                 className="border-b-2 border-black cursor-pointer"
-                onClick={() => handleSortClick("type")}>
+                onClick={() => handleSortClick("categoryId")}>
                 <span className="font-bold">
-                  Type{" "}
-                  {sortBy === "type" && sortOrder === SORT_ORDER.ASC ? (
+                  Category{" "}
+                  {sortBy === "categoryId" && sortOrder === SORT_ORDER.ASC ? (
                     <ArrowDropUpIcon />
                   ) : (
                     <ArrowDropDownIcon />
@@ -182,35 +174,35 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
               </div>
               <div></div>
             </div>
-
-            {listUser?.map((item, key) => (
+            {list?.map((item, key) => (
               <div
                 key={key}
-                className="grid grid-cols-6 gap-4 cursor-pointer"
-                onClick={() => handleSelected(item)}>
+                className={`grid grid-cols-6 gap-4 ${item.isReadyAssigned == false
+                  ? "opacity-50 cursor-not-allowed"
+                  : "cursor-pointer"
+                  }`}
+                onClick={item.isReadyAssigned == false ? () => { } : () => handleSelected(item)}>
                 <div className="flex justify-end items-center">
                   <label className="custom-radio">
                     <input
                       type="radio"
-                      checked={selected?.staffCode === item.staffCode}
+                      disabled={item.isReadyAssigned == false}
+                      checked={selected?.id === item.id}
                       onChange={() => handleSelected(item)}
                     />
                     <span className="checkmark"></span>
                   </label>
                 </div>
                 <div className="col border-b-2 border-graycustom">
-                  <span>{item?.staffCode}</span>
+                  <span>{item?.assetCode}</span>
                 </div>
                 <div className="col-span-3 border-b-2 border-graycustom">
-                  <span>
-                    {truncateParagraph(
-                      `${item.firstName} ${item.lastName}`,
-                      30
-                    )}
-                  </span>
+                  <span className="truncate">{item?.assetName}</span>
                 </div>
                 <div className="border-b-2 border-graycustom">
-                  <span>{formatText(item?.type)}</span>
+                  <span className="truncate">
+                    {item?.category.categoryName}
+                  </span>
                 </div>
                 <div></div>
               </div>
@@ -220,7 +212,6 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
                 <Pagination totalPages={totalPage} currentPage={currenPage} setCurrentPage={setCurrenPage} />
               }
             </div>
-
           </div>
           <div className="px-4 py-4 sm:px-6 flex justify-end gap-3">
             <Button
@@ -239,4 +230,4 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
   );
 };
 
-export default ModalUserPicker;
+export default ModalAssetPicker;

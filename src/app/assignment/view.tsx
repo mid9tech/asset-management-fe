@@ -14,11 +14,11 @@ import CustomDatePicker from "@components/datepicker";
 import ReusableList from "@components/list";
 import DetailAssignment from "./detail";
 import EmptyComponent from "@components/empty";
-import ModalConfirmDeleteAssignment from "./components/modal/confirmDelete";
 import { deleteAssignment } from "@services/assignment";
 import { toast } from "react-toastify";
 import { LABEL_STATE } from "../../constants/label";
 import { tableColumns } from "./tableColumn";
+import ModalConfirmDeleteAssignment from "./modal/confirmDelete";
 
 interface ViewAssignmentProps {
   listData: Assignment[];
@@ -30,7 +30,6 @@ interface ViewAssignmentProps {
   currentPage: number;
   reloadTableData: () => void;
 }
-
 
 const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
   const {
@@ -112,7 +111,10 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
       <div className="flex justify-between items-start mb-4">
         <div className="flex items-start space-x-2">
           <div className="relative w-auto flex flex-row items-center justify-start gap-3">
-            <Filter label={LABEL_STATE} data={convertEnumToMap(ASSIGNMENT_STATUS)} />
+            <Filter
+              label={LABEL_STATE}
+              data={convertEnumToMap(ASSIGNMENT_STATUS)}
+            />
             <CustomDatePicker name="assignedDate" label="Assigned date" />
           </div>
         </div>
@@ -120,7 +122,8 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
           <Search />
           <button
             className="bg-red-600 text-white rounded px-4 py-1 cursor-pointer hover:opacity-75"
-            onClick={handleNavigateCreate}>
+            onClick={handleNavigateCreate}
+          >
             Create new assignment
           </button>
         </div>

@@ -11,26 +11,22 @@ import { Input } from "@components/ui/input";
 import React, { FC, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
-  AssignmentType,
   IAssignmentForm,
-} from "../../../../types/assignment.type";
-import { ASSIGNMENT_STATUS } from "../../../../types/enum.type";
-import { useAuth } from "@providers/auth";
-import { TextArea } from "@components/ui/text-area";
+} from "../../../types/assignment.type";
 import {
   Asset,
   CreateAssignmentInput,
   User,
-} from "../../../../__generated__/graphql";
-import ModalUserPicker from "../modal/modalPickUser";
-import ModalPikcAsset from "../modal/modalPickAsset";
+} from "../../../__generated__/graphql";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { validateCreateSchema } from "../../create/validation";
 import { useLoading } from "@providers/loading";
 import { createAssignment } from "@services/assignment";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import { usePushUp } from "../../pushUp";
+import { usePushUp } from "../pushUp";
+import { validationSchema } from "./schema";
+import ModalUserPicker from "../modal/modalPickUser";
+import ModalAssetPicker from "../modal/modalPickAsset";
 
 interface CreateFormProps {
   setShowModalConfirm: (value: boolean) => void;
@@ -52,7 +48,7 @@ const CreateForm: FC<CreateFormProps> = (props) => {
   const [noteValue, setNoteValue] = useState<string>();
 
   const form = useForm({
-    resolver: zodResolver(validateCreateSchema),
+    resolver: zodResolver(validationSchema),
     mode: "onChange",
     defaultValues: {
       asset: null,
@@ -78,12 +74,11 @@ const CreateForm: FC<CreateFormProps> = (props) => {
       note: noteValue || "",
     };
     const { data }: any = await createAssignment(variables);
-
     if (data) {
       const assignmentId = data.id;
       pushUp(parseInt(assignmentId));
       toast.success("Assignment created successfully");
-      route.push("/assignment");
+      route.push('/assignment');
     } else {
       toast.error("create assignment failed");
     }
@@ -140,7 +135,7 @@ const CreateForm: FC<CreateFormProps> = (props) => {
                   </Button>
                 </FormControl>
               </div>
-              <ModalPikcAsset
+              <ModalAssetPicker
                 isOpen={openModalAsset}
                 setOpenModal={setOpenModalAsset}
                 setAssetSelected={setAssetSelected}
@@ -179,8 +174,7 @@ const CreateForm: FC<CreateFormProps> = (props) => {
         <div className="flex flex-row justify-between items-start w-full gap-20">
           <label>Note</label>
           <textarea
-            maxLength={200}
-            onChange={(e) => setNoteValue(e.target.value)}
+          onChange={(e) => setNoteValue(e.target.value)}
             id="note-assignment"
             rows={5}
             className="flex h-auto w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"

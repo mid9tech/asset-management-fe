@@ -50,8 +50,8 @@ export default function Index({
 
       request.page = parseInt(currentPage);
       if (isNaN(request.page) || request.page < 1) {
-        router.push(ASSIGNMENT_PATH_DEFAULT)
-        return
+        router.push(ASSIGNMENT_PATH_DEFAULT);
+        return;
       }
       request.sort = sortBy;
       request.sortOrder = sortOrder;
@@ -104,7 +104,6 @@ export default function Index({
       toast.error("Something went wrong! Please try again");
     } finally {
       setLoading(false);
-
     }
   };
 

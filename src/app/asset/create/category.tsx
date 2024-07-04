@@ -5,11 +5,8 @@ import {
   GET_CATEGORY_QUERY,
 } from "@services/query/category.query";
 import {
-  Select,
   SelectContent,
   SelectItem,
-  SelectTrigger,
-  SelectValue,
 } from "@components/ui/select";
 import { Input } from "@components/ui/input";
 import { useEffect, useState } from "react";

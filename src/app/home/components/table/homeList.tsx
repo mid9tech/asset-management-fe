@@ -14,7 +14,7 @@ import { toast } from "react-toastify";
 type Column<T> = {
   header: string;
   accessor: keyof T;
-  width?: string; // Optional width property for columns
+  width?: string;
 };
 
 interface ReusableTableProps<T> {
@@ -41,7 +41,6 @@ const HomeList = <T extends {}>({
   sortOrder,
 }: ReusableTableProps<T>) => {
   const [requestReturn] = useMutation(CREATE_REQUEST_RETURN);
-  const [requestData, setRequestData] = useState<any>(null);
   const [showModalCancel, setShowModalCancel] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
 
@@ -82,8 +81,6 @@ const HomeList = <T extends {}>({
       console.error("Error creating request return: ", error);
     }
   };
-  
-
   return (
     <>
       <div>

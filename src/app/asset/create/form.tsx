@@ -18,21 +18,19 @@ import { Button } from "@components/ui/button";
 import { Label } from "@components/ui/label";
 import DetailModal from '@components/modal';
 import { usePushUp } from '../pushUp';
-import { z } from "zod";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ASSET_PATH_DEFAULT } from '../../../constants';
+import { ASSET_TYPE_CREATE } from '../../../types/enum.type';
+import { formatText } from '@utils/formatText';
+import { formSchema } from './schema';
 
-enum State {
-    AVAILABLE = "AVAILABLE",
-    NOT_AVAILABLE = "NOT_AVAILABLE"
-}
 
 interface FormData {
     name: string;
     categoryId: string;
     specification: string;
     installedDate: string;
-    state: State;
+    state: ASSET_TYPE_CREATE;
 }
 
 const FormCreateAsset = () => {
@@ -43,20 +41,7 @@ const FormCreateAsset = () => {
     const router = useRouter();
     const { pushUp }: any = usePushUp();
 
-    const formSchema = z.object({
-        name: z.string().min(1, { message: "Asset Name is missing" }).max(128, {
-            message: "Asset Name can't be more than 128 characters",
-        })
-            .refine((val) => /[a-zA-Z]/.test(val), {
-                message: "Asset Name is invalid",
-            }),
-        categoryId: z.string().min(1, { message: "Category is missing" }),
-        specification: z.string().min(1, { message: "Specification is missing" }).max(128, {
-            message: "Specification can't be more than 128 characters",
-        }),
-        installedDate: z.string().min(1, { message: "Installed Date is missing" }),
-        state: z.nativeEnum(State),
-    });
+
 
     const form = useForm<FormData>({
         resolver: zodResolver(formSchema),
@@ -66,7 +51,7 @@ const FormCreateAsset = () => {
             categoryId: "",
             specification: "",
             installedDate: "",
-            state: State.AVAILABLE,
+            state: ASSET_TYPE_CREATE.Available,
         },
     });
 
@@ -227,32 +212,21 @@ const FormCreateAsset = () => {
                                             value={field.value}
                                             onValueChange={field.onChange}
                                             className="cursor-pointer">
-                                            <div className="flex items-center space-x-2">
-                                                <label className="custom-radio flex h-[20px]">
-                                                    <input
-                                                        type="radio"
-                                                        value={State.AVAILABLE}
-                                                        checked={field.value === State.AVAILABLE}
-                                                        onChange={field.onChange}
-                                                        className={`focus:ring ${field.value === State.AVAILABLE ? "border-nashtech" : ""}`}
-                                                    />
-                                                    <div className="checkmark mt-2"></div>
-                                                    <Label htmlFor="option-one">Available</Label>
-                                                </label>
-                                            </div>
-                                            <div className="flex items-center space-x-2">
-                                                <label className="custom-radio flex items-center">
-                                                    <input
-                                                        type="radio"
-                                                        value={State.NOT_AVAILABLE}
-                                                        checked={field.value === State.NOT_AVAILABLE}
-                                                        onChange={field.onChange}
-                                                        className={`focus:ring ${field.value === State.NOT_AVAILABLE ? "border-nashtech" : ""}`}
-                                                    />
-                                                    <span className="checkmark mt-2"></span>
-                                                    <Label htmlFor="option-two">Not Available</Label>
-                                                </label>
-                                            </div>
+                                            {Object.values(ASSET_TYPE_CREATE).map((type, index) => ( <div key={index} className="flex items-center space-x-2">
+                                                    <label className="custom-radio flex h-[20px]">
+                                                        <input
+                                                            id={`option-${index}`}
+                                                            type="radio"
+                                                            value={type}
+                                                            checked={field.value === type}
+                                                            onChange={field.onChange}
+                                                            className={`focus:ring ${field.value === type ? "border-nashtech" : ""}`}
+                                                        />
+                                                        <div className="checkmark mt-2"></div>
+                                                        <Label className='cursor-pointer' htmlFor={`option-${index}`}>{formatText(type)}</Label>
+                                                    </label>
+                                                </div>
+                                            ))}
                                         </RadioGroup>
                                     </FormControl>
                                 </div>

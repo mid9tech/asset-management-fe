@@ -1,5 +1,5 @@
-import { formatStateText, formatText } from "@utils/formatText";
-import { Assignment, User } from "../../__generated__/graphql";
+import { formatStateText } from "@utils/formatText";
+import { Assignment } from "../../__generated__/graphql";
 import { formatDate } from "@utils/timeFormat";
 import { ASSIGNMENT_STATUS } from "../../types/enum.type";
 

@@ -2,7 +2,6 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
-import { z, ZodSchema } from "zod";
 import { Button } from "@components/ui/button";
 import { Label } from "@components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@components/ui/radio-group";
@@ -23,7 +22,6 @@ import {
   FormMessage,
 } from "@components/ui/form";
 import { Input } from "@components/ui/input";
-import { differenceInYears, isAfter, isWeekend } from "date-fns";
 import { useEffect, useState } from "react";
 import DetailModal from "@components/modal";
 import { useRouter } from "next/navigation";
@@ -35,101 +33,8 @@ import { menuItem } from "../../../types/menu.type";
 import { usePushUp } from "../pushUp";
 import { User } from "../../../__generated__/graphql";
 import { USER_PATH_DEFAULT } from "../../../constants";
-
-enum Gender {
-  Male = "MALE",
-  Female = "FEMALE",
-  Other = "OTHER",
-}
-
-enum Type {
-  Admin = "ADMIN",
-  Staff = "USER",
-}
-
-enum Location {
-  HCM = "HCM",
-  HN = "HN",
-  DN = "DN",
-}
-
-const formSchema: ZodSchema = z
-  .object({
-    firstName: z
-      .string()
-      .min(1, { message: "First Name is missing" })
-      .regex(/^[a-zA-Z0-9_ ]+$/, {
-        message: "Must contain only alphabetic characters",
-      })
-      .max(128, {
-        message: "First Name can't be more than 128 characters",
-      }),
-    lastName: z
-      .string()
-      .min(1, { message: "Last Name is missing" })
-      .regex(/^[a-zA-Z0-9_ ]+$/, {
-        message: "Must contain only alphabetic characters",
-      })
-      .max(128, {
-        message: "Last Name can't be more than 128 characters",
-      }),
-    dateOfBirth: z
-      .string()
-      .min(1, { message: "Date of birth is missing" })
-      .refine(
-        (val) => {
-          const date = new Date(val);
-          return differenceInYears(new Date(), date) >= 18;
-        },
-        { message: "User is under 18. Please select a different date" }
-      ),
-    gender: z.nativeEnum(Gender, { message: "Gender is missing" }),
-    joinedDate: z
-      .string()
-      .min(1, { message: "Joined Date is missing" })
-      .refine(
-        (val) => {
-          const date = new Date(val);
-          return !isWeekend(date);
-        },
-        {
-          message:
-            "Joined date cannot be Saturday or Sunday. Please select a different date",
-        }
-      ),
-    type: z.string().min(1, { message: "Type is missing" }),
-    location: z.string().optional(),
-  })
-  .superRefine((values, ctx) => {
-    const dobDate = new Date(values.dateOfBirth);
-    const joinedDate = new Date(values.joinedDate);
-
-    if (differenceInYears(joinedDate, dobDate) < 18) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message:
-          "Joined date is not later than 18 years. Please select a different date",
-        path: ["joinedDate"],
-      });
-    }
-
-    if (isAfter(dobDate, joinedDate)) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message:
-          "Joined date is not later than Date of Birth. Please select a different date",
-        path: ["joinedDate"],
-      });
-    }
-
-    if (values.type === Type.Admin && !values.location) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Location is required when Type is Admin",
-        path: ["location"],
-      });
-    }
-  });
+import { Gender, Location, Type } from "../../../types/enum.type";
+import { formSchema } from "./schema";
 
 interface FormData {
   firstName: string;
@@ -142,7 +47,7 @@ interface FormData {
 }
 
 const EditUser = ({ params }: { params: { id: string } }) => {
-  const {pushUp}: any = usePushUp()
+  const { pushUp }: any = usePushUp();
   const [editUserMutation] = useMutation(EDIT_USER_MUTATION);
   const { setLoading }: any = useLoading();
   const [showModalCancel, setShowModalCancel] = useState(false);
@@ -166,15 +71,15 @@ const EditUser = ({ params }: { params: { id: string } }) => {
       );
     }
     if (userData) {
-      if (userData?.user?.type == 'Admin') {
-        alert("me")
+      if (userData?.user?.type == "Admin") {
+        alert("me");
       }
       setDataUpdate(userData.user);
     }
   }, [userData, setActiveItem]);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
+    const storedUser = localStorage.getItem("user");
     if (storedUser) {
       setCurrentUser(JSON.parse(storedUser));
     }
@@ -196,7 +101,6 @@ const EditUser = ({ params }: { params: { id: string } }) => {
       }
     }
   }, [userData]);
-
 
   const handleCloseCancelModal = () => {
     setShowModalCancel(false);
@@ -261,7 +165,7 @@ const EditUser = ({ params }: { params: { id: string } }) => {
         });
       } else {
         const userId = response.data.updateUser.id;
-        pushUp(parseInt(userId))
+        pushUp(parseInt(userId));
         router.push(USER_PATH_DEFAULT);
         toast.success("Edit User Successfully");
       }
@@ -290,8 +194,9 @@ const EditUser = ({ params }: { params: { id: string } }) => {
                         placeholder=""
                         {...field}
                         disabled
-                        className={`cursor-pointer bg-input-gray ${fieldState.error ? "border-nashtech" : ""
-                          }`}
+                        className={`cursor-pointer bg-input-gray ${
+                          fieldState.error ? "border-nashtech" : ""
+                        }`}
                       />
                     </FormControl>
                   </div>
@@ -313,8 +218,9 @@ const EditUser = ({ params }: { params: { id: string } }) => {
                         placeholder=""
                         {...field}
                         disabled
-                        className={`cursor-pointer bg-input-gray ${fieldState.error ? "border-nashtech" : ""
-                          }`}
+                        className={`cursor-pointer bg-input-gray ${
+                          fieldState.error ? "border-nashtech" : ""
+                        }`}
                       />
                     </FormControl>
                   </div>
@@ -336,8 +242,9 @@ const EditUser = ({ params }: { params: { id: string } }) => {
                         placeholder="Select a date"
                         {...field}
                         type="date"
-                        className={`flex justify-end cursor-pointer flex-col ${fieldState.error ? "border-nashtech" : ""
-                          }`}
+                        className={`flex justify-end cursor-pointer flex-col ${
+                          fieldState.error ? "border-nashtech" : ""
+                        }`}
                       />
                     </FormControl>
                   </div>
@@ -400,8 +307,9 @@ const EditUser = ({ params }: { params: { id: string } }) => {
                         placeholder=""
                         {...field}
                         type="date"
-                        className={`flex justify-end cursor-pointer flex-col ${fieldState.error ? "border-nashtech" : ""
-                          }`}
+                        className={`flex justify-end cursor-pointer flex-col ${
+                          fieldState.error ? "border-nashtech" : ""
+                        }`}
                       />
                     </FormControl>
                   </div>

@@ -1,7 +1,7 @@
-import { differenceInYears, isAfter, isWeekend } from "date-fns";
+import { isWeekend } from "date-fns";
 import { z, ZodSchema } from "zod";
 
-export const validateCreateSchema: ZodSchema = z
+export const validationSchema: ZodSchema = z
   .object({
     assignedDate: z
       .string()
