@@ -78,12 +78,12 @@ const CreateForm: FC<CreateFormProps> = (props) => {
       note: noteValue || "",
     };
     const { data }: any = await createAssignment(variables);
-    
+
     if (data) {
       const assignmentId = data.id;
       pushUp(parseInt(assignmentId));
       toast.success("Assignment created successfully");
-      route.push('/assignment');
+      route.push("/assignment");
     } else {
       toast.error("create assignment failed");
     }
@@ -179,7 +179,8 @@ const CreateForm: FC<CreateFormProps> = (props) => {
         <div className="flex flex-row justify-between items-start w-full gap-20">
           <label>Note</label>
           <textarea
-          onChange={(e) => setNoteValue(e.target.value)}
+            maxLength={200}
+            onChange={(e) => setNoteValue(e.target.value)}
             id="note-assignment"
             rows={5}
             className="flex h-auto w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"

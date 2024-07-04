@@ -29,7 +29,9 @@ import { DatePicker } from "@components/datepickerInput";
 import { Input } from "@components/ui/input";
 import { updateAssignment } from "@services/assignment";
 import { toast } from "react-toastify";
-import { ASSET_PATH_DEFAULT, ASSIGNMENT_PATH_DEFAULT } from "../../../../constants";
+import {
+  ASSET_PATH_DEFAULT, ASSIGNMENT_PATH_DEFAULT
+} from "../../../../constants";
 
 interface FormProps {
   setShowModalConfirm: (value: boolean) => void;
@@ -106,10 +108,7 @@ const EditForm: FC<FormProps> = (props) => {
       assignedDate: value.assignedDate || assignment?.assignedDate,
       note: noteValue || "",
     };
-    const data = await updateAssignment(
-      assignment?.id as number,
-      variables
-    );
+    const data = await updateAssignment(assignment?.id as number, variables);
 
     if (data) {
       pushUp(data?.id);
@@ -210,6 +209,7 @@ const EditForm: FC<FormProps> = (props) => {
         <div className="flex flex-row justify-between items-start w-full gap-20">
           <label>Note</label>
           <textarea
+            maxLength={200}
             onChange={(e) => setNoteValue(e.target.value)}
             defaultValue={assignment?.note || ""}
             id="note-assignment"

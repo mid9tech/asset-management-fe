@@ -81,7 +81,6 @@ export default function Index({
         );
 
         if (detail) {
-          console.log(listCustom);
           const index = listCustom.findIndex(
             (assignment: Assignment) => assignment.id === pushUpId
           );

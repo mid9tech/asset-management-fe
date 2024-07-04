@@ -14,6 +14,8 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
+  DateTime: { input: any; output: any; }
 };
 
 export type Asset = {
@@ -38,7 +40,7 @@ export type Assignment = {
   assetCode: Scalars['String']['output'];
   assetName: Scalars['String']['output'];
   assignedByUsername?: Maybe<Scalars['String']['output']>;
-  assignedDate: Scalars['String']['output'];
+  assignedDate: Scalars['DateTime']['output'];
   assignedToUsername?: Maybe<Scalars['String']['output']>;
   assignee: User;
   assigner: User;
