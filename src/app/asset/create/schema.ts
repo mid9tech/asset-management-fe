@@ -9,7 +9,7 @@ export const formSchema = z.object({
             message: "Asset Name is invalid",
         }),
     categoryId: z.string().min(1, { message: "Category is missing" }),
-    specification: z.string().min(1, { message: "Specification is missing" }).max(128, {
+    specification: z.string().min(1, { message: "Specification is missing" }).max(200, {
         message: "Specification can't be more than 128 characters",
     }),
     installedDate: z.string().min(1, { message: "Installed Date is missing" }),
