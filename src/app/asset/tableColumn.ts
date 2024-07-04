@@ -7,11 +7,9 @@ export const assetColumns = [
     { header: "State", accessor: "state" as keyof Asset, width: "15%" },
     { header: "icon", accessor: "" as keyof Asset },
   ];
-  
 export  const historyColumns = [
     { header: "Date", accessor: "date" as keyof Asset },
     { header: "Assigned To", accessor: "assignedTo" as keyof Asset },
     { header: "Assigned By", accessor: "assignedBy" as keyof Asset },
     { header: "Returned Date", accessor: "returnedDate" as keyof Asset },
   ];
-  

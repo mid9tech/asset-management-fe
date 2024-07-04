@@ -6,6 +6,7 @@ import Paginate from "@components/paginate";
 import ReusableList from "@components/list";
 import EmptyComponent from "@components/empty";
 import dynamic from "next/dynamic";
+import { userColumns } from "./tableColumns";
 const ExportButton = dynamic(() => import("./exportButton"), { ssr: false });
 
 interface UserManagementProps {
@@ -17,44 +18,6 @@ interface UserManagementProps {
   setSortBy: (value: any) => void;
   setSortOder: (value: any) => void;
 }
-
-const userColumns = [
-  {
-    header: "Category",
-    accessor: "category_name" as keyof ReportElement,
-    width: "20%",
-  },
-  {
-    header: "Total",
-    accessor: "total" as keyof ReportElement,
-    width: "10%",
-  },
-  {
-    header: "Assigned",
-    accessor: "assigned" as keyof ReportElement,
-    width: "10%",
-  },
-  {
-    header: "Available",
-    accessor: "available" as keyof ReportElement,
-    width: "10%",
-  },
-  {
-    header: "Not available",
-    accessor: "not_available" as keyof ReportElement,
-    width: "14%",
-  },
-  {
-    header: "Waiting for recycling",
-    accessor: "waiting_for_recycling" as keyof ReportElement,
-    width: "16%",
-  },
-  {
-    header: "Recycled",
-    accessor: "recycled" as keyof ReportElement,
-    width: "10%",
-  },
-];
 
 const ReportManagement: React.FC<UserManagementProps> = (props) => {
   const {

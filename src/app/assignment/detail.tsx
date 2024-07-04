@@ -1,8 +1,6 @@
 import DetailModal from "@components/modal";
 
-import { Assignment, User } from "../../__generated__/graphql";
-import { formatDate } from "@utils/timeFormat";
-import { formatText } from "@utils/formatText";
+import { Assignment } from "../../__generated__/graphql";
 
 interface Props {
   data: Assignment;

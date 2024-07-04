@@ -2,10 +2,9 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
-import { z, ZodSchema } from "zod";
 import { Button } from "@components/ui/button";
 import { Label } from "@components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@components/ui/radio-group";
+import { RadioGroup } from "@components/ui/radio-group";
 import { toast } from "react-toastify";
 import {
   Select,
@@ -31,7 +30,7 @@ import { CREATE_USER_MUTATION } from "@services/user";
 import { useMutation } from "@apollo/client";
 import { useLoading } from "@providers/loading";
 import { Gender, Type, Location } from "../../../types/enum.type";
-import { formSchema } from "./create-user-schema";
+import { formSchema } from "./schema";
 import { usePushUp, PushUp } from '../pushUp';
 import { USER_PATH_DEFAULT } from "../../../constants";
 

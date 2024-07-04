@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-import { useEffect, useState } from "react";
-import CreateForm from "../components/form/createForm";
-import ModalConfirmAssignment from "../components/modal/modalConfirm";
+import { useState } from "react";
+import CreateForm from "./createForm";
 import { useLoading } from "@providers/loading";
+import ModalConfirmAssignment from "../modal/modalConfirm";
 
 const CreateAssignment = () => {
   const { setLoading }: any = useLoading();

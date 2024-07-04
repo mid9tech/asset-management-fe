@@ -10,28 +10,19 @@ import {
 } from "@components/ui/form";
 import React, { FC, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { IAssignmentEditForm } from "../../../../types/assignment.type";
-import {
-  Asset,
-  Assignment,
-  CreateAssignmentInput,
-  UpdateAssignmentInput,
-  User,
-} from "../../../../__generated__/graphql";
-import ModalUserPicker from "../modal/modalPickUser";
-import ModalPikcAsset from "../modal/modalPickAsset";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { validateCreateSchema } from "../../create/validation";
 import { useLoading } from "@providers/loading";
 import { useRouter } from "next/navigation";
-import { usePushUp } from "../../pushUp";
-import { DatePicker } from "@components/datepickerInput";
 import { Input } from "@components/ui/input";
 import { updateAssignment } from "@services/assignment";
 import { toast } from "react-toastify";
-import {
-  ASSET_PATH_DEFAULT, ASSIGNMENT_PATH_DEFAULT
-} from "../../../../constants";
+import { IAssignmentEditForm } from "../../../types/assignment.type";
+import { Asset, Assignment, UpdateAssignmentInput, User } from "../../../__generated__/graphql";
+import { usePushUp } from "../pushUp";
+import { ASSET_PATH_DEFAULT } from "../../../constants";
+import { validationSchema } from "../create/schema";
+import ModalUserPicker from "../modal/modalPickUser";
+import ModalAssetPicker from "../modal/modalPickAsset";
 
 interface FormProps {
   setShowModalConfirm: (value: boolean) => void;
@@ -79,7 +70,7 @@ const EditForm: FC<FormProps> = (props) => {
   }, [dataUpdate]);
 
   const form = useForm({
-    resolver: zodResolver(validateCreateSchema),
+    resolver: zodResolver(validationSchema),
     mode: "onChange",
     defaultValues: dataUpdate || {
       asset: null,
@@ -108,13 +99,16 @@ const EditForm: FC<FormProps> = (props) => {
       assignedDate: value.assignedDate || assignment?.assignedDate,
       note: noteValue || "",
     };
-    const data = await updateAssignment(assignment?.id as number, variables);
+    const data = await updateAssignment(
+      assignment?.id as number,
+      variables
+    );
 
     if (data) {
       pushUp(data?.id);
       setLoading(false);
       toast.success("Assignment update success");
-      route.push(ASSIGNMENT_PATH_DEFAULT);
+      route.push(ASSET_PATH_DEFAULT);
     }
   };
   return (
@@ -169,7 +163,7 @@ const EditForm: FC<FormProps> = (props) => {
                   </Button>
                 </FormControl>
               </div>
-              <ModalPikcAsset
+              <ModalAssetPicker
                 isOpen={openModalAsset}
                 setOpenModal={setOpenModalAsset}
                 setAssetSelected={setAssetSelected}
@@ -209,7 +203,6 @@ const EditForm: FC<FormProps> = (props) => {
         <div className="flex flex-row justify-between items-start w-full gap-20">
           <label>Note</label>
           <textarea
-            maxLength={200}
             onChange={(e) => setNoteValue(e.target.value)}
             defaultValue={assignment?.note || ""}
             id="note-assignment"

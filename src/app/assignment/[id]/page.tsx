@@ -1,12 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import { useEffect, useState } from "react";
-import ModalConfirmAssignment from "../components/modal/modalConfirm";
 import { useLoading } from "@providers/loading";
-import EditForm from "../components/form/editForm";
+
 import { Assignment } from "../../../__generated__/graphql";
 import { loadDetailAssignment } from "@services/assignment";
 import { toast } from "react-toastify";
+import EditForm from "./editForm";
+import ModalConfirmAssignment from "../modal/modalConfirm";
 
 const EditAssignment = ({ params }: { params: { id: string } }) => {
   const { setLoading }: any = useLoading();

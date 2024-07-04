@@ -10,6 +10,17 @@ export enum ASSET_TYPE {
   Waiting_for_recycling = "WAITING_FOR_RECYCLING",
   Recycled = "RECYCLED",
 }
+export enum ASSET_TYPE_CREATE {
+  Available = "AVAILABLE",
+  Not_available = "NOT_AVAILABLE",
+}
+
+export enum ASSET_TYPE_EDIT {
+  Available = "AVAILABLE",
+  Not_available = "NOT_AVAILABLE",
+  Waiting_for_recycling = "WAITING_FOR_RECYCLING",
+  Recycled = "RECYCLED",
+}
 
 export enum SORT_ORDER {
   ASC = "asc",

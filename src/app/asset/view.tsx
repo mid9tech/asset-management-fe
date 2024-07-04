@@ -47,14 +47,12 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
     sortBy,
     setSortBy,
     setSortOrder,
-    loadAssetList,
   } = props;
 
   const [showModalRemoveAsset, setShowModalRemoveAsset] = useState(false);
   const [showModalErrorAsset, setShowModalErrorAsset] = useState(false);
   const [showModalDetailAsset, setShowModalDetailAsset] = useState(false);
   const [selectedAsset, setSelectedAsset] = useState<Asset | null>(null);
-  const [dataUpdate, setDataUpdate] = useState<Asset | Asset[] | null>(null);
   const [deleteAsset] = useMutation(DISABLE_ASSET_QUERY);
 
   const router = useRouter();
@@ -62,10 +60,8 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
   const { data: categoryData, loading: categoryLoading } = useQuery(GET_CATEGORY_QUERY);
 
   const handleNavigateEditAsset = (id: string) => {
-    setLoading(true);
     router.push(`/asset/${id}`);
-    setLoading(false);
-  };
+  }
 
   const handleSortClick = (item: string) => {
     let defaultOrder = SORT_ORDER.ASC;
@@ -178,7 +174,7 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
           onRowClick={handleRowClick}
           onDeleteClick={handleDeleteClick}
           onSortClick={handleSortClick}
-          onEditClick={(asset) => handleNavigateEditAsset(asset.id)}
+          onEditClick={(asset) => handleNavigateEditAsset(asset?.id)}
           sortBy={sortBy === "assetName" ? "assetCode" : sortBy}
           sortOrder={sortOrder}
         />

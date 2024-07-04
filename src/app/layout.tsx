@@ -7,7 +7,7 @@ import Sidebar from "@components/sidebar";
 import { LoadingProvider } from "@providers/loading";
 import ApolloCustomProvider from "@providers/apollo";
 
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const inter = Inter({ subsets: ["latin"] });
