@@ -159,11 +159,7 @@ const ReusableList = <T extends {}>({
                               : "border-b-2 border-graycustom"
                           } flex justify-start items-start h-full  truncate`}>
                           {column.header !== "icon" ? (
-                            column.accessor !== "id" ? (
-                              (getNestedValue(item, column.accessor) as string)
-                            ) : (
-                              key + 1
-                            )
+                            (getNestedValue(item, column.accessor) as string)
                           ) : (
                             <div className="flex justify-between items-start h-full">
                               {onCheckClick && (
