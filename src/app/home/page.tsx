@@ -66,7 +66,6 @@ export default function Index({
   return (
     <Fragment>
       <ViewOwnAssignment
-        reloadTableData={handleGetAllAssignment}
         listData={listData as Assignment[]}
         totalPages={totlaPage as number}
         currentPage={parseInt(currentPage)}

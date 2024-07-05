@@ -73,9 +73,9 @@ export default function Index({
         if (newUserIndex !== -1) {
           data?.users.splice(newUserIndex, 1);
         }
-        detailUser.joinedDate = parseInt(detailUser?.joinedDate);
-        detailUser.dateOfBirth = parseInt(detailUser?.dateOfBirth);
-        data?.users.unshift(formatUser(detailUser));
+        detailUser.joinedDate = detailUser?.joinedDate;
+        detailUser.dateOfBirth = detailUser?.dateOfBirth;
+        data?.users.unshift(detailUser);
       } else {
         pushUp(null)
       }

@@ -20,6 +20,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import { useMutation } from "@apollo/client";
 import { CREATE_REQUEST_RETURN } from "@services/query/requestReturn.query";
 import ModalConfirmCreateRequestReturn from "./components/modal/confirmCreate";
+import { useRouter } from "next/navigation";
 
 interface ViewAssignmentProps {
   listData: Assignment[];
@@ -29,7 +30,6 @@ interface ViewAssignmentProps {
   setSortOder: (value: any) => void;
   totalPages: number;
   currentPage: number;
-  reloadTableData: () => void;
 }
 
 const ViewOwnAssignment: FC<ViewAssignmentProps> = (props) => {
@@ -41,9 +41,9 @@ const ViewOwnAssignment: FC<ViewAssignmentProps> = (props) => {
     setSortOder,
     sortOrder,
     sortBy,
-    reloadTableData,
   } = props;
   const { setLoading }: any = useLoading();
+  const route = useRouter();
 
   const [selected, setSelected] = useState<Assignment | null>();
   const [showModalDetail, setShowModalDetail] = useState(false);
@@ -99,7 +99,7 @@ const ViewOwnAssignment: FC<ViewAssignmentProps> = (props) => {
       if (result) {
         setShowModalConfirmAccept(false);
         toast.success("Accept Assignment Successfully");
-        reloadTableData();
+        route.refresh();
       } else {
         toast.error("Failed to accept the assignment. Please try again.");
       }
@@ -127,7 +127,7 @@ const ViewOwnAssignment: FC<ViewAssignmentProps> = (props) => {
       if (result) {
         setShowModalConfirmDecline(false);
         toast.success("Decline Assignment Successfully");
-        reloadTableData();
+        route.refresh();
       } else {
         toast.error("Failed to accept the assignment. Please try again.");
       }
@@ -161,6 +161,7 @@ const ViewOwnAssignment: FC<ViewAssignmentProps> = (props) => {
         data.createRequestReturn?.message ||
         "Request return created successfully";
       toast.success(successMessage);
+      route.refresh();
       console.log("Request return created: ", data.createRequestReturn);
     } catch (error: any) {
       const errorMessage =
