@@ -19,9 +19,6 @@ export const formatAsset = (item: Asset) => {
     assetName: formatText(`${item.assetName}`),
     installedDate: formatDate(new Date(item.installedDate)),
     category: formatText(item?.category?.categoryName),
-    state: formatText(
-      item.state === ASSET_TYPE.Available ? "AVAILABLE" : item.state
-    ),
     isDisabledIcon: item.state === ASSET_TYPE.Assigned ? true : false,
   };
 };

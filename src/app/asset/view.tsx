@@ -22,6 +22,11 @@ import { LABEL_CATEGORY, LABEL_STATE } from "../../constants/label";
 import { assetColumns } from "./tableColumn";
 import { loadDetailAsset } from "@services/asset";
 import { formatAsset, formatDetail } from "./formatAsset";
+import TableComponent from "@components/table";
+import CreateIcon from "@mui/icons-material/Create";
+import CheckIcon from "@mui/icons-material/Check";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import ReplayIcon from "@mui/icons-material/Replay";import { formatStateText } from "@utils/formatText";
 
 interface AssetManagementProps {
   data: Asset[];
@@ -136,6 +141,36 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
     }
     return map;
   };
+  
+  const newListData = data?.map((item) => ({
+    ...item,
+    state: formatStateText(item.state),
+    actions: [
+      {
+        icon: (
+          <CreateIcon
+            onClick={(e) => {
+              e.stopPropagation();
+              item.state === ASSET_TYPE.Available &&
+              handleNavigateEditAsset(item.id);
+            }}
+          />
+        ),
+      },
+      {
+        icon: (
+          <HighlightOffIcon
+            onClick={(e) => {
+              e.stopPropagation();
+              item.state === ASSET_TYPE.Assigned &&
+              handleDeleteClick(item);
+            }}
+            sx={{ color: "red" }}
+          />
+        ),
+      },
+    ],
+  }));
 
   return (
     <>
@@ -174,14 +209,12 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
             </button>
           </div>
         </div>
-        <ReusableList
+        <TableComponent
           columns={assetColumns}
-          data={data}
+          data={newListData}
           onRowClick={handleRowClick}
-          onDeleteClick={handleDeleteClick}
           onSortClick={handleSortClick}
-          onEditClick={(asset) => handleNavigateEditAsset(asset?.id)}
-          sortBy={sortBy === "assetName" ? "assetCode" : sortBy}
+          sortBy={sortBy}
           sortOrder={sortOrder}
         />
         {totalPages !== 0 ? (

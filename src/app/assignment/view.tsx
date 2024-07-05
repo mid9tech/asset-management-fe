@@ -19,6 +19,17 @@ import { toast } from "react-toastify";
 import { LABEL_STATE } from "../../constants/label";
 import { tableColumns } from "./tableColumn";
 import ModalConfirmDeleteAssignment from "./modal/confirmDelete";
+import TableComponent from "@components/table";
+import { actionType } from "../../types/action.type";
+import CreateIcon from "@mui/icons-material/Create";
+import CheckIcon from "@mui/icons-material/Check";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import ReplayIcon from "@mui/icons-material/Replay";
+import { formatStateText } from "@utils/formatText";
+import { Button } from "@components/ui/button";
+import DetailModal from "@components/modal";
+import { useMutation } from "@apollo/client";
+import { CREATE_REQUEST_RETURN } from "@services/query/requestReturn.query";
 
 interface ViewAssignmentProps {
   listData: Assignment[];
@@ -48,6 +59,47 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
   const [selected, setSelected] = useState<Assignment>();
   const [showModalDetail, setShowModalDetail] = useState(false);
   const [showModalConfirmDelete, setShowModalConfirmDelete] = useState(false);
+
+  const [showModalCancel, setShowModalCancel] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [requestReturn] = useMutation(CREATE_REQUEST_RETURN);
+
+  const handleCloseCancelModal = () => {
+    setShowModalCancel(false);
+  };
+
+  const handleConfirm = async () => {
+    if (selectedItem) {
+      await onSubmit(selectedItem);
+      setShowModalCancel(false);
+      setSelectedItem(null);
+    }
+  };
+  const onSubmit = async (item: any) => {
+    console.log("data item: ", item);
+
+    try {
+      const variables: any = {
+        request: {
+          assetId: parseInt(item.asset.id),
+          assignmentId: parseInt(item.id),
+          requestedById: parseInt(item.assignee.id),
+          assignedDate: item.assignedDate,
+        },
+      };
+      const { data } = await requestReturn({ variables });
+      const successMessage =
+        data.createRequestReturn?.message ||
+        "Request return created successfully";
+      toast.success(successMessage);
+      console.log("Request return created: ", data.createRequestReturn);
+    } catch (error: any) {
+      const errorMessage =
+        error.graphQLErrors?.[0]?.message || "Something went wrong";
+      toast.error(errorMessage);
+      console.error("Error creating request return: ", error);
+    }
+  };
 
   const handleNavigateCreate = () => {
     setLoading(true);
@@ -104,7 +156,61 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
       setLoading(false);
     }
   };
-
+  const newListData = listData?.map((item) => ({
+    ...item,
+    state: formatStateText(item.state),
+    actions: [
+      {
+        icon: (
+          <CreateIcon
+            className={`${
+              item.state !== ASSIGNMENT_STATUS.WAITING_FOR_ACCEPTANCE &&
+              "text-gray cursor-not-allowed"
+            }`}
+            onClick={(e) => {
+              e.stopPropagation();
+              item.state === ASSIGNMENT_STATUS.WAITING_FOR_ACCEPTANCE &&
+                handleNavigateEditPage(item);
+            }}
+          />
+        ),
+      },
+      {
+        icon: (
+          <HighlightOffIcon
+            className={`${
+              item.state !== ASSIGNMENT_STATUS.WAITING_FOR_ACCEPTANCE &&
+              "text-gray cursor-not-allowed"
+            }`}
+            onClick={(e) => {
+              e.stopPropagation();
+              item.state === ASSIGNMENT_STATUS.WAITING_FOR_ACCEPTANCE &&
+                handleModalDeleteAssignment(item);
+            }}
+            sx={{ color: "red" }}
+          />
+        ),
+      },
+      {
+        icon: (
+          <ReplayIcon
+            className={`${
+              item.state !== ASSIGNMENT_STATUS.ACCEPTED &&
+              "text-gray cursor-not-allowed"
+            }`}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (item.state === ASSIGNMENT_STATUS.ACCEPTED) {
+                setSelectedItem(item);
+                setShowModalCancel(true);
+              }
+            }}
+            sx={{ color: "blue" }}
+          />
+        ),
+      },
+    ],
+  }));
   return (
     <div className="container mx-auto p-4">
       <h2 className="text-2xl font-bold mb-4 text-nashtech">Assignment List</h2>
@@ -122,20 +228,16 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
           <Search />
           <button
             className="bg-red-600 text-white rounded px-4 py-1 cursor-pointer hover:opacity-75"
-            onClick={handleNavigateCreate}
-          >
+            onClick={handleNavigateCreate}>
             Create new assignment
           </button>
         </div>
       </div>
-      <ReusableList
+      <TableComponent
         columns={tableColumns}
-        data={listData}
+        data={newListData}
         onRowClick={handleRowClick}
-        onDeleteClick={handleModalDeleteAssignment}
         onSortClick={handleSortClick}
-        onEditClick={handleNavigateEditPage}
-        onReturnClick={() => {}}
         sortBy={sortBy}
         sortOrder={sortOrder}
       />
@@ -160,6 +262,34 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
           handleDelete={() => confirmDelete()}
         />
       )}
+      <DetailModal
+        isOpen={showModalCancel}
+        onClose={handleCloseCancelModal}
+        title="Are you sure?">
+        <div className="bg-white sm:p-6 sm:pb-4">
+          <div className="sm:flex sm:items-start">
+            <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+              <p className="text-md text-gray-500">
+                Do you want to create a returning request for this asset?
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="bg-gray-50 sm:flex sm:flex-row-reverse gap-4">
+          <Button
+            type="button"
+            className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+            onClick={handleCloseCancelModal}>
+            Cancel
+          </Button>
+          <Button
+            type="button"
+            className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
+            onClick={handleConfirm}>
+            Confirm
+          </Button>
+        </div>
+      </DetailModal>
     </div>
   );
 };
