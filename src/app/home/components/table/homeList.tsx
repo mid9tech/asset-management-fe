@@ -36,7 +36,7 @@ const HomeList = <T extends {}>({
   onDeleteClick,
   onEditClick,
   onReturnClick,
-  onSortClick = () => {},
+  onSortClick = () => { },
   sortBy,
   sortOrder,
 }: ReusableTableProps<T>) => {
@@ -104,7 +104,7 @@ const HomeList = <T extends {}>({
                             <span className="font-bold">
                               {item.header}
                               {sortBy === item.accessor &&
-                              sortOrder === SORT_ORDER.ASC ? (
+                                sortOrder === SORT_ORDER.ASC ? (
                                 <ArrowDropUpIcon />
                               ) : (
                                 <ArrowDropDownIcon />
@@ -137,11 +137,10 @@ const HomeList = <T extends {}>({
                             minWidth: column.width || "auto",
                             maxWidth: column.width,
                           }}
-                          className={`text-sm h-full ${
-                            column.header === "icon"
+                          className={`text-sm h-full ${column.header === "icon"
                               ? ""
                               : "border-b-2 border-graycustom"
-                          } flex justify-start items-start h-full  truncate`}
+                            } flex justify-start items-start h-full  truncate`}
                         >
                           {column.header !== "icon" ? (
                             column.accessor !== "id" ? (
@@ -153,10 +152,9 @@ const HomeList = <T extends {}>({
                             <div className="flex justify-between items-start h-full">
                               {onEditClick && (
                                 <DoneIcon
-                                  className={`${
-                                    item.isDisabledIcon === true &&
+                                  className={`${item.isDisabledIcon === true &&
                                     "text-gray cursor-not-allowed"
-                                  }`}
+                                    }`}
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     !item.isDisabledIcon && onEditClick(item);
@@ -166,23 +164,21 @@ const HomeList = <T extends {}>({
 
                               {onDeleteClick && (
                                 <HighlightOffIcon
-                                  className={`${
-                                    item.isDisabledIcon === true &&
+                                  className={`${(item.isDisabledIcon === true || item.state === 'Declined') &&
                                     "text-gray cursor-not-allowed"
-                                  }`}
+                                    }`}
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    !item.isDisabledIcon && onDeleteClick(item);
+                                    !(item.isDisabledIcon === true || item.state === 'Declined') && onDeleteClick(item);
                                   }}
-                                  sx={{ color: "#cf2338" }}
+                                  sx={{ color: item.isDisabledIcon === true || item.state === 'Declined' ? "gray" : "#cf2338" }}
                                 />
                               )}
                               {onReturnClick && (
                                 <ReplayIcon
-                                  className={`${
-                                    item.state !== 'Accepted' &&
+                                  className={`${item.state !== 'Accepted' &&
                                     "text-gray cursor-not-allowed"
-                                  }`}
+                                    }`}
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     if (item.state === 'Accepted') {
