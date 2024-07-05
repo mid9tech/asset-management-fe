@@ -24,7 +24,7 @@ const DetailModal: React.FC<DetailModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50" style={{margin: 0}}>
       <div
         className="bg-white border border-black rounded-lg shadow-lg w-auto"
         onClick={handleBackdropClick}>

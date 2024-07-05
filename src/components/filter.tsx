@@ -65,7 +65,7 @@ const Filter = ({ data, label, height = 150 }: Props) => {
 
   return (
     <Fragment>
-      <div className="relative w-40 h-full">
+      <div className="relative w-40 h-full z-10">
         <div className="relative w-full h-full">
           <input
             type="text"

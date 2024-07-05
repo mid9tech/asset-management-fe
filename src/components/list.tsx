@@ -213,7 +213,7 @@ const ReusableList = <T extends {}>({
                           {onReturnClick && (
                             <ReplayIcon
                               className={`${
-                                item.state == "Waiting for acceptance" &&
+                                item.isDisabledIcon === true &&
                                 "text-gray cursor-not-allowed"
                               }`}
                               onClick={(e) => {

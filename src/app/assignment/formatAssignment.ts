@@ -8,6 +8,6 @@ export const formatAssignment = (item: Assignment) => {
     ...item,
     state: formatStateText(item.state),
     assignedDate: formatDate(new Date(item.assignedDate)),
-    isDisabledIcon: item.state === ASSIGNMENT_STATUS.ACCEPTED ? true : false
+    isDisabledIcon: (item.state === ASSIGNMENT_STATUS.ACCEPTED || item.state === ASSIGNMENT_STATUS.DECLINED) ? true : false
   };
 };
