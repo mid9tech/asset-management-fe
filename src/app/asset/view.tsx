@@ -26,7 +26,8 @@ import TableComponent from "@components/table";
 import CreateIcon from "@mui/icons-material/Create";
 import CheckIcon from "@mui/icons-material/Check";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-import ReplayIcon from "@mui/icons-material/Replay";import { formatStateText } from "@utils/formatText";
+import ReplayIcon from "@mui/icons-material/Replay";
+import { formatStateText } from "@utils/formatText";
 
 interface AssetManagementProps {
   data: Asset[];
@@ -88,11 +89,11 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
     setShowModalErrorAsset(false);
   };
 
-  const handleRowClick = async(asset: Asset) => {
+  const handleRowClick = async (asset: Asset) => {
     try {
-      const data  = await loadDetailAsset(parseInt(asset.id));
+      const data = await loadDetailAsset(parseInt(asset.id));
       const formatedData = formatDetail(data);
-      if(!data){
+      if (!data) {
         toast.error("Failed to load asset");
       }
       setSelectedAsset(formatedData);
@@ -141,7 +142,7 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
     }
     return map;
   };
-  
+
   const newListData = data?.map((item) => ({
     ...item,
     state: formatStateText(item.state),
@@ -151,7 +152,6 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
           <CreateIcon
             onClick={(e) => {
               e.stopPropagation();
-              item.state === ASSET_TYPE.Available &&
               handleNavigateEditAsset(item.id);
             }}
           />
@@ -162,7 +162,6 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
           <HighlightOffIcon
             onClick={(e) => {
               e.stopPropagation();
-              item.state === ASSET_TYPE.Assigned &&
               handleDeleteClick(item);
             }}
             sx={{ color: "red" }}
