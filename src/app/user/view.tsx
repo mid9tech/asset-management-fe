@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-import {useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { disableUser } from "@services/user";
 import { convertEnumToMap } from "@utils/enumToMap";
@@ -19,6 +19,7 @@ import EmptyComponent from "@components/empty";
 import { LABEL_TYPE } from "../../constants/label";
 import { USER_PATH_DEFAULT } from "../../constants";
 import { userColumns } from "./userColumn";
+import { checkSortOrder } from "@utils/checkSortField";
 
 interface UserManagementProps {
   data: User[];
@@ -29,8 +30,6 @@ interface UserManagementProps {
   setSortBy: (value: any) => void;
   setSortOder: (value: any) => void;
 }
-
-
 
 const UserManagement: React.FC<UserManagementProps> = (props) => {
   const {
@@ -47,28 +46,18 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
   const [showModalError, setShowModalError] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
-  const [dataUpdate, setDataUpdate] = useState<User | User[] | null>(null);
   const router = useRouter();
   const { setLoading }: any = useLoading();
 
   const handleNavigateEditUser = (user: User) => {
     if (user.type == "Admin") return;
     setLoading(true);
-    setDataUpdate(user);
     router.push(`/user/${user.id}`);
   };
   const handleSortClick = (item: string) => {
-    let defaultOrder = SORT_ORDER.ASC;
-    if (sortBy === item || (sortBy === "firstName" && item === "fullName")) {
-      defaultOrder =
-        sortOrder === SORT_ORDER.ASC ? SORT_ORDER.DESC : SORT_ORDER.ASC;
-    }
+    let defaultOrder = checkSortOrder(sortOrder);
     setSortOder(defaultOrder);
-    if (item === "fullName") {
-      setSortBy("firstName");
-    } else {
-      setSortBy(item);
-    }
+    setSortBy(item);
   };
 
   const handleDeleteClick = (user: User) => {
@@ -137,7 +126,7 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
           onDeleteClick={(e) => handleDeleteClick(e)}
           onSortClick={handleSortClick}
           onEditClick={handleNavigateEditUser}
-          sortBy={sortBy === "firstName" ? "fullName" : sortBy}
+          sortBy={sortBy}
           sortOrder={sortOrder}
         />
         {data?.length > 0 ? (

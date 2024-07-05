@@ -1,25 +1,8 @@
 import React, { Fragment } from "react";
-import { Asset } from "../../__generated__/graphql";
 import DetailModal from "@components/modal";
-import { useQuery } from "@apollo/client";
-import { GET_CATEGORY_QUERY } from "@services/query/category.query";
-import { SORT_ORDER } from "../../types/enum.type";
-import { truncateParagraph } from "@utils/truncate";
-interface AssetManagementProps {
-  data: Asset[];
-  totalPages: number;
-  currentPage: number;
-  sortOrder: SORT_ORDER;
-  sortBy: string;
-  setSortBy: (value: any) => void;
-  setSortOrder: (value: any) => void;
-}
+import ReusableList from "@components/list";
+import { historyColumns } from "./tableColumn";
 
-interface Props {
-  asset: Asset;
-  showModalDetailAsset: boolean;
-  handleCloseDetailModal: () => void;
-}
 const ViewDetail = (props: any) => {
   // const [showModalDetailAsset, setShowModalDetailAsset] = useState(false);
   const { selectedAsset, showModalDetailAsset, setShowModalDetailAsset } =
@@ -28,17 +11,6 @@ const ViewDetail = (props: any) => {
     setShowModalDetailAsset(false);
   };
 
-  const { data: categoryData, loading: categoryLoading } =
-    useQuery(GET_CATEGORY_QUERY);
-
-  const categoryMap =
-    categoryData?.getCategories.reduce(
-      (map: { [key: string]: string }, category: any) => {
-        map[category.id] = category.categoryName;
-        return map;
-      },
-      {}
-    ) || {};
   return (
     <Fragment>
       {selectedAsset && (
@@ -48,38 +20,52 @@ const ViewDetail = (props: any) => {
           title="Detailed Asset Information">
           <div className="text-gray">
             <div className="flex mb-2">
-              <span className="text-sm w-40">Asset Code</span>{" "}
-              <span className="text-sm w-80">{selectedAsset.assetCode}</span>
+              <span className="text-sm w-28">Asset Code</span>{" "}
+              <span className="text-sm w-96">{selectedAsset.assetCode}</span>
             </div>
             <div className="flex mb-2">
-              <span className="text-sm w-40">Asset Name</span>{" "}
-              <span className="text-sm w-80">{selectedAsset.assetName}</span>
+              <span className="text-sm w-28">Asset Name</span>{" "}
+              <span className="text-sm w-96">{selectedAsset.assetName}</span>
             </div>
             <div className="flex mb-2 overflow-y-auto">
-              <span className="text-sm w-40">Category</span>{" "}
-              <span className="text-sm w-80 break-words">{selectedAsset.category}</span>
+              <span className="text-sm w-28">Category</span>{" "}
+              <span className="text-sm w-96 break-words">
+                {selectedAsset.category.categoryName}
+              </span>
             </div>
             <div className="flex mb-2">
-              <span className="text-sm w-40">Installed Date</span>{" "}
-              <span className="text-sm w-80">{selectedAsset.installedDate}</span>
+              <span className="text-sm w-28">Installed Date</span>{" "}
+              <span className="text-sm w-96">
+                {selectedAsset.installedDate}
+              </span>
             </div>
             <div className="flex mb-2">
-              <span className="text-sm w-40">State</span>{" "}
-              <span className="text-sm w-80">{selectedAsset.state}</span>
+              <span className="text-sm w-28">State</span>{" "}
+              <span className="text-sm w-96">{selectedAsset.state}</span>
             </div>
             <div className="flex flex-row mb-2">
-              <span className="text-sm w-40">Location</span>{" "}
-              <span className="text-sm w-80">{selectedAsset.location}</span>
+              <span className="text-sm w-28">Location</span>{" "}
+              <span className="text-sm w-96">{selectedAsset.location}</span>
             </div>
             <div className="flex flex-row mb-2">
-              <span className="text-sm w-40">Specification</span>{" "}
-              <span className="text-sm w-80">
+              <span className="text-sm w-28">Specification</span>{" "}
+              <span className="text-sm w-96 break-words">
                 {selectedAsset.specification}
               </span>
             </div>
             <div className="flex mb-2">
-              <span className="text-sm w-40">History</span>{" "}
-              <span className="text-sm w-80">...</span>
+              <span className="text-sm w-28">History</span>{" "}
+              <div className="text-sm w-96">
+                <ReusableList
+                  fontSize={12}
+                  columns={historyColumns}
+                  data={selectedAsset.history}
+                  onRowClick={() => {}}
+                  onSortClick={() => {}}
+                  sortBy={"returnedDate"}
+                  sortOrder={"asc"}
+                />
+              </div>
             </div>
           </div>
         </DetailModal>

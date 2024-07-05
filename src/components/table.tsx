@@ -1,103 +1,148 @@
-import React, { ReactNode } from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "./ui/table";
+"use client";
+import React, { Fragment, ReactNode, useState } from "react";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import CreateIcon from "@mui/icons-material/Create";
+import CheckIcon from "@mui/icons-material/Check";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import ReplayIcon from "@mui/icons-material/Replay";
 import { SORT_ORDER } from "../types/enum.type";
-import { truncateParagraph } from "@utils/truncate";
+import { Button } from "./ui/button";
+import DetailModal from "./modal";
+import { useMutation } from "@apollo/client";
+import { CREATE_REQUEST_RETURN } from "@services/query/requestReturn.query";
+import { toast } from "react-toastify";
+import { actionType } from "../types/action.type";
+import { Icon } from "@mui/material";
 
-type Column<T> = {
+type Column = {
   header: string;
-  accessor: keyof T;
+  accessor: string;
+  width?: string; // Optional width property for columns
+  sortField?: string;
 };
 
 interface ReusableTableProps<T> {
-  columns: Column<T>[];
-  data: T[];
+  columns: Column[];
+  data: any[];
   onRowClick: (item: T) => void;
-  onDeleteClick?: (item: T) => void;
-  onEditClick?: (item: T) => void;
   onSortClick?: (item: string) => void;
   sortBy: string;
   sortOrder: string;
+  fontSize?: number;
 }
 
-const ReusableTable = <T extends {type?: string}>({
+const TableComponent = <T extends {}>({
   columns,
   data,
   onRowClick,
-  onDeleteClick,
-  onEditClick,
   onSortClick = () => {},
   sortBy,
   sortOrder,
+  fontSize,
 }: ReusableTableProps<T>) => {
-  const maxLength = 30;
+  
+
+  // get nested value of accessor
+  // for example: accessor == category.categoryName ?? column will go through category obj to get category name and display it
+  const getNestedValue = (obj: any, path: string) => {
+    return path.split(".").reduce((acc, part) => acc && acc[part], obj);
+  };
+
+  const genSortField = (sortField: string) => {
+    return sortBy === sortField && sortOrder === SORT_ORDER.ASC ? (
+      <ArrowDropUpIcon />
+    ) : (
+      <ArrowDropDownIcon />
+    );
+  };
+
+  const handleSortClick = (sortField: string | undefined) => {
+    if (sortField) return onSortClick(sortField);
+    else return null;
+  };
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          {columns.map((column, index) => (
-            <TableHead
-              key={index}
-              className="w-[150px] cursor-pointer"
-              onClick={() => onSortClick(column.accessor as string)}>
-              {column.header}{" "}
-              {sortBy === column.accessor && sortOrder === SORT_ORDER.ASC ? (
-                <ArrowDropUpIcon />
-              ) : (
-                <ArrowDropDownIcon />
-              )}
-            </TableHead>
-          ))}
-          <TableHead></TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {data.map((row, index) => (
-          <TableRow
-            key={index}
-            className="cursor-pointer"
-            onClick={() => onRowClick(row)}>
-            {columns.map((column, colIndex) => (
-              <TableCell key={colIndex} className="font-medium">
-                {truncateParagraph(String(row[column.accessor]), maxLength) as ReactNode}
-              </TableCell>
-            ))}
-            {onEditClick && onDeleteClick ? (
-              <TableCell onClick={(e) => e.stopPropagation()}>
-                <CreateIcon
-                   className={`text-gray-500 ${row.type === 'Admin' ? 'text-gray cursor-not-allowed' : ''}`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onEditClick(row);
-                  }}
-                />
-                <HighlightOffIcon
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onDeleteClick(row);
-                  }}
-                  className={`text-gray-500 ${row.type === 'Admin' ? 'text-gray cursor-not-allowed' : ''}`}
-                />
-              </TableCell>
-            ) : (
-              ""
-            )}
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+    <>
+      <div>
+        <div className="bg-white h-auto">
+          <table className="w-full table-fixed">
+            {" "}
+            {/* Add table-fixed class */}
+            <thead>
+              <tr className="flex flex-row gap-3">
+                {columns.map((item, key) => (
+                  <Fragment key={key}>
+                    {item.header !== "icon" ? (
+                      <th
+                        className="border-b-2 border-black cursor-pointer text-sm flex items-start"
+                        style={{
+                          minWidth: item.width || "auto",
+                          maxWidth: item.width,
+                          fontSize: fontSize || 15,
+                        }} // Set column width
+                        onClick={() => handleSortClick(item.sortField)}>
+                        <span className="font-bold">
+                          {item.header}
+                          {item.sortField && genSortField(item.sortField)}
+                        </span>
+                      </th>
+                    ) : (
+                      <th
+                        style={{
+                          minWidth: item.width || "auto",
+                          maxWidth: item.width,
+                          fontSize: fontSize || 15,
+                        }}></th> // Set column width
+                    )}
+                  </Fragment>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {data?.map((item, key) => (
+                <tr
+                  key={key}
+                  className="flex flex-row gap-3 cursor-pointer mt-1 h-full">
+                  {columns.map((column, colIndex) => (
+                    <td
+                      key={colIndex}
+                      onClick={() =>
+                        column.header !== "icon" && onRowClick(item)
+                      }
+                      style={{
+                        minWidth: column.width || "auto",
+                        maxWidth: column.width,
+                      }}
+                      className={`text-sm h-full min-h-6 ${
+                        column.header === "icon"
+                          ? ""
+                          : "border-b-2 border-graycustom"
+                      } flex justify-start items-start h-full  truncate`}>
+                      {column.header !== "icon" ? (
+                        <div>
+                          {getNestedValue(item, column.accessor) as string}
+                        </div>
+                      ) : (
+                        <div className="flex justify-between items-start h-full">
+                          {item.actions?.map(
+                            (item: actionType, index: number) => (
+                              <div key={index}>{item.icon}</div>
+                            )
+                          )}
+                        </div>
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    
+    </>
   );
 };
 
-export default ReusableTable;
+export default TableComponent;

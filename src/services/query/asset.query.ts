@@ -46,6 +46,14 @@ export const FIND_ONE_ASSET_QUERY = gql`
       state
       location
       specification
+      history {
+        assignment {
+          assignedByUsername
+          assignedToUsername
+        }
+        returnedDate
+        assignedDate
+      }
       category {
         id
         categoryName
@@ -92,6 +100,14 @@ export const FIND_ASSETS_QUERY = gql`
         isRemoved
         isAllowRemoved
         isReadyAssigned
+        history {
+          assignment {
+            assignedByUsername
+            assignedToUsername
+          }
+          returnedDate
+          assignedDate
+        }
         category {
           id
           categoryName
@@ -116,6 +132,6 @@ export const DISABLE_ASSET_QUERY = gql`
       state
       location
       specification
-  }
+    }
   }
 `;

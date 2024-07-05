@@ -21,6 +21,7 @@ import {
   CancelRequestReturnService,
   CompleteReturningService,
 } from "@services/requestForReturn";
+import { tableColumns } from "./tableColumn";
 
 interface ViewRequestReturnProps {
   listData: RequestReturn[];
@@ -32,42 +33,6 @@ interface ViewRequestReturnProps {
   currentPage: number;
   reloadTableData: () => void;
 }
-
-const tableColumns = [
-  { header: "No.", accessor: "id" as keyof RequestReturn, width: "5%" },
-  {
-    header: "Asset Code",
-    accessor: `asset.assetCode` as keyof RequestReturn,
-    width: "10%",
-  },
-  {
-    header: "Asset Name",
-    accessor: "asset.assetName" as keyof RequestReturn,
-    width: "10%",
-  },
-  {
-    header: "Requested By",
-    accessor: "requestedBy.username" as keyof RequestReturn,
-    width: "11%",
-  },
-  {
-    header: "Assigned Date",
-    accessor: "assignedDate" as keyof RequestReturn,
-    width: "12%",
-  },
-  {
-    header: "Accepted By",
-    accessor: "acceptedBy.username" as keyof RequestReturn,
-    width: "11%",
-  },
-  {
-    header: "Returned Date",
-    accessor: "returnedDate" as keyof RequestReturn,
-    width: "13%",
-  },
-  { header: "State", accessor: "state" as keyof RequestReturn, width: "13%" },
-  { header: "icon", accessor: "" as keyof RequestReturn, width: "10%" },
-];
 
 const ViewRequestReturn: FC<ViewRequestReturnProps> = (props) => {
   const {
@@ -83,7 +48,6 @@ const ViewRequestReturn: FC<ViewRequestReturnProps> = (props) => {
 
   const { setLoading }: any = useLoading();
   const [selected, setSelected] = useState<RequestReturn>();
-  const [sortColumn, setSortColumn] = useState<string>("asset.assetCode");
   const [showModalConfirmCancel, setShowModalConfirmCancel] = useState(false);
   const [showModalConfirmComplete, setShowModalConfirmComplete] =
     useState(false);
@@ -91,24 +55,7 @@ const ViewRequestReturn: FC<ViewRequestReturnProps> = (props) => {
   const handleSortClick = (item: string) => {
     let defaultOrder = checkSortOrder(sortOrder);
     setSortOder(defaultOrder);
-    setSortColumn(item);
-    switch (item) {
-      case "asset.assetCode":
-        setSortBy("assetCode");
-        break;
-      case "asset.assetName":
-        setSortBy("assetName");
-        break;
-      case "requestedBy.username":
-        setSortBy("requestedBy");
-        break;
-      case "acceptedBy.username":
-        setSortBy("acceptedBy");
-        break;
-      default:
-        setSortBy(item);
-        break;
-    }
+    setSortBy(item);
   };
 
   async function handleConfirmCancel(): Promise<void> {
@@ -195,7 +142,7 @@ const ViewRequestReturn: FC<ViewRequestReturnProps> = (props) => {
         onSortClick={handleSortClick}
         onCheckClick={handleOpenCompleteModal}
         onDeleteClick={handleOpenCancelModal}
-        sortBy={sortColumn}
+        sortBy={sortBy}
         sortOrder={sortOrder}
       />
       {listData?.length > 0 ? (

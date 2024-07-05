@@ -17,6 +17,7 @@ type Column = {
   header: string;
   accessor: string;
   width?: string; // Optional width property for columns
+  sortField?: string;
 };
 
 interface ReusableTableProps<T> {
@@ -30,6 +31,7 @@ interface ReusableTableProps<T> {
   onSortClick?: (item: string) => void;
   sortBy: string;
   sortOrder: string;
+  fontSize?: number;
 }
 
 const ReusableList = <T extends {}>({
@@ -43,6 +45,7 @@ const ReusableList = <T extends {}>({
   onSortClick = () => {},
   sortBy,
   sortOrder,
+  fontSize,
 }: ReusableTableProps<T>) => {
   const [showModalCancel, setShowModalCancel] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
@@ -96,137 +99,141 @@ const ReusableList = <T extends {}>({
     return path.split(".").reduce((acc, part) => acc && acc[part], obj);
   };
 
+  const genSortField = (sortField: string) => {
+    return sortBy === sortField && sortOrder === SORT_ORDER.ASC ? (
+      <ArrowDropUpIcon />
+    ) : (
+      <ArrowDropDownIcon />
+    );
+  };
+
+  const handleSortClick = (sortField: string | undefined) => {
+    if (sortField) return onSortClick(sortField);
+    else return null;
+  };
+
   return (
     <>
       <div>
         <div className="bg-white h-auto">
-          <div>
-            <div className="mt-5">
-              <table className="w-full table-fixed">
-                {" "}
-                {/* Add table-fixed class */}
-                <thead>
-                  <tr className="flex flex-row gap-3">
-                    {columns.map((item, key) => (
-                      <Fragment key={key}>
-                        {item.header !== "icon" ? (
-                          <th
-                            className="border-b-2 border-black cursor-pointer text-sm flex items-start"
-                            style={{
-                              minWidth: item.width || "auto",
-                              maxWidth: item.width,
-                            }} // Set column width
-                            onClick={() =>
-                              onSortClick(item.accessor as string)
-                            }>
-                            <span className="font-bold">
-                              {item.header}
-                              {sortBy === item.accessor &&
-                              sortOrder === SORT_ORDER.ASC ? (
-                                <ArrowDropUpIcon />
-                              ) : (
-                                <ArrowDropDownIcon />
-                              )}
-                            </span>
-                          </th>
-                        ) : (
-                          <th
-                            style={{
-                              minWidth: item.width || "auto",
-                              maxWidth: item.width,
-                            }}></th> // Set column width
-                        )}
-                      </Fragment>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {data?.map((item, key) => (
-                    <tr
-                      key={key}
-                      className="flex flex-row gap-3 cursor-pointer mt-1 h-full"
-                      onClick={() => onRowClick(item)}>
-                      {columns.map((column, colIndex) => (
-                        <td
-                          key={colIndex}
-                          style={{
-                            minWidth: column.width || "auto",
-                            maxWidth: column.width,
-                          }}
-                          className={`text-sm h-full min-h-6 ${
-                            column.header === "icon"
-                              ? ""
-                              : "border-b-2 border-graycustom"
-                          } flex justify-start items-start h-full  truncate`}>
-                          {column.header !== "icon" ? (
-                            (getNestedValue(item, column.accessor) as string)
-                          ) : (
-                            <div className="flex justify-between items-start h-full">
-                              {onCheckClick && (
-                                <CheckIcon
-                                  className={`${
-                                    item.isDisabledIcon === true &&
-                                    "text-gray cursor-not-allowed"
-                                  }`}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    !item.isDisabledIcon && onCheckClick(item);
-                                  }}
-                                />
-                              )}
-
-                              {onEditClick && (
-                                <CreateIcon
-                                  className={`${
-                                    item.isDisabledIcon === true &&
-                                    "text-gray cursor-not-allowed"
-                                  }`}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    !item.isDisabledIcon && onEditClick(item);
-                                  }}
-                                />
-                              )}
-
-                              {onDeleteClick && (
-                                <HighlightOffIcon
-                                  className={`${
-                                    item.isDisabledIcon === true &&
-                                    "text-gray cursor-not-allowed"
-                                  }`}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    !item.isDisabledIcon && onDeleteClick(item);
-                                  }}
-                                  sx={{ color: "#cf2338" }}
-                                />
-                              )}
-                              {onReturnClick && (
-                                <ReplayIcon
-                                  className={`${
-                                    item.state == "Waiting for acceptance" &&
-                                    "text-gray cursor-not-allowed"
-                                  }`}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    if (item.state === "Accepted") {
-                                      setSelectedItem(item);
-                                      setShowModalCancel(true);
-                                    }
-                                  }}
-                                  sx={{ color: "blue" }}
-                                />
-                              )}
-                            </div>
+          <table className="w-full table-fixed">
+            {" "}
+            {/* Add table-fixed class */}
+            <thead>
+              <tr className="flex flex-row gap-3">
+                {columns.map((item, key) => (
+                  <Fragment key={key}>
+                    {item.header !== "icon" ? (
+                      <th
+                        className="border-b-2 border-black cursor-pointer text-sm flex items-start"
+                        style={{
+                          minWidth: item.width || "auto",
+                          maxWidth: item.width,
+                          fontSize: fontSize || 15,
+                        }} // Set column width
+                        onClick={() => handleSortClick(item.sortField)}>
+                        <span className="font-bold">
+                          {item.header}
+                          {item.sortField && genSortField(item.sortField)}
+                        </span>
+                      </th>
+                    ) : (
+                      <th
+                        style={{
+                          minWidth: item.width || "auto",
+                          maxWidth: item.width,
+                          fontSize: fontSize || 15,
+                        }}></th> // Set column width
+                    )}
+                  </Fragment>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {data?.map((item, key) => (
+                <tr
+                  key={key}
+                  className="flex flex-row gap-3 cursor-pointer mt-1 h-full"
+                  onClick={() => onRowClick(item)}>
+                  {columns.map((column, colIndex) => (
+                    <td
+                      key={colIndex}
+                      style={{
+                        minWidth: column.width || "auto",
+                        maxWidth: column.width,
+                      }}
+                      className={`text-sm h-full min-h-6 ${
+                        column.header === "icon"
+                          ? ""
+                          : "border-b-2 border-graycustom"
+                      } flex justify-start items-start h-full  truncate`}>
+                      {column.header !== "icon" ? (
+                        (getNestedValue(item, column.accessor) as string)
+                      ) : (
+                        <div className="flex justify-between items-start h-full">
+                          {onCheckClick && (
+                            <CheckIcon
+                              className={`${
+                                item.isDisabledIcon === true &&
+                                "text-gray cursor-not-allowed"
+                              }`}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                !item.isDisabledIcon && onCheckClick(item);
+                              }}
+                            />
                           )}
-                        </td>
-                      ))}
-                    </tr>
+
+                          {onEditClick && (
+                            <CreateIcon
+                              className={`${
+                                item.isDisabledIcon === true &&
+                                "text-gray cursor-not-allowed"
+                              }`}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                !item.isDisabledIcon && onEditClick(item);
+                              }}
+                            />
+                          )}
+
+                          {onDeleteClick && (
+                            <HighlightOffIcon
+                              className={`${
+                                item.isDisabledIcon === true &&
+                                "text-gray cursor-not-allowed"
+                              }`}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                !item.isDisabledIcon && onDeleteClick(item);
+                              }}
+                              sx={{ color: "#cf2338" }}
+                            />
+                          )}
+                          {onReturnClick && (
+                            <ReplayIcon
+                              className={`${
+                                item.isDisabledIcon === true &&
+                                "text-gray cursor-not-allowed"
+                              }`}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (item.state === "Accepted") {
+                                  setSelectedItem(item);
+                                  setShowModalCancel(true);
+                                }
+                              }}
+                              sx={{ color: "blue" }}
+                            />
+                          )}
+                        </div>
+                      )}
+                    </td>
                   ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
       <DetailModal
