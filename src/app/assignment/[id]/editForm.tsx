@@ -19,7 +19,7 @@ import { toast } from "react-toastify";
 import { IAssignmentEditForm } from "../../../types/assignment.type";
 import { Asset, Assignment, UpdateAssignmentInput, User } from "../../../__generated__/graphql";
 import { usePushUp } from "../pushUp";
-import { ASSET_PATH_DEFAULT } from "../../../constants";
+import { ASSIGNMENT_PATH_DEFAULT } from "../../../constants";
 import { validationSchema } from "../create/schema";
 import ModalUserPicker from "../modal/modalPickUser";
 import ModalAssetPicker from "../modal/modalPickAsset";
@@ -108,7 +108,7 @@ const EditForm: FC<FormProps> = (props) => {
       pushUp(data?.id);
       setLoading(false);
       toast.success("Assignment update success");
-      route.push(ASSET_PATH_DEFAULT);
+      route.push(ASSIGNMENT_PATH_DEFAULT);
     }
   };
   return (
