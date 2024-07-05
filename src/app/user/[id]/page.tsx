@@ -169,8 +169,8 @@ const EditUser = ({ params }: { params: { id: string } }) => {
         router.push(USER_PATH_DEFAULT);
         toast.success("Edit User Successfully");
       }
-    } catch (error) {
-      toast.error("Something went wrong! Please try again");
+    } catch (error :any) {
+      toast.error(error.message);
       console.error("Error updating user:", error);
     } finally {
       setLoading(false);
