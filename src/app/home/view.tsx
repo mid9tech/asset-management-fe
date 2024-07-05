@@ -171,6 +171,13 @@ const ViewOwnAssignment: FC<ViewAssignmentProps> = (props) => {
     }
   };
 
+  const checkReturn = (item: Assignment) => {
+    if (item.isWaitingReturning || item.state === ASSIGNMENT_STATUS.ACCEPTED){
+      return true;
+    }
+    return false;
+  }
+
   const newListData = listData?.map((item) => ({
     ...item,
     state:
@@ -214,15 +221,18 @@ const ViewOwnAssignment: FC<ViewAssignmentProps> = (props) => {
         icon: (
           <ReplayIcon
             className={`${
-              item.state !== ASSIGNMENT_STATUS.ACCEPTED &&
+              checkReturn(item) &&
               "text-gray cursor-not-allowed"
             }`}
             onClick={(e) => {
-              e.stopPropagation();
-              if (item.state === ASSIGNMENT_STATUS.ACCEPTED) {
-                setSelected(item);
-                setShowModalConfirmCreate(true);
+              if(!item.isWaitingReturning){
+                e.stopPropagation();
+                if (item.state === ASSIGNMENT_STATUS.ACCEPTED) {
+                  setSelected(item);
+                  setShowModalConfirmCreate(true);
+                }
               }
+              
             }}
             sx={{ color: "blue" }}
           />
@@ -230,6 +240,8 @@ const ViewOwnAssignment: FC<ViewAssignmentProps> = (props) => {
       },
     ],
   }));
+
+
 
   return (
     <div className="container mx-auto p-4">
