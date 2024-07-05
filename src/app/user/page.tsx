@@ -68,23 +68,20 @@ export default function Index({
       }
 
       const { data }: any = await loadData(request);
-      const listUserCustome = data?.users.map(
-        (item: User) => (formatUser(item))
-      );
       if (detailUser) {
-        const newUserIndex = listUserCustome.findIndex((user: User) => user.id === newUserId.toString());
+        const newUserIndex = data?.users.findIndex((user: User) => user.id === newUserId.toString());
         if (newUserIndex !== -1) {
-          listUserCustome.splice(newUserIndex, 1);
+          data?.users.splice(newUserIndex, 1);
         }
         detailUser.joinedDate = parseInt(detailUser?.joinedDate);
         detailUser.dateOfBirth = parseInt(detailUser?.dateOfBirth);
-        listUserCustome.unshift(formatUser(detailUser));
+        data?.users.unshift(formatUser(detailUser));
       } else {
         pushUp(null)
       }
       //store data
       setTotalPages(data?.totalPages);
-      setListUsers(listUserCustome);
+      setListUsers(data?.users);
     } catch (error) {
       toast.error("An error occurred. Please try again.");
     } finally {

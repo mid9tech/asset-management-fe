@@ -14,20 +14,18 @@ import { useMutation, useQuery } from "@apollo/client";
 import { GET_CATEGORY_QUERY } from "@services/query/category.query";
 import ViewDetail from "./viewDetail";
 import Paginate from "@components/paginate";
-import ReusableList from "@components/list";
 import EmptyComponent from "@components/empty";
 import { DISABLE_ASSET_QUERY } from "@services/query/asset.query";
 import { toast } from "react-toastify";
 import { LABEL_CATEGORY, LABEL_STATE } from "../../constants/label";
 import { assetColumns } from "./tableColumn";
 import { loadDetailAsset } from "@services/asset";
-import { formatAsset, formatDetail } from "./formatAsset";
+import {  formatDetail } from "./formatAsset";
 import TableComponent from "@components/table";
 import CreateIcon from "@mui/icons-material/Create";
-import CheckIcon from "@mui/icons-material/Check";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-import ReplayIcon from "@mui/icons-material/Replay";
-import { formatStateText } from "@utils/formatText";
+import { formatStateText, formatText } from "@utils/formatText";
+import { formatDate } from "@utils/timeFormat";
 
 interface AssetManagementProps {
   data: Asset[];
@@ -146,6 +144,9 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
   const newListData = data?.map((item) => ({
     ...item,
     state: formatStateText(item.state),
+    assetName: formatText(`${item.assetName}`),
+    installedDate: formatDate(new Date(item.installedDate)),
+    category: formatText(item?.category?.categoryName),
     actions: [
       {
         icon: (
@@ -267,7 +268,7 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
                   onClick={() =>
                     handleNavigateEditAsset(selectedAsset?.id as string)
                   }
-                  className="text-blue underline">
+                  className="text-blue underline cursor-pointer">
                   Edit Asset page
                 </a>
               </div>

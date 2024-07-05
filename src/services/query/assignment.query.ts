@@ -117,6 +117,7 @@ export const GET_ALL_OWN_ASSIGNMENT_QUERY = gql`
         assignedDate
         assignedByUsername
         assignedToUsername
+        isWaitingReturning
         asset {
           id
           specification
@@ -145,6 +146,7 @@ export const GET_DETAIL_ASSIGNMENT_QUERY = gql`
       state
       note
       assignedDate
+      isWaitingReturning
       asset {
         id
         assetCode

@@ -11,7 +11,6 @@ import Filter from "@components/filter";
 import { convertEnumToMap } from "@utils/enumToMap";
 import Search from "@components/search";
 import CustomDatePicker from "@components/datepicker";
-import ReusableList from "@components/list";
 import DetailAssignment from "./detail";
 import EmptyComponent from "@components/empty";
 import { deleteAssignment } from "@services/assignment";
@@ -20,9 +19,7 @@ import { LABEL_STATE } from "../../constants/label";
 import { tableColumns } from "./tableColumn";
 import ModalConfirmDeleteAssignment from "./modal/confirmDelete";
 import TableComponent from "@components/table";
-import { actionType } from "../../types/action.type";
 import CreateIcon from "@mui/icons-material/Create";
-import CheckIcon from "@mui/icons-material/Check";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import ReplayIcon from "@mui/icons-material/Replay";
 import { formatStateText } from "@utils/formatText";
@@ -30,6 +27,7 @@ import { Button } from "@components/ui/button";
 import DetailModal from "@components/modal";
 import { useMutation } from "@apollo/client";
 import { CREATE_REQUEST_RETURN } from "@services/query/requestReturn.query";
+import { formatDate } from "@utils/timeFormat";
 
 interface ViewAssignmentProps {
   listData: Assignment[];
@@ -159,6 +157,7 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
   const newListData = listData?.map((item) => ({
     ...item,
     state: formatStateText(item.state),
+    assignedDate: formatDate(new Date(item.assignedDate)),
     actions: [
       {
         icon: (
@@ -179,13 +178,17 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
         icon: (
           <HighlightOffIcon
             className={`${
-              item.state !== ASSIGNMENT_STATUS.WAITING_FOR_ACCEPTANCE &&
+              item.state === ASSIGNMENT_STATUS.ACCEPTED &&
               "text-gray cursor-not-allowed"
             }`}
             onClick={(e) => {
               e.stopPropagation();
-              item.state === ASSIGNMENT_STATUS.WAITING_FOR_ACCEPTANCE &&
+              if (
+                item.state === ASSIGNMENT_STATUS.WAITING_FOR_ACCEPTANCE ||
+                item.state === ASSIGNMENT_STATUS.DECLINED
+              ) {
                 handleModalDeleteAssignment(item);
+              }
             }}
             sx={{ color: "red" }}
           />
@@ -195,8 +198,9 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
         icon: (
           <ReplayIcon
             className={`${
-              item.state !== ASSIGNMENT_STATUS.ACCEPTED &&
-              "text-gray cursor-not-allowed"
+              item.state !== ASSIGNMENT_STATUS.ACCEPTED
+                ? "text-gray cursor-not-allowed"
+                : ""
             }`}
             onClick={(e) => {
               e.stopPropagation();

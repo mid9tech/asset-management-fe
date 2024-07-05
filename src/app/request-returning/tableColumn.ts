@@ -46,7 +46,7 @@ export const tableColumns = [
   {
     header: "State",
     accessor: "state" as keyof RequestReturn,
-    width: "13%",
+    width: "12%",
     sortField: "state",
   },
   { header: "icon", accessor: "" as keyof RequestReturn, width: "10%" },

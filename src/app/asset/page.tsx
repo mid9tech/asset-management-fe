@@ -74,22 +74,19 @@ export default function Index({
 
       const { data }: any = await loadDataAsset(request);
 
-      const listAssetCustom = data?.assets.map((item: Asset) =>
-        formatAsset(item)
-      );
       if (detail) {
-        const newAssetIndex = listAssetCustom.findIndex(
+        const newAssetIndex = data?.assets?.findIndex(
           (asset: Asset) => asset.id === pushUpId.toString()
         );
         if (newAssetIndex !== -1) {
-          listAssetCustom.splice(newAssetIndex, 1);
+          data?.assets?.splice(newAssetIndex, 1);
         }
-        listAssetCustom.unshift(formatAsset(detail));
+        data?.assets.unshift(detail);
       } else {
         pushUp(null);
       }
       setTotalPages(data?.totalPages);
-      setListAssets(listAssetCustom);
+      setListAssets(data?.assets);
       setLoading(false);
     } catch (error) {
       console.error("Error loading assets: ", error);

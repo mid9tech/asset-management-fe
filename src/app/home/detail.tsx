@@ -27,7 +27,7 @@ export default function DetailOwnAssignment({
         </div>
         <div className="flex mb-2">
           <span className="text-sm w-40">Asset Name:</span>{" "}
-          <span className="text-sm w-80">{data.assetName}</span>
+          <span className="text-sm w-80 break-words">{data.assetName}</span>
         </div>
         <div className="flex flex-row mb-2">
           <span className="text-sm w-40">Specification</span>{" "}

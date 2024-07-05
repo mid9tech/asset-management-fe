@@ -5,12 +5,10 @@ import ViewAssignment from "./view";
 import { Assignment } from "../../__generated__/graphql";
 import { gettAllAssignment, loadDetailAssignment } from "@services/assignment";
 import { useLoading } from "@providers/loading";
-import { ASSIGNMENT_STATUS, SORT_ORDER } from "../../types/enum.type";
+import { SORT_ORDER } from "../../types/enum.type";
 import { formatStateText } from "@utils/formatText";
 import { formatDate } from "@utils/timeFormat";
 import { usePushUp } from "./pushUp";
-import { loadDetailAsset } from "@services/asset";
-import { formatAssignment } from "./formatAssignment";
 import { useRouter } from "next/navigation";
 import { ASSIGNMENT_PATH_DEFAULT } from "../../constants";
 import { toast } from "react-toastify";
@@ -76,27 +74,21 @@ export default function Index({
       const { data }: any = await gettAllAssignment(request);
 
       if (data) {
-        const listCustom = data?.assignments.map((item: Assignment) =>
-          formatAssignment(item)
-        );
 
         if (detail) {
-          const index = listCustom.findIndex(
+          const index = data?.assignments?.findIndex(
             (assignment: Assignment) => assignment.id === pushUpId
           );
-
           if (index !== -1) {
-            listCustom.splice(index, 1);
+            data?.assignments?.splice(index, 1);
           }
           detail.assignedByUsername = detail.assigner?.username;
           detail.assignedToUsername = detail.assignee?.username;
-          detail.state = formatStateText(detail.state);
-          detail.assignedDate = formatDate(new Date(detail.assignedDate));
-          listCustom.unshift(detail);
+          data?.assignments?.unshift(detail);
         } else {
           pushUp(null);
         }
-        setListData(listCustom);
+        setListData(data?.assignments);
         setTotalPages(data.totalPages);
       }
     } catch (error) {

@@ -2,7 +2,6 @@ import { formatText } from "@utils/formatText";
 import { Asset, RequestReturn } from "../../__generated__/graphql";
 import { formatDate } from "@utils/timeFormat";
 import { ASSET_TYPE } from "../../types/enum.type";
-import { Item } from "@radix-ui/react-radio-group";
 
 const formatHistory = (item: RequestReturn) => {
   console.log('item', item);
@@ -19,7 +18,6 @@ export const formatAsset = (item: Asset) => {
     assetName: formatText(`${item.assetName}`),
     installedDate: formatDate(new Date(item.installedDate)),
     category: formatText(item?.category?.categoryName),
-    isDisabledIcon: item.state === ASSET_TYPE.Assigned ? true : false,
   };
 };
 

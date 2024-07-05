@@ -14,12 +14,16 @@ import DetailUser from "./detail";
 import Paginate from "@components/paginate";
 import ModalConfirmUser from "./modal/modalConfirm";
 import ModalError from "./modal/modalError";
-import ReusableList from "@components/list";
 import EmptyComponent from "@components/empty";
 import { LABEL_TYPE } from "../../constants/label";
 import { USER_PATH_DEFAULT } from "../../constants";
 import { userColumns } from "./userColumn";
 import { checkSortOrder } from "@utils/checkSortField";
+import TableComponent from "@components/table";
+import { formatText } from "@utils/formatText";
+import { formatDate } from "@utils/timeFormat";
+import CreateIcon from "@mui/icons-material/Create";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 
 interface UserManagementProps {
   data: User[];
@@ -72,7 +76,7 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
       if (response) {
         setShowModalRemoveUser(false);
         toast.success("Disable User Successfully");
-        router.push(USER_PATH_DEFAULT);
+        router.refresh();
         setLoading(false);
       }
     } catch (error: any) {
@@ -95,6 +99,47 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
     setLoading(true);
     router.push("user/create");
   };
+
+  const newListData = data?.map((item) => ({
+    ...item,
+    fullName: formatText(`${item.firstName} ${item.lastName}`),
+    dateOfBirth: formatDate(parseInt(item.dateOfBirth)),
+    joinedDate: formatDate(parseInt(item.joinedDate)),
+    type: formatText(item.type === USER_TYPE.STAFF ? "STAFF" : item.type),
+    actions: [
+      {
+        icon: (
+          <CreateIcon
+            className={`${
+              item.type === USER_TYPE.ADMIN && "text-gray cursor-not-allowed"
+            }`}
+            onClick={(e) => {
+              if (item.type === USER_TYPE.STAFF) {
+                e.stopPropagation();
+                handleNavigateEditUser(item);
+              }
+            }}
+          />
+        ),
+      },
+      {
+        icon: (
+          <HighlightOffIcon
+            className={`${
+              item.type === USER_TYPE.ADMIN && "text-gray cursor-not-allowed"
+            }`}
+            onClick={(e) => {
+              if (item.type === USER_TYPE.STAFF) {
+                e.stopPropagation();
+                handleDeleteClick(item);
+              }
+            }}
+            sx={{ color: "red" }}
+          />
+        ),
+      },
+    ],
+  }));
 
   return (
     <>
@@ -119,13 +164,11 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
             </button>
           </div>
         </div>
-        <ReusableList
-          columns={userColumns}
-          data={data ?? []}
+        <TableComponent
           onRowClick={handleRowClick}
-          onDeleteClick={(e) => handleDeleteClick(e)}
+          columns={userColumns}
+          data={newListData}
           onSortClick={handleSortClick}
-          onEditClick={handleNavigateEditUser}
           sortBy={sortBy}
           sortOrder={sortOrder}
         />

@@ -57,11 +57,7 @@ export default function Index({
     const { data }: any = await getAllOwnAssignment(request);
 
     if (data) {
-      const listCustom = data?.assignments.map((item: Assignment) =>
-        formatAssignment(item)
-      );
-
-      setListData(listCustom);
+      setListData(data?.assignments);
       setTotalPages(data.totalPages);
       setLoading(false);
     }

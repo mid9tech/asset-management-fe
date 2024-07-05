@@ -46,6 +46,7 @@ export type Assignment = {
   assignee: User;
   assigner: User;
   id: Scalars['Int']['output'];
+  isWaitingReturning: Scalars['Boolean']['output'];
   note?: Maybe<Scalars['String']['output']>;
   state: Scalars['String']['output'];
 };

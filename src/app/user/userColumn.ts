@@ -21,7 +21,7 @@ export const userColumns = [
   {
     header: "Joined Date",
     accessor: "joinedDate" as keyof User,
-    width: "20%",
+    width: "15%",
     sortField: "joinedDate",
   },
   {

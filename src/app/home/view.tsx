@@ -7,10 +7,19 @@ import EmptyComponent from "@components/empty";
 import DetailOwnAssignment from "./detail";
 import ModalConfirmDeclineAssignment from "./components/modal/confirmDecline";
 import ModalConfirmAcceptAssignment from "./components/modal/confirmAccept";
-import HomeList from "./components/table/homeList";
+import CreateIcon from "@mui/icons-material/Create";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import ReplayIcon from "@mui/icons-material/Replay";
 import { toast } from "react-toastify";
 import { tableColumns } from "./tableColumn";
 import { UpdateStatusAssignmentService } from "@services/assignment";
+import TableComponent from "@components/table";
+import { formatStateText } from "@utils/formatText";
+import { formatDate } from "@utils/timeFormat";
+import CheckIcon from "@mui/icons-material/Check";
+import { useMutation } from "@apollo/client";
+import { CREATE_REQUEST_RETURN } from "@services/query/requestReturn.query";
+import ModalConfirmCreateRequestReturn from "./components/modal/confirmCreate";
 
 interface ViewAssignmentProps {
   listData: Assignment[];
@@ -36,10 +45,13 @@ const ViewOwnAssignment: FC<ViewAssignmentProps> = (props) => {
   } = props;
   const { setLoading }: any = useLoading();
 
-  const [selected, setSelected] = useState<Assignment>();
+  const [selected, setSelected] = useState<Assignment | null>();
   const [showModalDetail, setShowModalDetail] = useState(false);
   const [showModalConfirmDecline, setShowModalConfirmDecline] = useState(false);
   const [showModalConfirmAccept, setShowModalConfirmAccept] = useState(false);
+
+  const [requestReturn] = useMutation(CREATE_REQUEST_RETURN);
+  const [showModalConfirmCreate, setShowModalConfirmCreate] = useState(false);
 
   const handleSortClick = (item: string) => {
     let defaultOrder = SORT_ORDER.ASC;
@@ -126,17 +138,106 @@ const ViewOwnAssignment: FC<ViewAssignmentProps> = (props) => {
     }
   };
 
+  const handleConfirm = async () => {
+    if (selected) {
+      await onSubmit(selected);
+      setShowModalConfirmCreate(false);
+      setSelected(null);
+    }
+  };
+
+  const onSubmit = async (item: any) => {
+    try {
+      const variables: any = {
+        request: {
+          assetId: parseInt(item.asset.id),
+          assignmentId: parseInt(item.id),
+          requestedById: parseInt(item.assignee.id),
+          assignedDate: item.assignedDate,
+        },
+      };
+      const { data } = await requestReturn({ variables });
+      const successMessage =
+        data.createRequestReturn?.message ||
+        "Request return created successfully";
+      toast.success(successMessage);
+      console.log("Request return created: ", data.createRequestReturn);
+    } catch (error: any) {
+      const errorMessage =
+        error.graphQLErrors?.[0]?.message || "Something went wrong";
+      toast.error(errorMessage);
+      console.error("Error creating request return: ", error);
+    }
+  };
+
+  const newListData = listData?.map((item) => ({
+    ...item,
+    state:
+      item.isWaitingReturning === true
+        ? "Waiting for returning"
+        : formatStateText(item.state),
+    assignedDate: formatDate(new Date(item.assignedDate)),
+    actions: [
+      {
+        icon: (
+          <CheckIcon
+            className={`${
+              item.state !== ASSIGNMENT_STATUS.WAITING_FOR_ACCEPTANCE &&
+              "text-gray cursor-not-allowed"
+            }`}
+            onClick={(e) => {
+              e.stopPropagation();
+              item.state === ASSIGNMENT_STATUS.WAITING_FOR_ACCEPTANCE &&
+                handleAcceptAssignment(item);
+            }}
+          />
+        ),
+      },
+      {
+        icon: (
+          <HighlightOffIcon
+            className={`${
+              item.state !== ASSIGNMENT_STATUS.WAITING_FOR_ACCEPTANCE &&
+              "text-gray cursor-not-allowed"
+            }`}
+            onClick={(e) => {
+              e.stopPropagation();
+              item.state === ASSIGNMENT_STATUS.WAITING_FOR_ACCEPTANCE &&
+                handleDeclineAssignment(item);
+            }}
+            sx={{ color: "red" }}
+          />
+        ),
+      },
+      {
+        icon: (
+          <ReplayIcon
+            className={`${
+              item.state !== ASSIGNMENT_STATUS.ACCEPTED &&
+              "text-gray cursor-not-allowed"
+            }`}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (item.state === ASSIGNMENT_STATUS.ACCEPTED) {
+                setSelected(item);
+                setShowModalConfirmCreate(true);
+              }
+            }}
+            sx={{ color: "blue" }}
+          />
+        ),
+      },
+    ],
+  }));
+
   return (
     <div className="container mx-auto p-4">
       <h2 className="text-2xl font-bold mb-4 text-nashtech">My Assignment</h2>
-      <HomeList
+      <TableComponent
         columns={tableColumns}
-        data={listData}
+        data={newListData}
         onRowClick={handleRowClick}
-        onDeleteClick={handleDeclineAssignment}
         onSortClick={handleSortClick}
-        onEditClick={handleAcceptAssignment}
-        onReturnClick={() => {}}
         sortBy={sortBy}
         sortOrder={sortOrder}
       />
@@ -167,6 +268,14 @@ const ViewOwnAssignment: FC<ViewAssignmentProps> = (props) => {
           showModalConfirm={showModalConfirmAccept}
           setShowModalConfirm={setShowModalConfirmAccept}
           handleConfirmAccept={handleConfirmAccept}
+        />
+      )}
+
+      {selected && (
+        <ModalConfirmCreateRequestReturn
+          showModal={showModalConfirmCreate}
+          setShowModal={setShowModalConfirmCreate}
+          handleConfirm={handleConfirm}
         />
       )}
     </div>
