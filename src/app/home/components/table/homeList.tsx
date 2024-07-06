@@ -176,17 +176,13 @@ const HomeList = <T extends {}>({
                               )}
                               {onReturnClick && (
                                 <ReplayIcon
-                                  className={`${item.state !== 'Accepted' &&
-                                    "text-gray cursor-not-allowed"
-                                    }`}
+                                  // className='text-blue'
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    if (item.state === 'Accepted') {
-                                      setSelectedItem(item);
-                                      setShowModalCancel(true);
-                                    }
+                                    setSelectedItem(item);
+                                    setShowModalCancel(true);
                                   }}
-                                  sx={{ color: item.state === 'Accepted' ? "blue" : "gray" }}
+                                  sx={{ color: "blue" }}
                                 />
                               )}
                             </div>

@@ -172,7 +172,7 @@ const ViewOwnAssignment: FC<ViewAssignmentProps> = (props) => {
   };
 
   const checkReturn = (item: Assignment) => {
-    if (item.isWaitingReturning || item.state === ASSIGNMENT_STATUS.ACCEPTED){
+    if (item.isWaitingReturning || item.state === ASSIGNMENT_STATUS.WAITING_FOR_ACCEPTANCE){
       return true;
     }
     return false;

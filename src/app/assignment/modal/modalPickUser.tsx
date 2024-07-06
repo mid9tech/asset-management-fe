@@ -39,6 +39,7 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
   const [totalPage, setTotalPage] = useState<number>(0)
 
   const handleSearch = useDebouncedCallback((term: string) => {
+    setCurrenPage(1);
     setSearchTerm(term);
   }, 300);
 
