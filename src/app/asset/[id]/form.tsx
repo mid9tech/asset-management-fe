@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 import React, { useEffect, useState } from 'react'
 import {
@@ -34,7 +33,6 @@ import { ASSET_PATH_DEFAULT } from '../../../constants';
 import { ASSET_TYPE, ASSET_TYPE_EDIT } from '../../../types/enum.type';
 import { formatText } from '@utils/formatText';
 
-
 interface FormData {
     assetName: string;
     installedDate: string;
@@ -46,7 +44,6 @@ interface FormData {
     };
 }
 
-
 const FormEdit = ({ params }: { params: { id: string } }) => {
     const { setLoading }: any = useLoading();
     const [editAssetMutation] = useMutation(EDIT_ASSET_MUTATION);
@@ -55,7 +52,7 @@ const FormEdit = ({ params }: { params: { id: string } }) => {
     const [abbreviation, setAbbreviation] = useState("");
     const [dataUpdate, setDataUpdate] = useState<FormData | null>(null);
     const router = useRouter();
-    const { pushUp }: any = usePushUp()
+    const { pushUp }: any = usePushUp();
     const form = useForm<FormData>({
         mode: "onChange",
         defaultValues: dataUpdate || {
@@ -82,6 +79,7 @@ const FormEdit = ({ params }: { params: { id: string } }) => {
         setNewCategory("");
         setAbbreviation("");
     };
+
     const onSubmit = async (data: FormData) => {
         setLoading(true);
         try {
@@ -91,7 +89,7 @@ const FormEdit = ({ params }: { params: { id: string } }) => {
                     assetName: data.assetName,
                     installedDate: data.installedDate,
                     state: data.state,
-                    specification: data.specification
+                    specification: data.specification || "", // Ensure specification is sent even if it's an empty string
                 },
             };
 
@@ -103,7 +101,7 @@ const FormEdit = ({ params }: { params: { id: string } }) => {
                 });
             } else {
                 const assetId = response.data.updateAsset.id;
-                pushUp(parseInt(assetId))
+                pushUp(parseInt(assetId));
                 router.push(ASSET_PATH_DEFAULT);
                 toast.success("Edit Asset Successfully");
             }
@@ -114,10 +112,10 @@ const FormEdit = ({ params }: { params: { id: string } }) => {
             setLoading(false);
         }
     };
+
     const { data: assetData, error } = useQuery(FIND_ONE_ASSET_QUERY, {
         variables: { id: parseInt(params.id, 10) },
     });
-
 
     useEffect(() => {
         if (assetData) {
@@ -150,8 +148,7 @@ const FormEdit = ({ params }: { params: { id: string } }) => {
                                         <Input
                                             placeholder=""
                                             {...field}
-                                            className={`cursor-pointer ${fieldState.error ? "border-nashtech" : ""
-                                                }`}
+                                            className={`cursor-pointer ${fieldState.error ? "border-nashtech" : ""}`}
                                         />
                                     </FormControl>
                                 </div>
@@ -230,8 +227,7 @@ const FormEdit = ({ params }: { params: { id: string } }) => {
                                         <Input
                                             {...field}
                                             type="text"
-                                            className={`h-[100px] flex justify-end cursor-pointer flex-col ${fieldState.error ? "border-nashtech" : ""
-                                                }`}
+                                            className={`h-[100px] flex justify-end cursor-pointer flex-col ${fieldState.error ? "border-nashtech" : ""}`}
                                         />
                                     </FormControl>
                                 </div>
@@ -253,8 +249,7 @@ const FormEdit = ({ params }: { params: { id: string } }) => {
                                             placeholder=""
                                             {...field}
                                             type="date"
-                                            className={`flex justify-end cursor-pointer flex-col ${fieldState.error ? "border-nashtech" : ""
-                                                }`}
+                                            className={`flex justify-end cursor-pointer flex-col ${fieldState.error ? "border-nashtech" : ""}`}
                                         />
                                     </FormControl>
                                 </div>
@@ -294,7 +289,6 @@ const FormEdit = ({ params }: { params: { id: string } }) => {
                                                     </label>
                                                 </div>
                                             ))}
-
                                         </RadioGroup>
                                     </FormControl>
                                 </div>
@@ -321,4 +315,4 @@ const FormEdit = ({ params }: { params: { id: string } }) => {
     )
 }
 
-export default FormEdit
+export default FormEdit;
