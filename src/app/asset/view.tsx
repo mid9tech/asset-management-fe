@@ -10,8 +10,7 @@ import Search from "@components/search";
 import { ASSET_TYPE, SORT_ORDER } from "../../types/enum.type";
 import { Asset } from "../../__generated__/graphql";
 import { Button } from "@components/ui/button";
-import { useMutation, useQuery } from "@apollo/client";
-import { GET_CATEGORY_QUERY } from "@services/query/category.query";
+import { useMutation } from "@apollo/client";
 import ViewDetail from "./viewDetail";
 import Paginate from "@components/paginate";
 import EmptyComponent from "@components/empty";
@@ -147,6 +146,14 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
     }
     return map;
   };
+  const checkAssigned = (item: Asset) => {
+    if (item.state !== ASSET_TYPE.Assigned) {
+      return false
+    }
+    else {
+      return true
+    }
+  }
 
   const newListData = data?.map((item) => ({
     ...item,
@@ -158,9 +165,14 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
       {
         icon: (
           <CreateIcon
+            style={checkAssigned(item) ? {
+              color: 'gray', cursor: 'not-allowed'
+            } : {}}
             onClick={(e) => {
-              e.stopPropagation();
-              handleNavigateEditAsset(item.id);
+              if (!checkAssigned(item)) {
+                e.stopPropagation();
+                handleNavigateEditAsset(item.id);
+              }
             }}
           />
         ),
@@ -168,9 +180,14 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
       {
         icon: (
           <HighlightOffIcon
+            style={checkAssigned(item) ? {
+              color: 'gray', cursor: 'not-allowed'
+            } : {}}
             onClick={(e) => {
-              e.stopPropagation();
-              handleDeleteClick(item);
+              if (!checkAssigned(item)) {
+                e.stopPropagation();
+                handleDeleteClick(item);
+              }
             }}
             sx={{ color: "red" }}
           />
@@ -208,10 +225,6 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
                   setSelected={setSelected}
                   action={() => resetPage()}
                 />
-                {/* {categoryLoading ? (
-                  <div>Loading...</div>
-                ) : (
-                )} */}
               </div>
             </div>
           </div>
@@ -273,7 +286,6 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
       <DetailModal
         isOpen={showModalErrorAsset}
         onClose={handleCloseModalAsset}
-        // isShowCloseIcon={true}
         title="Cannot Delete asset"
       >
         <div className="p-0">
