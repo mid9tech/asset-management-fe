@@ -10,31 +10,31 @@ export const tableColumns = [
   {
     header: "Asset Code",
     accessor: "assetCode" as keyof Assignment,
-    width: "13%",
+    width: "10%",
     sortField: "assetCode",
   },
   {
     header: "Asset Name",
     accessor: "assetName" as keyof Assignment,
-    width: "15%",
+    width: "21%",
     sortField: "assetName",
   },
   {
     header: "Assigned To",
     accessor: "assignedToUsername" as keyof Assignment,
-    width: "12%",
+    width: "11%",
     sortField: "assignedToUsername",
   },
   {
     header: "Assigned By",
     accessor: "assignedByUsername" as keyof Assignment,
-    width: "12%",
+    width: "11%",
     sortField: "assignedByUsername",
   },
   {
     header: "Assigned Date",
     accessor: "assignedDate" as keyof Assignment,
-    width: "13%",
+    width: "12%",
     sortField: "assignedDate",
   },
   {

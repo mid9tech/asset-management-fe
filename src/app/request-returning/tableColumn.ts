@@ -16,7 +16,7 @@ export const tableColumns = [
   {
     header: "Asset Name",
     accessor: "asset.assetName" as keyof RequestReturn,
-    width: "10%",
+    width: "14%",
     sortField: "assetName",
   },
   {
@@ -28,19 +28,19 @@ export const tableColumns = [
   {
     header: "Assigned Date",
     accessor: "assignedDate" as keyof RequestReturn,
-    width: "12%",
+    width: "11%",
     sortField: "assignedDate",
   },
   {
     header: "Accepted By",
     accessor: "acceptedBy.username" as keyof RequestReturn,
-    width: "11%",
+    width: "10%",
     sortField: "acceptedBy",
   },
   {
     header: "Returned Date",
     accessor: "returnedDate" as keyof RequestReturn,
-    width: "13%",
+    width: "11%",
     sortField: "returnedDate",
   },
   {

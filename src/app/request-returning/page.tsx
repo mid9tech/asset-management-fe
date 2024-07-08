@@ -61,10 +61,7 @@ export default function Index({
       const { data }: any = await loadDataRequest(request);
 
       if (data) {
-        const listCustom = data?.requestReturns.map((item: RequestReturn) =>
-          formatRequestReturn(item)
-        );
-        setListData(listCustom);
+        setListData(data?.requestReturns);
         setTotalPages(data.totalPages);
         setLoading(false);
       }

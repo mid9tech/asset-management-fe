@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import React, { FC, useState } from "react";
-
 import { RequestReturn } from "../../__generated__/graphql";
 import { REQUEST_RETURN_STATUS, SORT_ORDER } from "../../types/enum.type";
 import Paginate from "@components/paginate";
@@ -9,8 +8,6 @@ import Filter from "@components/filter";
 import { convertEnumToMap } from "@utils/enumToMap";
 import Search from "@components/search";
 import CustomDatePicker from "@components/datepicker";
-import ReusableList from "@components/list";
-// import DetailAssignment from "./detail";
 import EmptyComponent from "@components/empty";
 import { checkSortOrder } from "@utils/checkSortField";
 import ModalCancelRequestReturn from "./components/model/cancel";
@@ -22,6 +19,11 @@ import {
   CompleteReturningService,
 } from "@services/requestForReturn";
 import { tableColumns } from "./tableColumn";
+import TableComponent from "@components/table";
+import { formatStateText, formatText } from "@utils/formatText";
+import { formatDate } from "@utils/timeFormat";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import CheckIcon from "@mui/icons-material/Check";
 
 interface ViewRequestReturnProps {
   listData: RequestReturn[];
@@ -118,6 +120,50 @@ const ViewRequestReturn: FC<ViewRequestReturnProps> = (props) => {
     setShowModalConfirmCancel(true);
   }
 
+  const newListData = listData?.map((item) => ({
+    ...item,
+    assignedDate: formatDate(new Date(item.assignedDate)),
+    returnedDate: item.returnedDate
+      ? formatDate(new Date(item.returnedDate))
+      : null,
+    state: formatStateText(item.state),
+    actions: [
+      {
+        icon: (
+          <CheckIcon
+            className={`${
+              item.state === REQUEST_RETURN_STATUS.COMPLETED &&
+              "text-gray cursor-not-allowed"
+            }`}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (item.state !== REQUEST_RETURN_STATUS.COMPLETED) {
+                handleOpenCompleteModal(item);
+              }
+            }}
+          />
+        ),
+      },
+      {
+        icon: (
+          <HighlightOffIcon
+            className={`${
+              item.state === REQUEST_RETURN_STATUS.COMPLETED &&
+              "text-gray cursor-not-allowed"
+            }`}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (item.state !== REQUEST_RETURN_STATUS.COMPLETED) {
+                handleOpenCancelModal(item);
+              }
+            }}
+            sx={{ color: "red" }}
+          />
+        ),
+      },
+    ],
+  }));
+
   return (
     <div className="container mx-auto p-4">
       <h2 className="text-2xl font-bold mb-4 text-nashtech">Request List</h2>
@@ -135,13 +181,11 @@ const ViewRequestReturn: FC<ViewRequestReturnProps> = (props) => {
           <Search />
         </div>
       </div>
-      <ReusableList
+      <TableComponent
         columns={tableColumns}
-        data={listData}
+        data={newListData}
         onRowClick={() => {}}
         onSortClick={handleSortClick}
-        onCheckClick={handleOpenCompleteModal}
-        onDeleteClick={handleOpenCancelModal}
         sortBy={sortBy}
         sortOrder={sortOrder}
       />

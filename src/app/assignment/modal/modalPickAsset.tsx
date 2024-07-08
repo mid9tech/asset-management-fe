@@ -14,6 +14,33 @@ import Pagination from "@components/paginationByState";
 import { toast } from "react-toastify";
 import { Asset, FindAssetsInput } from "../../../__generated__/graphql";
 import { SORT_ORDER, ASSET_TYPE } from "../../../types/enum.type";
+import TablePickerComponent from "@components/tablePicker";
+
+export const assetColumns = [
+  {
+    header: "radio",
+    accessor: "" as keyof Asset,
+    width: "4%",
+  },
+  {
+    header: "Asset Code",
+    accessor: "assetCode" as keyof Asset,
+    width: "25%",
+    sortField: "assetCode",
+  },
+  {
+    header: "Asset Name",
+    accessor: "assetName" as keyof Asset,
+    width: "45%",
+    sortField: "assetName",
+  },
+  {
+    header: "Category",
+    accessor: "category.categoryName" as keyof Asset,
+    width: "20%",
+    sortField: "category",
+  },
+];
 
 interface ModalPickerProps {
   isOpen: boolean;
@@ -33,11 +60,11 @@ const ModalAssetPicker: React.FC<ModalPickerProps> = ({
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("assetCode");
   const [sortOrder, setSortOrder] = useState<SORT_ORDER>(SORT_ORDER.ASC);
-  const [currenPage, setCurrenPage] = useState<number>(1)
-  const [totalPage, setTotalPage] = useState<number>(0)
+  const [currenPage, setCurrenPage] = useState<number>(1);
+  const [totalPage, setTotalPage] = useState<number>(0);
 
   const handleSearch = useDebouncedCallback((term: string) => {
-    setCurrenPage(1)
+    setCurrenPage(1);
     setSearchTerm(term);
   }, 300);
 
@@ -55,7 +82,7 @@ const ModalAssetPicker: React.FC<ModalPickerProps> = ({
     try {
       setLoading(true);
       const { data }: any = await loadDataAsset(filter);
-      setTotalPage(data.totalPages)
+      setTotalPage(data.totalPages);
       setList(data.assets);
       setLoading(false);
     } catch (error) {
@@ -81,7 +108,7 @@ const ModalAssetPicker: React.FC<ModalPickerProps> = ({
         limit: 10,
         sortField: sortBy,
         sortOrder: sortOrder,
-        stateFilter: [ASSET_TYPE.Available]
+        stateFilter: [ASSET_TYPE.Available],
       });
 
       document.addEventListener("mousedown", handleClickOutside);
@@ -107,7 +134,7 @@ const ModalAssetPicker: React.FC<ModalPickerProps> = ({
     <div className="fixed inset-0 flex items-center justify-center z-50">
       <div
         ref={modalRef}
-        className="bg-white border border-black shadow-lg w-auto h-auto">
+        className="bg-white border border-black shadow-lg w-1/2 h-auto">
         <div className="bg-white shadow overflow-hidden sm:rounded-lg p-5">
           <div className="flex flex-row justify-between items-center">
             <div className="px-4 py-5 sm:px-6">
@@ -121,6 +148,7 @@ const ModalAssetPicker: React.FC<ModalPickerProps> = ({
                   onChange={(e) => {
                     handleSearch(e.target.value);
                   }}
+                  value={searchTerm || ""}
                   className="w-full pr-9 rounded border-solid border outline-none px-2 py-1 border-graycustom"
                 />
                 <button className="absolute top-0 p-2 h-full right-0 border-l-graycustom border-l">
@@ -134,86 +162,27 @@ const ModalAssetPicker: React.FC<ModalPickerProps> = ({
               </div>
             </div>
           </div>
-          <div className="p-3">
-            <div className="grid grid-cols-6 gap-4">
-              <div></div>
-              <div
-                className="col border-b-2 border-black cursor-pointer"
-                onClick={() => handleSortClick("assetCode")}>
-                <span className="font-bold">
-                  Asset Code{" "}
-                  {sortBy === "assetCode" && sortOrder === SORT_ORDER.ASC ? (
-                    <ArrowDropUpIcon />
-                  ) : (
-                    <ArrowDropDownIcon />
-                  )}
-                </span>
-              </div>
-              <div
-                className="col-span-3 border-b-2 border-black cursor-pointer"
-                onClick={() => handleSortClick("assetName")}>
-                <span className="font-bold">
-                  Asset Name{" "}
-                  {sortBy === "assetName" && sortOrder === SORT_ORDER.ASC ? (
-                    <ArrowDropUpIcon />
-                  ) : (
-                    <ArrowDropDownIcon />
-                  )}
-                </span>
-              </div>
-              <div
-                className="border-b-2 border-black cursor-pointer"
-                onClick={() => handleSortClick("categoryId")}>
-                <span className="font-bold">
-                  Category{" "}
-                  {sortBy === "categoryId" && sortOrder === SORT_ORDER.ASC ? (
-                    <ArrowDropUpIcon />
-                  ) : (
-                    <ArrowDropDownIcon />
-                  )}
-                </span>
-              </div>
-              <div></div>
-            </div>
-            {list?.map((item, key) => (
-              <div
-                key={key}
-                className={`grid grid-cols-6 gap-4 ${item.isReadyAssigned == false
-                  ? "opacity-50 cursor-not-allowed"
-                  : "cursor-pointer"
-                  }`}
-                onClick={item.isReadyAssigned == false ? () => { } : () => handleSelected(item)}>
-                <div className="flex justify-end items-center">
-                  <label className="custom-radio">
-                    <input
-                      type="radio"
-                      disabled={item.isReadyAssigned == false}
-                      checked={selected?.id === item.id}
-                      onChange={() => handleSelected(item)}
-                    />
-                    <span className="checkmark"></span>
-                  </label>
-                </div>
-                <div className="col border-b-2 border-graycustom">
-                  <span>{item?.assetCode}</span>
-                </div>
-                <div className="col-span-3 border-b-2 border-graycustom">
-                  <span className="truncate">{item?.assetName}</span>
-                </div>
-                <div className="border-b-2 border-graycustom">
-                  <span className="truncate">
-                    {item?.category.categoryName}
-                  </span>
-                </div>
-                <div></div>
-              </div>
-            ))}
-            <div className="flex justify-center">
-              {totalPage > 1 &&
-                <Pagination totalPages={totalPage} currentPage={currenPage} setCurrentPage={setCurrenPage} />
-              }
-            </div>
+          <div className="flex flex-row justify-center">
+            <TablePickerComponent
+              selected={selected}
+              columns={assetColumns}
+              data={list as Asset[]}
+              onRowClick={handleSelected}
+              sortBy={sortBy}
+              sortOrder={sortOrder}
+              onSortClick={handleSortClick}
+            />
           </div>
+          <div className="flex justify-center">
+            {totalPage > 1 && (
+              <Pagination
+                totalPages={totalPage}
+                currentPage={currenPage}
+                setCurrentPage={setCurrenPage}
+              />
+            )}
+          </div>
+
           <div className="px-4 py-4 sm:px-6 flex justify-end gap-3">
             <Button
               disabled={!selected}

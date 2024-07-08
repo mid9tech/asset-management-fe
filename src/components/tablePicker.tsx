@@ -1,19 +1,8 @@
 "use client";
-import React, { Fragment, ReactNode, useState } from "react";
+import React, { Fragment } from "react";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
-import CreateIcon from "@mui/icons-material/Create";
-import CheckIcon from "@mui/icons-material/Check";
-import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-import ReplayIcon from "@mui/icons-material/Replay";
 import { SORT_ORDER } from "../types/enum.type";
-import { Button } from "./ui/button";
-import DetailModal from "./modal";
-import { useMutation } from "@apollo/client";
-import { CREATE_REQUEST_RETURN } from "@services/query/requestReturn.query";
-import { toast } from "react-toastify";
-import { actionType } from "../types/action.type";
-import { Icon } from "@mui/material";
 
 type Column = {
   header: string;
@@ -27,22 +16,22 @@ interface ReusableTableProps<T> {
   data: any[];
   onRowClick: (item: T) => void;
   onSortClick?: (item: string) => void;
+  selected: any;
   sortBy: string;
   sortOrder: string;
   fontSize?: number;
 }
 
-const TableComponent = <T extends {}>({
+const TablePickerComponent = <T extends {}>({
   columns,
   data,
   onRowClick,
   onSortClick = () => {},
+  selected,
   sortBy,
   sortOrder,
   fontSize,
 }: ReusableTableProps<T>) => {
-  
-
   // get nested value of accessor
   // for example: accessor == category.categoryName ?? column will go through category obj to get category name and display it
   const getNestedValue = (obj: any, path: string) => {
@@ -73,7 +62,7 @@ const TableComponent = <T extends {}>({
               <tr className="flex flex-row gap-3">
                 {columns.map((item, key) => (
                   <Fragment key={key}>
-                    {item.header !== "icon" ? (
+                    {item.header !== "radio" ? (
                       <th
                         className="border-b-2 border-black cursor-pointer text-sm flex items-start"
                         style={{
@@ -103,33 +92,47 @@ const TableComponent = <T extends {}>({
               {data?.map((item, key) => (
                 <tr
                   key={key}
-                  className="flex flex-row gap-3 cursor-pointer mt-1 h-full">
+                  className={`flex flex-row gap-3 cursor-pointer mt-1 h-full ${
+                    item.isReadyAssigned == false
+                      ? "opacity-50 cursor-not-allowed"
+                      : "cursor-pointer"
+                  }`}>
                   {columns.map((column, colIndex) => (
                     <td
                       key={colIndex}
-                      onClick={() =>
-                        column.header !== "icon" && onRowClick(item)
+                      onClick={
+                        item.isReadyAssigned == false
+                          ? () => {}
+                          : () => onRowClick(item)
                       }
                       style={{
                         minWidth: column.width || "auto",
                         maxWidth: column.width,
                       }}
-                      className={`text-sm h-full min-h-6 ${
-                        column.header === "icon"
+                      className={`text-sm h-full min-h-8 truncate ${
+                        column.header === "radio"
                           ? ""
                           : "border-b-2 border-graycustom"
-                      } flex justify-start items-start h-full  truncate`}>
-                      {column.header !== "icon" ? (
+                      } flex justify-start items-center h-full`}>
+                      {column.header !== "radio" ? (
                         <div className="text-ellipsis overflow-hidden">
                           {getNestedValue(item, column.accessor) as string}
                         </div>
                       ) : (
-                        <div className="flex justify-between items-start h-full">
-                          {item.actions?.map(
-                            (item: actionType, index: number) => (
-                              <div key={index}>{item.icon}</div>
-                            )
-                          )}
+                        <div className="flex">
+                          <label className="custom-radio">
+                            <input
+                              type="radio"
+                              disabled={item.isReadyAssigned == false}
+                              checked={selected?.id == item.id}
+                              onChange={
+                                item.isReadyAssigned == false
+                                  ? () => {}
+                                  : () => onRowClick(item)
+                              }
+                            />
+                            <span className="checkmark"></span>
+                          </label>
                         </div>
                       )}
                     </td>
@@ -140,9 +143,8 @@ const TableComponent = <T extends {}>({
           </table>
         </div>
       </div>
-    
     </>
   );
 };
 
-export default TableComponent;
+export default TablePickerComponent;

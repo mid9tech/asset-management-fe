@@ -4,7 +4,7 @@ export const userColumns = [
     {
       header: "Category",
       accessor: "category_name" as keyof ReportElement,
-      width: "20%",
+      width: "24%",
       sortField: "category_name"
     },
     {

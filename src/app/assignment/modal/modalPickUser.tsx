@@ -3,20 +3,42 @@
 import { useDebouncedCallback } from "use-debounce";
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { truncateParagraph } from "@utils/truncate";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 
 import { Button } from "@components/ui/button";
 import { loadData } from "@services/user";
 import SearchIcon from "@public/icon/search.svg";
 import { useLoading } from "@providers/loading";
-import { formatText } from "@utils/formatText";
 import Pagination from "@components/paginationByState";
 import { toast } from "react-toastify";
 import { User, FindUsersInput } from "../../../__generated__/graphql";
 import { SORT_ORDER, USER_TYPE } from "../../../types/enum.type";
+import TablePickerComponent from "@components/tablePicker";
 
+export const userColumns = [
+  {
+    header: "radio",
+    accessor: "" as keyof User,
+    width: "5%",
+  },
+  {
+    header: "Staff Code",
+    accessor: "staffCode" as keyof User,
+    width: "20%",
+    sortField: "staffCode",
+  },
+  {
+    header: "Full Name",
+    accessor: "fullName" as keyof User,
+    width: "50%",
+    sortField: "firstName",
+  },
+  {
+    header: "Type",
+    accessor: "type" as keyof User,
+    width: "20%",
+    sortField: "type",
+  },
+];
 interface ModalPickerProps {
   isOpen: boolean;
   setOpenModal: (value: boolean) => void;
@@ -45,7 +67,7 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
 
   const handleSortClick = (item: any) => {
     let defaultOrder = SORT_ORDER.ASC;
-    if (sortBy === item || (sortBy === "firstName" && item === "fullName")) {
+    if (sortBy === item) {
       defaultOrder =
         sortOrder === SORT_ORDER.ASC ? SORT_ORDER.DESC : SORT_ORDER.ASC;
     }
@@ -113,7 +135,7 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
     <div className="fixed inset-0 flex items-center justify-center z-50">
       <div
         ref={modalRef}
-        className="bg-white border border-black shadow-lg w-auto h-auto">
+        className="bg-white border border-black shadow-lg w-1/2 h-auto">
         <div className="bg-white shadow overflow-hidden sm:rounded-lg p-5">
           <div className="flex flex-row justify-between items-center">
             <div className="px-4 py-5 sm:px-6">
@@ -127,6 +149,7 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
                   onChange={(e) => {
                     handleSearch(e.target.value);
                   }}
+                  value={searchTerm || ""}
                   className="w-full pr-9 rounded border-solid border outline-none px-2 py-1 border-graycustom"
                 />
                 <button className="absolute top-0 p-2 h-full right-0 border-l-graycustom border-l">
@@ -140,86 +163,25 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
               </div>
             </div>
           </div>
-          <div className="p-3">
-            <div className="grid grid-cols-6 gap-4">
-              <div></div>
-              <div
-                className="col border-b-2 border-black cursor-pointer"
-                onClick={() => handleSortClick("staffCode")}>
-                <span className="font-bold">
-                  Staff Code{" "}
-                  {sortBy === "staffCode" && sortOrder === SORT_ORDER.ASC ? (
-                    <ArrowDropUpIcon />
-                  ) : (
-                    <ArrowDropDownIcon />
-                  )}
-                </span>
-              </div>
-              <div
-                className="col-span-3 border-b-2 border-black cursor-pointer"
-                onClick={() => handleSortClick("firstName")}>
-                <span className="font-bold">
-                  Full Name
-                  {sortBy === "firstName" && sortOrder === SORT_ORDER.ASC ? (
-                    <ArrowDropUpIcon />
-                  ) : (
-                    <ArrowDropDownIcon />
-                  )}
-                </span>
-              </div>
-              <div
-                className="border-b-2 border-black cursor-pointer"
-                onClick={() => handleSortClick("type")}>
-                <span className="font-bold">
-                  Type{" "}
-                  {sortBy === "type" && sortOrder === SORT_ORDER.ASC ? (
-                    <ArrowDropUpIcon />
-                  ) : (
-                    <ArrowDropDownIcon />
-                  )}
-                </span>
-              </div>
-              <div></div>
-            </div>
-
-            {listUser?.map((item, key) => (
-              <div
-                key={key}
-                className="grid grid-cols-6 gap-4 cursor-pointer"
-                onClick={() => handleSelected(item)}>
-                <div className="flex justify-end items-center">
-                  <label className="custom-radio">
-                    <input
-                      type="radio"
-                      checked={selected?.staffCode === item.staffCode}
-                      onChange={() => handleSelected(item)}
-                    />
-                    <span className="checkmark"></span>
-                  </label>
-                </div>
-                <div className="col border-b-2 border-graycustom">
-                  <span>{item?.staffCode}</span>
-                </div>
-                <div className="col-span-3 border-b-2 border-graycustom">
-                  <span>
-                    {truncateParagraph(
-                      `${item.firstName} ${item.lastName}`,
-                      30
-                    )}
-                  </span>
-                </div>
-                <div className="border-b-2 border-graycustom">
-                  <span>{formatText(item?.type)}</span>
-                </div>
-                <div></div>
-              </div>
-            ))}
-            <div className="flex justify-center">
-              {totalPage > 1 &&
-                <Pagination totalPages={totalPage} currentPage={currenPage} setCurrentPage={setCurrenPage} />
-              }
-            </div>
-
+          <div className="flex flex-row justify-center">
+            <TablePickerComponent
+              selected={selected}
+              columns={userColumns}
+              data={listUser as User[]}
+              onRowClick={handleSelected}
+              sortBy={sortBy}
+              sortOrder={sortOrder}
+              onSortClick={handleSortClick}
+            />
+          </div>
+          <div className="flex justify-center">
+            {totalPage > 1 && (
+              <Pagination
+                totalPages={totalPage}
+                currentPage={currenPage}
+                setCurrentPage={setCurrenPage}
+              />
+            )}
           </div>
           <div className="px-4 py-4 sm:px-6 flex justify-end gap-3">
             <Button

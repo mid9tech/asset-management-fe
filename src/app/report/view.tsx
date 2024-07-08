@@ -3,10 +3,10 @@
 import { SORT_ORDER } from "../../types/enum.type";
 import { ReportElement } from "../../__generated__/graphql";
 import Paginate from "@components/paginate";
-import ReusableList from "@components/list";
 import EmptyComponent from "@components/empty";
 import dynamic from "next/dynamic";
 import { userColumns } from "./tableColumns";
+import TableComponent from "@components/table";
 const ExportButton = dynamic(() => import("./exportButton"), { ssr: false });
 
 interface UserManagementProps {
@@ -50,7 +50,7 @@ const ReportManagement: React.FC<UserManagementProps> = (props) => {
             <ExportButton />
           </div>
         </div>
-        <ReusableList
+        <TableComponent
           onRowClick={() => {}}
           columns={userColumns}
           data={data ?? []}

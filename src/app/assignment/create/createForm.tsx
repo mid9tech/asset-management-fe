@@ -10,9 +10,7 @@ import {
 import { Input } from "@components/ui/input";
 import React, { FC, useState } from "react";
 import { useForm } from "react-hook-form";
-import {
-  IAssignmentForm,
-} from "../../../types/assignment.type";
+import { IAssignmentForm } from "../../../types/assignment.type";
 import {
   Asset,
   CreateAssignmentInput,
@@ -27,6 +25,7 @@ import { usePushUp } from "../pushUp";
 import { validationSchema } from "./schema";
 import ModalUserPicker from "../modal/modalPickUser";
 import ModalAssetPicker from "../modal/modalPickAsset";
+import { ASSIGNMENT_PATH_DEFAULT } from "../../../constants";
 
 interface CreateFormProps {
   setShowModalConfirm: (value: boolean) => void;
@@ -78,7 +77,7 @@ const CreateForm: FC<CreateFormProps> = (props) => {
       const assignmentId = data.id;
       pushUp(parseInt(assignmentId));
       toast.success("Assignment created successfully");
-      route.push('/assignment');
+      route.push(ASSIGNMENT_PATH_DEFAULT);
     } else {
       toast.error("create assignment failed");
     }
@@ -98,11 +97,13 @@ const CreateForm: FC<CreateFormProps> = (props) => {
                     id="select-user-assignment"
                     type="button"
                     variant="outline"
-                    className="w-full flex justify-start"
+                    className="w-full flex justify-start truncate"
                     onClick={() => setOpenModalUser(true)}>
-                    {userSelected
-                      ? userSelected.firstName + " " + userSelected.lastName
-                      : ""}
+                    <span className="text-ellipsis overflow-hidden">
+                      {userSelected
+                        ? userSelected.firstName + " " + userSelected.lastName
+                        : ""}
+                    </span>
                   </Button>
                 </FormControl>
               </div>
@@ -129,12 +130,15 @@ const CreateForm: FC<CreateFormProps> = (props) => {
                     id="select-asset-assignment"
                     type="button"
                     variant="outline"
-                    className="w-full flex justify-start"
+                    className="w-full flex justify-start truncate"
                     onClick={() => setOpenModalAsset(true)}>
-                    {assetSelected ? assetSelected.assetName : ""}
+                    <span className="text-ellipsis overflow-hidden">
+                      {assetSelected ? assetSelected.assetName : ""}
+                    </span>
                   </Button>
                 </FormControl>
               </div>
+              <div className="flex flex-row justify-center"></div>
               <ModalAssetPicker
                 isOpen={openModalAsset}
                 setOpenModal={setOpenModalAsset}
@@ -159,8 +163,9 @@ const CreateForm: FC<CreateFormProps> = (props) => {
                     placeholder="Select a date"
                     {...field}
                     type="date"
-                    className={`flex justify-end cursor-pointer flex-col ${fieldState.error ? "border-nashtech" : ""
-                      }`}
+                    className={`flex justify-end cursor-pointer flex-col ${
+                      fieldState.error ? "border-nashtech" : ""
+                    }`}
                   />
                 </FormControl>
               </div>

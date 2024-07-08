@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import DetailModal from "@components/modal";
-import ReusableList from "@components/list";
 import { historyColumns } from "./tableColumn";
+import TableComponent from "@components/table";
 
 const ViewDetail = (props: any) => {
   // const [showModalDetailAsset, setShowModalDetailAsset] = useState(false);
@@ -56,7 +56,7 @@ const ViewDetail = (props: any) => {
             <div className="flex mb-2">
               <span className="text-sm w-28">History</span>{" "}
               <div className="text-sm w-96">
-                <ReusableList
+                <TableComponent
                   fontSize={12}
                   columns={historyColumns}
                   data={selectedAsset.history}
