@@ -55,17 +55,21 @@ const ViewDetail = (props: any) => {
             </div>
             <div className="flex mb-2">
               <span className="text-sm w-28">History</span>{" "}
-              <div className="text-sm w-96">
-                <TableComponent
-                  fontSize={12}
-                  columns={historyColumns}
-                  data={selectedAsset.history}
-                  onRowClick={() => {}}
-                  onSortClick={() => {}}
-                  sortBy={"returnedDate"}
-                  sortOrder={"asc"}
-                />
-              </div>
+              {selectedAsset.history?.length > 0 ? (
+                <div className="text-sm w-96 max-h-40 overflow-scroll">
+                  <TableComponent
+                    fontSize={12}
+                    columns={historyColumns}
+                    data={selectedAsset.history}
+                    onRowClick={() => {}}
+                    onSortClick={() => {}}
+                    sortBy={"returnedDate"}
+                    sortOrder={"asc"}
+                  />
+                </div>
+              ) : (
+                <div className="text-sm w-96">...</div>
+              )}
             </div>
           </div>
         </DetailModal>

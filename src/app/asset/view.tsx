@@ -292,7 +292,8 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
           <div className="sm:flex sm:items-start">
             <p className="text-md text-gray-500">
               Cannot delete the asset because it belongs to one or more
-              historical assignments.
+              historical assignments,
+              <div>or there are valid assignments belonging to this asset.</div>
               <div>
                 If the asset is not able to be used anymore, please update its
                 state in{" "}

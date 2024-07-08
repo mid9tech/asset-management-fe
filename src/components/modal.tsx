@@ -26,7 +26,7 @@ const DetailModal: React.FC<DetailModalProps> = ({
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50" style={{margin: 0}}>
       <div
-        className="bg-white border border-black rounded-lg shadow-lg w-auto"
+        className="bg-white border border-black rounded-lg shadow-lg auto"
         onClick={handleBackdropClick}>
         <div className="bg-bluegray border-b border-black flex flex-row justify-between items-center px-4 py-4 rounded-t-lg">
           <h3
@@ -40,7 +40,7 @@ const DetailModal: React.FC<DetailModalProps> = ({
             </button>
           )}
         </div>
-        <div className="space-y-2 py-8 px-12">{children}</div>
+        <div className="space-y-2 py-8 px-10">{children}</div>
       </div>
     </div>
   );

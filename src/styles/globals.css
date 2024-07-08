@@ -2,129 +2,160 @@
 @tailwind components;
 @tailwind utilities;
 
-.dropdown  {
-    height: 30px;
-    overflow: hidden;
-    transition: all .2s;
+.dropdown {
+  height: 30px;
+  overflow: hidden;
+  transition: all 0.2s;
 }
-.dropdown.active  {
-    height: 150px;
-    transition: all .2s;
-    overflow: scroll;
+.dropdown.active {
+  height: 150px;
+  transition: all 0.2s;
+  overflow: scroll;
 }
 .dropdown-label {
-    left: 0;
-    position: sticky;
-    right: 0;
-    z-index: 9;
-    top: 0;
-    background: white;
+  left: 0;
+  position: sticky;
+  right: 0;
+  z-index: 9;
+  top: 0;
+  background: white;
 }
 .dropdown-item {
-    transition: all .1s
-
+  transition: all 0.1s;
 }
 .dropdown-item:hover {
-    color: white;
-    background: #cf2338;
-    transition: all .1s
+  color: white;
+  background: #cf2338;
+  transition: all 0.1s;
 }
 .loader-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(0, 0, 0, 0.5); /* semi-transparent background */
-    z-index: 9999; /* Ensure it overlays on top of everything else */
-  }
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5); /* semi-transparent background */
+  z-index: 9999; /* Ensure it overlays on top of everything else */
+}
 /* HTML: <div class="loader"></div> */
 .loader {
-    width: 50px;
-    --b: 8px; 
-    aspect-ratio: 1;
-    border-radius: 50%;
-    padding: 1px;
-    background: conic-gradient(#0000 10%,#f03355) content-box;
-    -webkit-mask:
-      repeating-conic-gradient(#0000 0deg,#000 1deg 20deg,#0000 21deg 36deg),
-      radial-gradient(farthest-side,#0000 calc(100% - var(--b) - 1px),#000 calc(100% - var(--b)));
-    -webkit-mask-composite: destination-in;
-            mask-composite: intersect;
-    animation:l4 1s infinite steps(10);
+  width: 50px;
+  --b: 8px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  padding: 1px;
+  background: conic-gradient(#0000 10%, #f03355) content-box;
+  -webkit-mask: repeating-conic-gradient(
+      #0000 0deg,
+      #000 1deg 20deg,
+      #0000 21deg 36deg
+    ),
+    radial-gradient(
+      farthest-side,
+      #0000 calc(100% - var(--b) - 1px),
+      #000 calc(100% - var(--b))
+    );
+  -webkit-mask-composite: destination-in;
+  mask-composite: intersect;
+  animation: l4 1s infinite steps(10);
+}
+@keyframes l4 {
+  to {
+    transform: rotate(1turn);
   }
-  @keyframes l4 {to{transform: rotate(1turn)}}
+}
 
 /* Custome radio button*/
-  .custom-radio input {
-    position: absolute;
-    opacity: 0;
-    cursor: pointer;
-  }
-  .custom-radio {
-    position: relative;
-    padding-left: 30px;
-    cursor: pointer;
-    font-size: 20px;
-    user-select: none;
-  }
-  .custom-radio .checkmark {
-    position: absolute;
-    top: -10px;
-    left: 0;
-    height: 20px;
-    width: 20px;
-    background-color: #eee;
-    border-radius: 50%;
-  }
-  
-  .custom-radio input:checked ~ .checkmark {
-    background-color: #cf2338;
-  }
-  
-  .custom-radio .checkmark:after {
-    content: "";
-    position: absolute;
-    display: none;
-  }
-  
-  .custom-radio input:checked ~ .checkmark:after {
-    display: block;
-  }
-  
-  .custom-radio .checkmark:after {
-    top: 7px;
-    left: 7px;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: white;
-  }
-  /* Custome datepicker */
-  .custom-date-picker {
-    border: 1px solid #707070;
-    padding: 10px;
-    border-radius: 4px;
-    font-size: 16px;
-    width: 40%;
-    max-width: 300px;
-    height: 34px;
-    box-sizing: border-box;
-  }
+.custom-radio input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+.custom-radio {
+  position: relative;
+  padding-left: 30px;
+  cursor: pointer;
+  font-size: 20px;
+  user-select: none;
+}
+.custom-radio .checkmark {
+  position: absolute;
+  top: -10px;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background-color: #eee;
+  border-radius: 50%;
+}
 
-  /* Disable popup error ^.^ */
-  nextjs-portal {
-    display: none;
-  }
+.custom-radio input:checked ~ .checkmark {
+  background-color: #cf2338;
+}
 
-  input {
-    box-shadow: none !important;
-    outline: none !important;
-  }
+.custom-radio .checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
 
-  .break-words {
-    word-break: break-word;
-  }
+.custom-radio input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.custom-radio .checkmark:after {
+  top: 7px;
+  left: 7px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: white;
+}
+/* Custome datepicker */
+.custom-date-picker {
+  border: 1px solid #707070;
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 16px;
+  width: 40%;
+  max-width: 300px;
+  height: 34px;
+  box-sizing: border-box;
+}
+
+/* Disable popup error ^.^ */
+nextjs-portal {
+  display: none;
+}
+
+input {
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.break-words {
+  word-break: break-word;
+}
+
+::-webkit-scrollbar {
+  height: 4px; /* height of horizontal scrollbar ← You're missing this */
+  width: 4px; /* width of vertical scrollbar */
+  border: 1px solid #d5d5d5;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

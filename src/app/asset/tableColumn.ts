@@ -11,21 +11,21 @@ export const historyColumns = [
   {
     header: "Date",
     accessor: "assignedDate" as keyof Asset,
-    width: "25%",
+    width: "22%",
   },
   {
     header: "Assigned To",
     accessor: "assignment.assignedToUsername" as keyof Asset,
-    width: "25%",
+    width: "21%",
   },
   {
     header: "Assigned By",
     accessor: "assignment.assignedByUsername" as keyof Asset,
-    width: "25%",
+    width: "21%",
   },
   {
     header: "Returned Date",
     accessor: "returnedDate" as keyof Asset,
-    width: "25%",
+    width: "23%",
   },
 ];
