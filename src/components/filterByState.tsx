@@ -1,34 +1,46 @@
-'use client'
-import { Fragment, useState } from "react";
+"use client";
+import { Fragment, useEffect, useState } from "react";
 import { formatStateText } from "@utils/formatText";
 import { truncateParagraph } from "@utils/truncate";
 import FilterIcon from "@public/icon/filter.svg";
 import Image from "next/image";
 
-export const defaultChoice = 'all';
+export const defaultChoice = "all";
 
 interface Props {
   label: string;
   data: Map<string, string>;
   height?: number;
-  selected: string[];
-  setSelected: (value: string[]) => void;
-  action?: () => void
+  selected: string[] | null;
+  setSelected: (value: string[] | null) => void;
+  action?: () => void;
 }
 
 const maxLength = 30;
 
-const FilterState = ({ data, label, height = 150, selected, setSelected, action }: Props) => {
+const FilterState = ({
+  data,
+  label,
+  height = 150,
+  selected,
+  setSelected,
+  action,
+}: Props) => {
+
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
   const handleChange = (event: any, value: string) => {
-    if(action)
-        action()
-    const newSelected = new Set(selected);
+    let newSelected: any;
+    if (!selected) {
+      newSelected = new Set((data.values()))
+    } else {
+      newSelected = new Set(selected);
+    }
+    if (action) action();
     if (event.target.checked) {
       newSelected.add(value);
     } else {
-      newSelected.delete(value);
+      newSelected?.delete(value);
     }
     setSelected(Array.from(newSelected));
   };
@@ -38,7 +50,8 @@ const FilterState = ({ data, label, height = 150, selected, setSelected, action 
   };
 
   const isChecked = (id: string) => {
-    return selected.includes(id);
+    if (selected) return selected.includes(id);
+    return true;
   };
 
   const handleClickAll = (event: any) => {
@@ -71,7 +84,10 @@ const FilterState = ({ data, label, height = 150, selected, setSelected, action 
         {dropdownVisible && (
           <div
             className={`absolute mt-2 bg-white border border-gray-300 rounded shadow-lg z-10 w-full overflow-scroll`}
-            style={{ maxHeight: "350px", height: `${height === 0 ? 'auto' : height}` }}
+            style={{
+              maxHeight: "350px",
+              height: `${height === 0 ? "auto" : height}`,
+            }}
           >
             <fieldset>
               <legend className="sr-only">{label}</legend>
@@ -81,12 +97,17 @@ const FilterState = ({ data, label, height = 150, selected, setSelected, action 
                     id={`${defaultChoice}`}
                     name={defaultChoice}
                     type="checkbox"
-                    checked={Array.from(data.values()).every(value => isChecked(value))}
+                    checked={Array.from(data.values()).every((value) =>
+                      isChecked(value)
+                    )}
                     value={`${defaultChoice}`}
                     onChange={handleClickAll}
                     className="input-checkbox h-4 w-4 text-nashtech rounded custom-checkbox accent-red-500"
                   />
-                  <label htmlFor={defaultChoice} className="ml-3 block text-sm text-gray-700">
+                  <label
+                    htmlFor={defaultChoice}
+                    className="ml-3 block text-sm text-gray-700"
+                  >
                     All
                   </label>
                 </div>
@@ -101,8 +122,14 @@ const FilterState = ({ data, label, height = 150, selected, setSelected, action 
                       onChange={(e) => handleChange(e, value)}
                       className="h-4 w-4 text-nashtech focus:ring rounded bg-transparent"
                     />
-                    <label htmlFor={key} className="ml-3 block text-sm text-gray-700">
-                      {truncateParagraph(String(formatStateText(key)), maxLength)}
+                    <label
+                      htmlFor={key}
+                      className="ml-3 block text-sm text-gray-700"
+                    >
+                      {truncateParagraph(
+                        String(formatStateText(key)),
+                        maxLength
+                      )}
                     </label>
                   </div>
                 ))}

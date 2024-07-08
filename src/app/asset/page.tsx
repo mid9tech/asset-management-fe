@@ -20,7 +20,6 @@ export default function Index({
 }: {
   searchParams?: {
     State?: string[];
-    // Category?: string[];
     query?: string;
     page?: string;
   };
@@ -29,7 +28,6 @@ export default function Index({
   const { setLoading }: any = useLoading();
   const [listAsset, setListAssets] = useState<Asset[]>([]);
   const filterState = searchParams?.State || [];
-  // const filterCategory = searchParams?.Category || null;
   const currentPage = searchParams?.page || "1";
 
   const queryString = searchParams?.query || "";
@@ -38,13 +36,7 @@ export default function Index({
   const [totalPage, setTotalPages] = useState<number>(0);
   const { pushUpId, pushUp }: any = usePushUp();
   const { data: categoryData, loading: categoryLoading } = useQuery(GET_CATEGORY_QUERY);
-  const [selectedStates, setSelectedStates] = useState<string[]>([]);
-
-  useEffect(() => {
-    if (categoryData?.getCategories) {
-      setSelectedStates(categoryData.getCategories.map((category: any) => category.id));
-    }
-  }, [categoryData]);
+  const [selectedStates, setSelectedStates] = useState<string[] | null>(null);
   useEffect(() => {
     setLoading(true);
     loadAssetList();

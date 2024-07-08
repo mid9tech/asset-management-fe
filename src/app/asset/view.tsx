@@ -36,8 +36,8 @@ interface AssetManagementProps {
   setSortBy: (value: any) => void;
   setSortOrder: (value: any) => void;
   loadAssetList: () => void;
-  selected: string[];
-  setSelected: (value: string[]) => void;
+  selected: string[] | null;
+  setSelected: (value: string[] | null) => void;
   categories: any[];
 }
 
