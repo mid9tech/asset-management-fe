@@ -189,10 +189,9 @@ const ViewOwnAssignment: FC<ViewAssignmentProps> = (props) => {
       {
         icon: (
           <CheckIcon
-            className={`${
-              item.state !== ASSIGNMENT_STATUS.WAITING_FOR_ACCEPTANCE &&
-              "text-gray cursor-not-allowed"
-            }`}
+            style={item.state !== ASSIGNMENT_STATUS.WAITING_FOR_ACCEPTANCE ? {
+              color: 'gray', cursor: 'not-allowed' 
+            } : {color: '#cf2338'} }
             onClick={(e) => {
               e.stopPropagation();
               item.state === ASSIGNMENT_STATUS.WAITING_FOR_ACCEPTANCE &&
@@ -204,26 +203,23 @@ const ViewOwnAssignment: FC<ViewAssignmentProps> = (props) => {
       {
         icon: (
           <HighlightOffIcon
-            className={`${
-              item.state !== ASSIGNMENT_STATUS.WAITING_FOR_ACCEPTANCE &&
-              "text-gray cursor-not-allowed"
-            }`}
+          style={item.state !== ASSIGNMENT_STATUS.WAITING_FOR_ACCEPTANCE ? {
+            color: 'gray', cursor: 'not-allowed' 
+          } : {color: '#cf2338'} }
             onClick={(e) => {
               e.stopPropagation();
               item.state === ASSIGNMENT_STATUS.WAITING_FOR_ACCEPTANCE &&
                 handleDeclineAssignment(item);
             }}
-            sx={{ color: "red" }}
           />
         ),
       },
       {
         icon: (
           <ReplayIcon
-            className={`${
-              checkReturn(item) &&
-              "text-gray cursor-not-allowed"
-            }`}
+            style={checkReturn(item) ? {
+              color: 'gray', cursor: 'not-allowed' 
+            } : {color: 'blue'} }
             onClick={(e) => {
               if(!item.isWaitingReturning){
                 e.stopPropagation();
@@ -234,7 +230,6 @@ const ViewOwnAssignment: FC<ViewAssignmentProps> = (props) => {
               }
               
             }}
-            sx={{ color: "blue" }}
           />
         ),
       },

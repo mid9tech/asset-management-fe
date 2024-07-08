@@ -131,10 +131,9 @@ const ViewRequestReturn: FC<ViewRequestReturnProps> = (props) => {
       {
         icon: (
           <CheckIcon
-            className={`${
-              item.state === REQUEST_RETURN_STATUS.COMPLETED &&
-              "text-gray cursor-not-allowed"
-            }`}
+            style={item.state === REQUEST_RETURN_STATUS.COMPLETED ? {
+              color: 'gray', cursor: 'not-allowed' 
+            } : {color: '#cf2338'} }
             onClick={(e) => {
               e.stopPropagation();
               if (item.state !== REQUEST_RETURN_STATUS.COMPLETED) {
@@ -147,17 +146,15 @@ const ViewRequestReturn: FC<ViewRequestReturnProps> = (props) => {
       {
         icon: (
           <HighlightOffIcon
-            className={`${
-              item.state === REQUEST_RETURN_STATUS.COMPLETED &&
-              "text-gray cursor-not-allowed"
-            }`}
+            style={item.state === REQUEST_RETURN_STATUS.COMPLETED ? {
+              color: 'gray', cursor: 'not-allowed' 
+            } : {color: '#cf2338'} }
             onClick={(e) => {
               e.stopPropagation();
               if (item.state !== REQUEST_RETURN_STATUS.COMPLETED) {
                 handleOpenCancelModal(item);
               }
             }}
-            sx={{ color: "red" }}
           />
         ),
       },

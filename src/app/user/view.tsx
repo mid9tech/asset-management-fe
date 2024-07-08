@@ -110,9 +110,9 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
       {
         icon: (
           <CreateIcon
-            className={`${
-              item.type === USER_TYPE.ADMIN && "text-gray cursor-not-allowed"
-            }`}
+            style={item.type === USER_TYPE.ADMIN ? {
+              color: 'gray', cursor: 'not-allowed' 
+            } : {} }
             onClick={(e) => {
               if (item.type === USER_TYPE.STAFF) {
                 e.stopPropagation();
@@ -125,9 +125,9 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
       {
         icon: (
           <HighlightOffIcon
-            className={`${
-              item.type === USER_TYPE.ADMIN && "text-gray cursor-not-allowed"
-            }`}
+            style={item.type === USER_TYPE.ADMIN ? {
+              color: 'gray', cursor: 'not-allowed' 
+            } : {} }
             onClick={(e) => {
               if (item.type === USER_TYPE.STAFF) {
                 e.stopPropagation();

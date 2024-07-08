@@ -156,11 +156,17 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
     }
   };
   const checkReturn = (item: Assignment) => {
-    if (item.isWaitingReturning || item.state === ASSIGNMENT_STATUS.WAITING_FOR_ACCEPTANCE || item.state !== ASSIGNMENT_STATUS.ACCEPTED){
-      return true;
+    if (item.state === ASSIGNMENT_STATUS.ACCEPTED) {
+      return false; 
+    } else if (
+      item.state === ASSIGNMENT_STATUS.DECLINED || 
+      item.state === ASSIGNMENT_STATUS.WAITING_FOR_ACCEPTANCE
+    ) {
+      return true; 
     }
     return false;
-  }
+  };
+  
   console.log("list data: ",listData);
   
   const newListData = listData?.map((item) => ({
@@ -171,10 +177,9 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
       {
         icon: (
           <CreateIcon
-            className={`${
-              item.state !== ASSIGNMENT_STATUS.WAITING_FOR_ACCEPTANCE &&
-              "text-gray cursor-not-allowed"
-            }`}
+            style={item.state !== ASSIGNMENT_STATUS.WAITING_FOR_ACCEPTANCE ? {
+              color: 'gray', cursor: 'not-allowed' 
+            } : {} }
             onClick={(e) => {
               e.stopPropagation();
               item.state === ASSIGNMENT_STATUS.WAITING_FOR_ACCEPTANCE &&
@@ -186,10 +191,9 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
       {
         icon: (
           <HighlightOffIcon
-            className={`${
-              item.state === ASSIGNMENT_STATUS.ACCEPTED &&
-              "text-gray cursor-not-allowed"
-            }`}
+            style={item.state === ASSIGNMENT_STATUS.ACCEPTED ? {
+              color: 'gray', cursor: 'not-allowed' 
+            } : {color: '#cf2338'} }
             onClick={(e) => {
               e.stopPropagation();
               if (
@@ -199,35 +203,28 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
                 handleModalDeleteAssignment(item);
               }
             }}
-            sx={{ color: "red" }}
           />
         ),
       },
       {
         icon: (
           <ReplayIcon
-            // className={`${
-            //   item.state !== ASSIGNMENT_STATUS.ACCEPTED
-            //     ? "text-gray cursor-not-allowed"
-            //     : ""
-            // }`}
-            className={`${
-              checkReturn(item) &&
-              "text-gray cursor-not-allowed"
-            }`}
+            style={checkReturn(item) ? {
+              color: 'gray', cursor: 'not-allowed' 
+            } : {color: "blue"}}
             onClick={(e) => {
-              if(!item.isWaitingReturning){
-              e.stopPropagation();
-              if (item.state === ASSIGNMENT_STATUS.ACCEPTED) {
-                setSelectedItem(item);
-                setShowModalCancel(true);
+              if (!checkReturn(item)) {
+                e.stopPropagation();
+                if (item.state === ASSIGNMENT_STATUS.ACCEPTED) {
+                  setSelectedItem(item);
+                  setShowModalCancel(true);
+                }
               }
-            }
             }}
-            sx={{ color: "blue" }}
           />
         ),
-      },
+      }
+      ,
     ],
   }));
 
