@@ -66,7 +66,7 @@ const ModalAssetPicker: React.FC<ModalPickerProps> = ({
   const handleSearch = useDebouncedCallback((term: string) => {
     setCurrenPage(1);
     setSearchTerm(term);
-  }, 300);
+  }, 50);
 
   const handleSortClick = (item: any) => {
     let defaultOrder = SORT_ORDER.ASC;

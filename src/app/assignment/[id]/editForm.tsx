@@ -17,7 +17,12 @@ import { Input } from "@components/ui/input";
 import { updateAssignment } from "@services/assignment";
 import { toast } from "react-toastify";
 import { IAssignmentEditForm } from "../../../types/assignment.type";
-import { Asset, Assignment, UpdateAssignmentInput, User } from "../../../__generated__/graphql";
+import {
+  Asset,
+  Assignment,
+  UpdateAssignmentInput,
+  User,
+} from "../../../__generated__/graphql";
 import { usePushUp } from "../pushUp";
 import { ASSIGNMENT_PATH_DEFAULT } from "../../../constants";
 import { validationSchema } from "../create/schema";
@@ -54,10 +59,12 @@ const EditForm: FC<FormProps> = (props) => {
       setAssetSelected(assignment.asset);
       setNoteValue(assignment?.note);
       setDataUpdate({
-        assignedDate: new Date(assignment?.assignedDate).toISOString().slice(0, 10),
+        assignedDate: new Date(assignment?.assignedDate)
+          .toISOString()
+          .slice(0, 10),
         note: assignment?.note || "",
         user: assignment.assignee,
-        asset: assignment.asset
+        asset: assignment.asset,
       });
     }
   }, [assignment]);
@@ -98,10 +105,7 @@ const EditForm: FC<FormProps> = (props) => {
       assignedDate: value.assignedDate || assignment?.assignedDate,
       note: noteValue || "",
     };
-    const data = await updateAssignment(
-      assignment?.id as number,
-      variables
-    );
+    const data = await updateAssignment(assignment?.id as number, variables);
 
     if (data) {
       pushUp(data?.id);
@@ -127,9 +131,11 @@ const EditForm: FC<FormProps> = (props) => {
                     variant="outline"
                     className="w-full flex justify-start"
                     onClick={() => setOpenModalUser(true)}>
-                    {userSelected
-                      ? userSelected.lastName + " " + userSelected.firstName
-                      : ""}
+                    <span className="text-ellipsis overflow-hidden">
+                      {userSelected
+                        ? userSelected.firstName + " " + userSelected.lastName
+                        : ""}
+                    </span>
                   </Button>
                 </FormControl>
               </div>
@@ -156,9 +162,11 @@ const EditForm: FC<FormProps> = (props) => {
                     id="select-asset-assignment"
                     type="button"
                     variant="outline"
-                    className="w-full flex justify-start"
+                    className="w-full flex justify-start truncate"
                     onClick={() => setOpenModalAsset(true)}>
-                    {assetSelected ? assetSelected.assetName : ""}
+                    <span className="text-ellipsis overflow-hidden">
+                      {assetSelected ? assetSelected.assetName : ""}
+                    </span>
                   </Button>
                 </FormControl>
               </div>
@@ -185,7 +193,6 @@ const EditForm: FC<FormProps> = (props) => {
                     id="assigned-date-assignment-edit"
                     placeholder="Select a date"
                     {...field}
-                    
                     type="date"
                     className={`flex justify-end cursor-pointer flex-col ${
                       fieldState.error ? "border-nashtech" : ""
