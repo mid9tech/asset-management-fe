@@ -10,15 +10,15 @@ interface SearchProps {
 }
 
 const Search: FC<SearchProps> = (props) => {
-  const { setCurrentPage } = props;
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
   const handleSearch = useDebouncedCallback((term: string) => {
+    const trimmedTerm = term.trim();
     const params = new URLSearchParams(searchParams);
-    params.set('page', '1')
-    if (term) {
-      params.set("query", term);
+    params.set('page', '1');
+    if (trimmedTerm) {
+      params.set("query", trimmedTerm);
     } else {
       params.delete("query");
     }
