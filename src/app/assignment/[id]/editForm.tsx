@@ -49,7 +49,6 @@ const EditForm: FC<FormProps> = (props) => {
   );
 
   useEffect(() => {
-    console.log("data update", assignment);
     if (assignment) {
       setUserSelected(assignment.assignee);
       setAssetSelected(assignment.asset);

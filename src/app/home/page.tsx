@@ -55,9 +55,6 @@ export default function Index({
     }
 
     const { data }: any = await getAllOwnAssignment(request);
-    console.log("data user: ",data);
-    console.log("request user: ",request);
-    
 
     if (data) {
       setListData(data?.assignments);

@@ -162,7 +162,6 @@ const ViewOwnAssignment: FC<ViewAssignmentProps> = (props) => {
         "Request return created successfully";
       toast.success(successMessage);
       route.refresh();
-      console.log("Request return created: ", data.createRequestReturn);
     } catch (error: any) {
       const errorMessage =
         error.graphQLErrors?.[0]?.message || "Something went wrong";

@@ -4,7 +4,6 @@ import { formatDate } from "@utils/timeFormat";
 import { ASSET_TYPE } from "../../types/enum.type";
 
 const formatHistory = (item: RequestReturn) => {
-  console.log('item', item);
   return {
     ...item,
     returnedDate: item.returnedDate ? formatDate(parseInt(item.returnedDate as string)) : null,

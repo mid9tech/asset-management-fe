@@ -74,7 +74,6 @@ const HomeList = <T extends {}>({
       const { data } = await requestReturn({ variables });
       const successMessage = data.createRequestReturn?.message || "Request return created successfully";
       toast.success(successMessage);
-      console.log("Request return created: ", data.createRequestReturn);
     } catch (error: any) {
       const errorMessage = error.graphQLErrors?.[0]?.message || "Something went wrong";
       toast.error(errorMessage);

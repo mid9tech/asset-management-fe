@@ -11,6 +11,8 @@ import { usePushUp } from "./pushUp";
 import { formatAsset } from "./formatAsset";
 import { usePathname, useRouter } from "next/navigation";
 import { ASSET_PATH_DEFAULT } from "../../constants";
+import { useQuery } from "@apollo/client";
+import { GET_CATEGORY_QUERY } from "@services/query/category.query";
 
 export const dynamic = "force-dynamic";
 export default function Index({
@@ -18,7 +20,7 @@ export default function Index({
 }: {
   searchParams?: {
     State?: string[];
-    Category?: string[];
+    // Category?: string[];
     query?: string;
     page?: string;
   };
@@ -27,7 +29,7 @@ export default function Index({
   const { setLoading }: any = useLoading();
   const [listAsset, setListAssets] = useState<Asset[]>([]);
   const filterState = searchParams?.State || [];
-  const filterCategory = searchParams?.Category || null;
+  // const filterCategory = searchParams?.Category || null;
   const currentPage = searchParams?.page || "1";
 
   const queryString = searchParams?.query || "";
@@ -35,12 +37,19 @@ export default function Index({
   const [sortBy, setSortBy] = useState("assetCode");
   const [totalPage, setTotalPages] = useState<number>(0);
   const { pushUpId, pushUp }: any = usePushUp();
+  const { data: categoryData, loading: categoryLoading } = useQuery(GET_CATEGORY_QUERY);
+  const [selectedStates, setSelectedStates] = useState<string[]>([]);
 
+  useEffect(() => {
+    if (categoryData?.getCategories) {
+      setSelectedStates(categoryData.getCategories.map((category: any) => category.id));
+    }
+  }, [categoryData]);
   useEffect(() => {
     setLoading(true);
     loadAssetList();
     pushUp(null);
-  }, [searchParams, sortOrder, sortBy]);
+  }, [searchParams, sortOrder, sortBy, selectedStates]);
 
   const loadAssetList = async () => {
     try {
@@ -54,16 +63,10 @@ export default function Index({
       request.sortField = sortBy;
       request.sortOrder = sortOrder;
       request.stateFilter = filterState;
+      request.categoryFilter = selectedStates;
 
       if (queryString) {
         request.query = queryString;
-      }
-      if (filterCategory) {
-        if (filterCategory.includes(defaultChoice)) {
-          delete request.categoryFilter;
-        } else {
-          request.categoryFilter = filterCategory;
-        }
       }
 
       let detail: any = null;
@@ -99,6 +102,8 @@ export default function Index({
     <Fragment>
       <Suspense>
         <AssetManagement
+          selected={selectedStates}
+          setSelected={setSelectedStates}
           data={listAsset as Asset[]}
           totalPages={totalPage}
           currentPage={parseInt(currentPage)}
@@ -107,6 +112,7 @@ export default function Index({
           setSortBy={setSortBy}
           setSortOrder={setSortOrder}
           loadAssetList={loadAssetList}
+          categories={categoryData?.getCategories || []}
         />
       </Suspense>
     </Fragment>

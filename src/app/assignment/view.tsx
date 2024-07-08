@@ -75,7 +75,6 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
     }
   };
   const onSubmit = async (item: any) => {
-    console.log("data item: ", item);
 
     try {
       const variables: any = {

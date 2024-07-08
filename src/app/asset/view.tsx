@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import DetailModal from "@components/modal";
 import { convertEnumToMap } from "@utils/enumToMap";
 import Filter from "@components/filter";
@@ -20,12 +20,13 @@ import { toast } from "react-toastify";
 import { LABEL_CATEGORY, LABEL_STATE } from "../../constants/label";
 import { assetColumns } from "./tableColumn";
 import { loadDetailAsset } from "@services/asset";
-import {  formatDetail } from "./formatAsset";
+import { formatDetail } from "./formatAsset";
 import TableComponent from "@components/table";
 import CreateIcon from "@mui/icons-material/Create";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { formatStateText, formatText } from "@utils/formatText";
 import { formatDate } from "@utils/timeFormat";
+import FilterState from "@components/filterByState";
 
 interface AssetManagementProps {
   data: Asset[];
@@ -36,6 +37,9 @@ interface AssetManagementProps {
   setSortBy: (value: any) => void;
   setSortOrder: (value: any) => void;
   loadAssetList: () => void;
+  selected: string[];
+  setSelected: (value: string[]) => void;
+  categories: any[];
 }
 
 const AssetManagement: React.FC<AssetManagementProps> = (props) => {
@@ -47,7 +51,13 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
     sortBy,
     setSortBy,
     setSortOrder,
+    selected,
+    setSelected,
+    categories,
   } = props;
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { replace } = useRouter();
 
   const [showModalRemoveAsset, setShowModalRemoveAsset] = useState(false);
   const [showModalErrorAsset, setShowModalErrorAsset] = useState(false);
@@ -57,8 +67,6 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
 
   const router = useRouter();
   const { setLoading }: any = useLoading();
-  const { data: categoryData, loading: categoryLoading } =
-    useQuery(GET_CATEGORY_QUERY);
 
   const handleNavigateEditAsset = (id: string) => {
     router.push(`/asset/${id}`);
@@ -118,7 +126,6 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
         },
       };
       const response = await deleteAsset(deleteOptions);
-      console.log("delete response: ", response);
 
       if (response) {
         setShowModalRemoveAsset(false);
@@ -171,6 +178,11 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
       },
     ],
   }));
+  const resetPage = () => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("page", "1");
+    replace(`${pathname}?${params.toString()}`);
+  };
 
   return (
     <>
@@ -188,15 +200,18 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
               </div>
 
               <div className="ml-4">
-                {categoryLoading ? (
+                <FilterState
+                  label={LABEL_CATEGORY}
+                  data={convertToMap(categories)}
+                  height={300}
+                  selected={selected}
+                  setSelected={setSelected}
+                  action={() => resetPage()}
+                />
+                {/* {categoryLoading ? (
                   <div>Loading...</div>
                 ) : (
-                  <Filter
-                    label={LABEL_CATEGORY}
-                    data={convertToMap(categoryData?.getCategories)}
-                    height={300}
-                  />
-                )}
+                )} */}
               </div>
             </div>
           </div>
@@ -204,7 +219,8 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
             <Search />
             <button
               className="bg-red-600 text-white rounded px-4 py-1 cursor-pointer"
-              onClick={handleNavigateCreateAsset}>
+              onClick={handleNavigateCreateAsset}
+            >
               Create new asset
             </button>
           </div>
@@ -227,7 +243,8 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
         isOpen={showModalRemoveAsset}
         onClose={handleCloseModal}
         isShowCloseIcon={true}
-        title="Are you sure ?">
+        title="Are you sure ?"
+      >
         <div className="p-3">
           <div className="sm:flex sm:items-start">
             <p className="text-md text-gray-500">
@@ -239,14 +256,16 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
           <Button
             type="button"
             onClick={handleConfirmDelete}
-            className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto">
+            className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
+          >
             Delete
           </Button>
           <Button
             variant="outline"
             type="button"
             className="text-gray"
-            onClick={() => setShowModalRemoveAsset(false)}>
+            onClick={() => setShowModalRemoveAsset(false)}
+          >
             Cancel
           </Button>
         </div>
@@ -255,7 +274,8 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
         isOpen={showModalErrorAsset}
         onClose={handleCloseModalAsset}
         // isShowCloseIcon={true}
-        title="Cannot Delete asset">
+        title="Cannot Delete asset"
+      >
         <div className="p-0">
           <div className="sm:flex sm:items-start">
             <p className="text-md text-gray-500">
@@ -268,7 +288,8 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
                   onClick={() =>
                     handleNavigateEditAsset(selectedAsset?.id as string)
                   }
-                  className="text-blue underline cursor-pointer">
+                  className="text-blue underline cursor-pointer"
+                >
                   Edit Asset page
                 </a>
               </div>

@@ -13,7 +13,6 @@ const DatePicker = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, defaultValue, onChange, ...props }, ref) => {
     const inputRef = React.useRef<HTMLInputElement>(null);
     const combinedRef = ref ? (ref as React.RefObject<HTMLInputElement>) : inputRef;
-    console.log('ref', combinedRef);
 
     React.useEffect(() => {
       if (combinedRef.current) {

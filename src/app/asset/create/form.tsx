@@ -89,7 +89,6 @@ const FormCreateAsset = () => {
       };
 
       const response = await createAssetMutation({ variables });
-      console.log("data: ", response.data);
 
       if (response.errors) {
         response.errors.forEach((error: any) => {
