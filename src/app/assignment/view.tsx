@@ -28,6 +28,7 @@ import DetailModal from "@components/modal";
 import { useMutation } from "@apollo/client";
 import { CREATE_REQUEST_RETURN } from "@services/query/requestReturn.query";
 import { formatDate } from "@utils/timeFormat";
+import { ASSIGNMENT_PATH_DEFAULT } from "../../constants";
 
 interface ViewAssignmentProps {
   listData: Assignment[];
@@ -61,7 +62,7 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
   const [showModalCancel, setShowModalCancel] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [requestReturn] = useMutation(CREATE_REQUEST_RETURN);
-
+  const router = useRouter()
   const handleCloseCancelModal = () => {
     setShowModalCancel(false);
   };
@@ -90,7 +91,7 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
         data.createRequestReturn?.message ||
         "Request return created successfully";
       toast.success(successMessage);
-      console.log("Request return created: ", data.createRequestReturn);
+      router.refresh()
     } catch (error: any) {
       const errorMessage =
         error.graphQLErrors?.[0]?.message || "Something went wrong";
@@ -154,6 +155,14 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
       setLoading(false);
     }
   };
+  const checkReturn = (item: Assignment) => {
+    if (item.isWaitingReturning || item.state === ASSIGNMENT_STATUS.WAITING_FOR_ACCEPTANCE || item.state !== ASSIGNMENT_STATUS.ACCEPTED){
+      return true;
+    }
+    return false;
+  }
+  console.log("list data: ",listData);
+  
   const newListData = listData?.map((item) => ({
     ...item,
     state: formatStateText(item.state),
@@ -197,17 +206,23 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
       {
         icon: (
           <ReplayIcon
+            // className={`${
+            //   item.state !== ASSIGNMENT_STATUS.ACCEPTED
+            //     ? "text-gray cursor-not-allowed"
+            //     : ""
+            // }`}
             className={`${
-              item.state !== ASSIGNMENT_STATUS.ACCEPTED
-                ? "text-gray cursor-not-allowed"
-                : ""
+              checkReturn(item) &&
+              "text-gray cursor-not-allowed"
             }`}
             onClick={(e) => {
+              if(!item.isWaitingReturning){
               e.stopPropagation();
               if (item.state === ASSIGNMENT_STATUS.ACCEPTED) {
                 setSelectedItem(item);
                 setShowModalCancel(true);
               }
+            }
             }}
             sx={{ color: "blue" }}
           />
@@ -215,6 +230,7 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
       },
     ],
   }));
+
   return (
     <div className="container mx-auto p-4">
       <h2 className="text-2xl font-bold mb-4 text-nashtech">Assignment List</h2>

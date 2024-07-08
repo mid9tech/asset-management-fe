@@ -64,6 +64,7 @@ export const GET_ALL_ASSIGNMENT_QUERY = gql`
         assignedDate
         assignedByUsername
         assignedToUsername
+        isWaitingReturning
         asset {
           id
           specification
