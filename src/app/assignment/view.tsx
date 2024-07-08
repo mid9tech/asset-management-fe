@@ -155,16 +155,11 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
     }
   };
   const checkReturn = (item: Assignment) => {
-    if (item.state === ASSIGNMENT_STATUS.ACCEPTED) {
-      return false; 
-    } else if (
-      item.state === ASSIGNMENT_STATUS.DECLINED || 
-      item.state === ASSIGNMENT_STATUS.WAITING_FOR_ACCEPTANCE
-    ) {
-      return true; 
+    if (item.isWaitingReturning || item.state === ASSIGNMENT_STATUS.WAITING_FOR_ACCEPTANCE || item.state !== ASSIGNMENT_STATUS.ACCEPTED){
+      return true;
     }
     return false;
-  };
+  }
   
   console.log("list data: ",listData);
   

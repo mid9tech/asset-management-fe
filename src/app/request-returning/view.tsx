@@ -24,6 +24,7 @@ import { formatStateText, formatText } from "@utils/formatText";
 import { formatDate } from "@utils/timeFormat";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from '@mui/icons-material/Close';
 
 interface ViewRequestReturnProps {
   listData: RequestReturn[];
@@ -145,10 +146,10 @@ const ViewRequestReturn: FC<ViewRequestReturnProps> = (props) => {
       },
       {
         icon: (
-          <HighlightOffIcon
+          <CloseIcon
             style={item.state === REQUEST_RETURN_STATUS.COMPLETED ? {
               color: 'gray', cursor: 'not-allowed' 
-            } : {color: '#cf2338'} }
+            } : {color: '#000'} }
             onClick={(e) => {
               e.stopPropagation();
               if (item.state !== REQUEST_RETURN_STATUS.COMPLETED) {
