@@ -17,12 +17,7 @@ import { Input } from "@components/ui/input";
 import { updateAssignment } from "@services/assignment";
 import { toast } from "react-toastify";
 import { IAssignmentEditForm } from "../../../types/assignment.type";
-import {
-  Asset,
-  Assignment,
-  UpdateAssignmentInput,
-  User,
-} from "../../../__generated__/graphql";
+import { Asset, Assignment, UpdateAssignmentInput, User } from "../../../__generated__/graphql";
 import { usePushUp } from "../pushUp";
 import { ASSIGNMENT_PATH_DEFAULT } from "../../../constants";
 import { validationSchema } from "../create/schema";
@@ -47,7 +42,7 @@ const EditForm: FC<FormProps> = (props) => {
 
   const [userSelected, setUserSelected] = useState<User>();
   const [assetSelected, setAssetSelected] = useState<Asset>();
-  const [noteValue, setNoteValue] = useState<string | null>();
+  const [noteValue, setNoteValue] = useState<string>("");
 
   const [dataUpdate, setDataUpdate] = useState<IAssignmentEditForm | null>(
     null
@@ -57,14 +52,12 @@ const EditForm: FC<FormProps> = (props) => {
     if (assignment) {
       setUserSelected(assignment.assignee);
       setAssetSelected(assignment.asset);
-      setNoteValue(assignment?.note);
+      setNoteValue(assignment?.note || "");
       setDataUpdate({
-        assignedDate: new Date(assignment?.assignedDate)
-          .toISOString()
-          .slice(0, 10),
-        note: assignment?.note || "",
+        assignedDate: new Date(assignment?.assignedDate).toISOString().slice(0, 10),
+        note: assignment.note || "",
         user: assignment.assignee,
-        asset: assignment.asset,
+        asset: assignment.asset
       });
     }
   }, [assignment]);
@@ -105,7 +98,11 @@ const EditForm: FC<FormProps> = (props) => {
       assignedDate: value.assignedDate || assignment?.assignedDate,
       note: noteValue || "",
     };
-    const data = await updateAssignment(assignment?.id as number, variables);
+    console.log(variables)
+    const data = await updateAssignment(
+      assignment?.id as number,
+      variables
+    );
 
     if (data) {
       pushUp(data?.id);
@@ -131,11 +128,9 @@ const EditForm: FC<FormProps> = (props) => {
                     variant="outline"
                     className="w-full flex justify-start"
                     onClick={() => setOpenModalUser(true)}>
-                    <span className="text-ellipsis overflow-hidden">
-                      {userSelected
-                        ? userSelected.firstName + " " + userSelected.lastName
-                        : ""}
-                    </span>
+                    {userSelected
+                      ? userSelected.lastName + " " + userSelected.firstName
+                      : ""}
                   </Button>
                 </FormControl>
               </div>
@@ -162,11 +157,9 @@ const EditForm: FC<FormProps> = (props) => {
                     id="select-asset-assignment"
                     type="button"
                     variant="outline"
-                    className="w-full flex justify-start truncate"
+                    className="w-full flex justify-start"
                     onClick={() => setOpenModalAsset(true)}>
-                    <span className="text-ellipsis overflow-hidden">
-                      {assetSelected ? assetSelected.assetName : ""}
-                    </span>
+                    {assetSelected ? assetSelected.assetName : ""}
                   </Button>
                 </FormControl>
               </div>
@@ -193,6 +186,7 @@ const EditForm: FC<FormProps> = (props) => {
                     id="assigned-date-assignment-edit"
                     placeholder="Select a date"
                     {...field}
+                    
                     type="date"
                     className={`flex justify-end cursor-pointer flex-col ${
                       fieldState.error ? "border-nashtech" : ""
@@ -211,7 +205,7 @@ const EditForm: FC<FormProps> = (props) => {
           <label>Note</label>
           <textarea
             onChange={(e) => setNoteValue(e.target.value)}
-            defaultValue={assignment?.note || ""}
+            value={noteValue}
             id="note-assignment"
             maxLength={200}
             rows={5}
