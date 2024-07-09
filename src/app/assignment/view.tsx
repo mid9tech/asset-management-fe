@@ -148,9 +148,12 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
         toast.success("Delete Assignment Successfully");
         reloadTableData();
         setLoading(false);
+      } else {
+        toast.error("Opps! Something went wrong")
       }
     } catch (error: any) {
       setShowModalConfirmDelete(false);
+    } finally {
       setLoading(false);
     }
   };

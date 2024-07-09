@@ -68,7 +68,7 @@ const ViewDetail = (props: any) => {
                   />
                 </div>
               ) : (
-                <div className="text-sm w-96">...</div>
+                <div className="text-sm w-96">N/A</div>
               )}
             </div>
           </div>
