@@ -32,7 +32,7 @@ const ReportManagement: React.FC<UserManagementProps> = (props) => {
 
   const handleSortClick = (item: string) => {
     let defaultOrder = SORT_ORDER.ASC;
-    if (sortBy === item || sortBy === "category_name") {
+    if (sortBy === item) {
       defaultOrder =
         sortOrder === SORT_ORDER.ASC ? SORT_ORDER.DESC : SORT_ORDER.ASC;
     }
@@ -43,19 +43,16 @@ const ReportManagement: React.FC<UserManagementProps> = (props) => {
   return (
     <>
       <div className="container mx-auto p-4">
-        <h2 className="text-2xl font-bold mb-4 text-nashtech">Report</h2>
-        <div className="flex justify-between items-center mb-4">
-          <div className="flex items-center space-x-2"></div>
-          <div className="flex gap-10">
-            <ExportButton />
-          </div>
+        <div className="flex justify-between items-center mb-5">
+          <h2 className="text-2xl font-bold text-nashtech">Report</h2>
+          <ExportButton />
         </div>
         <TableComponent
           onRowClick={() => {}}
           columns={userColumns}
           data={data ?? []}
           onSortClick={handleSortClick}
-          sortBy={sortBy === "firstName" ? "fullName" : sortBy}
+          sortBy={sortBy}
           sortOrder={sortOrder}
         />
         {data?.length > 0 ? (
