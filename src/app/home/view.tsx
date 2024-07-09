@@ -7,8 +7,7 @@ import EmptyComponent from "@components/empty";
 import DetailOwnAssignment from "./detail";
 import ModalConfirmDeclineAssignment from "./components/modal/confirmDecline";
 import ModalConfirmAcceptAssignment from "./components/modal/confirmAccept";
-import CreateIcon from "@mui/icons-material/Create";
-import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import CloseIcon from '@mui/icons-material/Close';
 import ReplayIcon from "@mui/icons-material/Replay";
 import { toast } from "react-toastify";
 import { tableColumns } from "./tableColumn";
@@ -201,10 +200,10 @@ const ViewOwnAssignment: FC<ViewAssignmentProps> = (props) => {
       },
       {
         icon: (
-          <HighlightOffIcon
+          <CloseIcon
           style={item.state !== ASSIGNMENT_STATUS.WAITING_FOR_ACCEPTANCE ? {
             color: 'gray', cursor: 'not-allowed' 
-          } : {color: '#cf2338'} }
+          } : {color: '#000 '} }
             onClick={(e) => {
               e.stopPropagation();
               item.state === ASSIGNMENT_STATUS.WAITING_FOR_ACCEPTANCE &&

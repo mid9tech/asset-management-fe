@@ -127,14 +127,13 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
           <HighlightOffIcon
             style={item.type === USER_TYPE.ADMIN ? {
               color: 'gray', cursor: 'not-allowed' 
-            } : {} }
+            } : {color: '#cf2338'} }
             onClick={(e) => {
               if (item.type === USER_TYPE.STAFF) {
                 e.stopPropagation();
                 handleDeleteClick(item);
               }
             }}
-            sx={{ color: "red" }}
           />
         ),
       },

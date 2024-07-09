@@ -195,7 +195,7 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
                     color: "gray",
                     cursor: "not-allowed",
                   }
-                : {}
+                : {color: '#cf2338'}
             }
             onClick={(e) => {
               if (!checkAssigned(item)) {
@@ -203,7 +203,6 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
                 handleDeleteClick(item);
               }
             }}
-            sx={{ color: "red" }}
           />
         ),
       },
