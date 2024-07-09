@@ -11,7 +11,7 @@ import {
 } from "@components/ui/form";
 import { useForm, Controller } from "react-hook-form";
 import { Input } from "@components/ui/input";
-import { RadioGroup, RadioGroupItem } from "@components/ui/radio-group";
+import { RadioGroup } from "@components/ui/radio-group";
 import { Label } from "@components/ui/label";
 import { Button } from "@components/ui/button";
 
@@ -31,8 +31,10 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import { usePushUp } from '../pushUp';
 import { ASSET_PATH_DEFAULT } from '../../../constants';
-import { ASSET_TYPE, ASSET_TYPE_EDIT } from '../../../types/enum.type';
+import { ASSET_TYPE_EDIT } from '../../../types/enum.type';
 import { formatText } from '@utils/formatText';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { formSchema } from './schema';
 
 interface FormData {
     assetName: string;
@@ -52,9 +54,11 @@ const FormEdit = ({ params }: { params: { id: string } }) => {
     const [newCategory, setNewCategory] = useState("");
     const [abbreviation, setAbbreviation] = useState("");
     const [dataUpdate, setDataUpdate] = useState<FormData | null>(null);
+    const [submissionInProgress, setSubmissionInProgress] = useState(false);
     const router = useRouter();
     const { pushUp }: any = usePushUp();
     const form = useForm<FormData>({
+        resolver: zodResolver(formSchema),
         mode: "onChange",
         defaultValues: dataUpdate || {
             assetName: "",
@@ -82,6 +86,8 @@ const FormEdit = ({ params }: { params: { id: string } }) => {
     };
 
     const onSubmit = async (data: FormData) => {
+        if (submissionInProgress) return;
+        setSubmissionInProgress(true);
         setLoading(true);
         try {
             const variables: any = {
@@ -153,7 +159,7 @@ const FormEdit = ({ params }: { params: { id: string } }) => {
                                         />
                                     </FormControl>
                                 </div>
-                                <FormMessage className="text-nashtech float-left ml-26">
+                                <FormMessage className="text-nashtech float-left ml-32">
                                     {fieldState.error?.message}
                                 </FormMessage>
                             </FormItem>
@@ -211,7 +217,7 @@ const FormEdit = ({ params }: { params: { id: string } }) => {
                                         />
                                     </FormControl>
                                 </div>
-                                <FormMessage className="text-nashtech float-left ml-26">
+                                <FormMessage className="text-nashtech float-left ml-32">
                                     {fieldState.error?.message}
                                 </FormMessage>
                             </FormItem>
@@ -225,14 +231,21 @@ const FormEdit = ({ params }: { params: { id: string } }) => {
                                 <div className="flex items-start gap-5">
                                     <FormLabel className="w-[150px]">Specification</FormLabel>
                                     <FormControl>
-                                        <Input
+                                        {/* <Input
                                             {...field}
                                             type="text"
                                             className={`h-[100px] flex justify-end cursor-pointer flex-col ${fieldState.error ? "border-nashtech" : ""}`}
+                                        /> */}
+                                        <textarea
+                                            {...field}
+                                            id="specification"
+                                            rows={5}
+                                            maxLength={200}
+                                            className={`flex h-auto w-full rounded-md border border-input bg-transparent px-3 py-3 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 ${fieldState.error ? "border-nashtech" : ""}`}
                                         />
                                     </FormControl>
                                 </div>
-                                <FormMessage className="text-nashtech float-left ml-26">
+                                <FormMessage className="text-nashtech float-left ml-32">
                                     {fieldState.error?.message}
                                 </FormMessage>
                             </FormItem>
@@ -254,7 +267,7 @@ const FormEdit = ({ params }: { params: { id: string } }) => {
                                         />
                                     </FormControl>
                                 </div>
-                                <FormMessage className="text-nashtech float-left ml-26">
+                                <FormMessage className="text-nashtech float-left ml-32">
                                     {fieldState.error?.message}
                                 </FormMessage>
                             </FormItem>
@@ -293,7 +306,7 @@ const FormEdit = ({ params }: { params: { id: string } }) => {
                                         </RadioGroup>
                                     </FormControl>
                                 </div>
-                                <FormMessage className="text-nashtech float-left ml-26">
+                                <FormMessage className="text-nashtech float-left ml-32">
                                     {fieldState.error?.message}
                                 </FormMessage>
                             </FormItem>
