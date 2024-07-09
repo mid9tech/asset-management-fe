@@ -119,7 +119,7 @@ const FormCreateAsset = () => {
                         render={({ field, fieldState }) => (
                             <FormItem>
                                 <div className="flex items-center gap-5">
-                                    <FormLabel className="w-[150px]">Name</FormLabel>
+                                    <FormLabel className="w-[150px]">Name <span className="text-red-500">*</span></FormLabel>
                                     <FormControl>
                                         <Input
                                             placeholder=""
@@ -140,7 +140,7 @@ const FormCreateAsset = () => {
                         render={({ field, fieldState }) => (
                             <FormItem>
                                 <div className="flex items-center gap-5">
-                                    <FormLabel className="w-[150px]">Category</FormLabel>
+                                    <FormLabel className="w-[150px]">Category <span className="text-red-500">*</span></FormLabel>
                                     <FormControl>
                                         <Select
                                             {...field}
@@ -166,7 +166,7 @@ const FormCreateAsset = () => {
                         render={({ field, fieldState }) => (
                             <FormItem>
                                 <div className="flex items-start gap-5">
-                                    <FormLabel className="w-[150px]">Specification</FormLabel>
+                                    <FormLabel className="w-[150px]">Specification <span className="text-red-500">*</span></FormLabel>
                                     <FormControl>
                                         <textarea
                                             {...field}
@@ -192,7 +192,7 @@ const FormCreateAsset = () => {
                         render={({ field, fieldState }) => (
                             <FormItem>
                                 <div className="flex items-center gap-5">
-                                    <FormLabel className="w-[150px]">Installed Date</FormLabel>
+                                    <FormLabel className="w-[150px]">Installed Date <span className="text-red-500">*</span></FormLabel>
                                     <FormControl>
                                         <Input
                                             placeholder=""
@@ -214,7 +214,7 @@ const FormCreateAsset = () => {
                         render={({ field, fieldState }) => (
                             <FormItem>
                                 <div className="flex">
-                                    <FormLabel className="w-[125px]">State</FormLabel>
+                                    <FormLabel className="w-[125px]">State <span className="text-red-500">*</span></FormLabel>
                                     <FormControl>
                                         <RadioGroup
                                             {...field}

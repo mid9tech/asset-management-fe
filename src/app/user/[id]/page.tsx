@@ -179,7 +179,7 @@ const EditUser = ({ params }: { params: { id: string } }) => {
   };
   return (
     <>
-      <div className="-mt-8 ml-14 w-1/2">
+      <div className="ml-14 w-1/2">
         <h1 className="text-nashtech font-semibold mb-5">Edit User</h1>
         <Form {...form}>
           <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
@@ -189,7 +189,7 @@ const EditUser = ({ params }: { params: { id: string } }) => {
               render={({ field, fieldState }) => (
                 <FormItem>
                   <div className="flex items-center gap-5 cursor-pointer">
-                    <FormLabel className="w-[120px]">First Name</FormLabel>
+                    <FormLabel className="w-[120px]">First Name <span className="text-red-500">*</span></FormLabel>
                     <FormControl>
                       <Input
                         placeholder=""
@@ -212,7 +212,7 @@ const EditUser = ({ params }: { params: { id: string } }) => {
               render={({ field, fieldState }) => (
                 <FormItem>
                   <div className="flex items-center gap-5">
-                    <FormLabel className="w-[120px]">Last Name</FormLabel>
+                    <FormLabel className="w-[120px]">Last Name <span className="text-red-500">*</span></FormLabel>
                     <FormControl>
                       <Input
                         placeholder=""
@@ -234,8 +234,8 @@ const EditUser = ({ params }: { params: { id: string } }) => {
               name="dateOfBirth"
               render={({ field, fieldState }) => (
                 <FormItem>
-                  <div className="flex items-center gap-5">
-                    <FormLabel className="w-[120px]">Date Of Birth</FormLabel>
+                  <div className="flex items-center gap-4">
+                    <FormLabel className="w-[125px]">Date Of Birth <span className="text-red-500">*</span></FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Select a date"
@@ -257,8 +257,8 @@ const EditUser = ({ params }: { params: { id: string } }) => {
               name="gender"
               render={({ field, fieldState }) => (
                 <FormItem>
-                  <div className="flex items-center">
-                    <FormLabel className="w-[110px]">Gender</FormLabel>
+                  <div className="flex items-center gap-2">
+                    <FormLabel className="w-[110px]">Gender <span className="text-red-500">*</span></FormLabel>
                     <FormControl>
                       <RadioGroup
                         {...field}
@@ -298,7 +298,7 @@ const EditUser = ({ params }: { params: { id: string } }) => {
               render={({ field, fieldState }) => (
                 <FormItem>
                   <div className="flex items-center gap-5">
-                    <FormLabel className="w-[120px]">Joined Date</FormLabel>
+                    <FormLabel className="w-[120px]">Joined Date <span className="text-red-500">*</span></FormLabel>
                     <FormControl>
                       <Input
                         placeholder=""
@@ -321,7 +321,7 @@ const EditUser = ({ params }: { params: { id: string } }) => {
               render={({ field, fieldState }) => (
                 <FormItem>
                   <div className="flex items-center gap-5 mt-14">
-                    <FormLabel className="w-[120px]">Type</FormLabel>
+                    <FormLabel className="w-[120px]">Type <span className="text-red-500">*</span></FormLabel>
                     <FormControl>
                       <Select
                         {...field}

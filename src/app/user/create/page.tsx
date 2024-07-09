@@ -55,7 +55,6 @@ const CreateUser = () => {
   setLoading(false);
 
   const [showModalCancel, setShowModalCancel] = useState(false);
-  const [double, setDouble] = useState(false);
   const router = useRouter();
 
   const handleCloseCancelModal = () => {
@@ -152,7 +151,7 @@ const CreateUser = () => {
               render={({ field, fieldState }) => (
                 <FormItem>
                   <div className="flex items-center gap-5 cursor-pointer">
-                    <FormLabel className="w-[120px]">First Name</FormLabel>
+                    <FormLabel className="w-[120px]">First Name <span className="text-red-500">*</span></FormLabel>
                     <FormControl>
                       <Input
                         placeholder=""
@@ -174,7 +173,7 @@ const CreateUser = () => {
               render={({ field, fieldState }) => (
                 <FormItem>
                   <div className="flex items-center gap-5">
-                    <FormLabel className="w-[120px]">Last Name</FormLabel>
+                    <FormLabel className="w-[120px]">Last Name <span className="text-red-500">*</span></FormLabel>
                     <FormControl>
                       <Input
                         placeholder=""
@@ -195,8 +194,8 @@ const CreateUser = () => {
               name="dateOfBirth"
               render={({ field, fieldState }) => (
                 <FormItem>
-                  <div className="flex items-center gap-5">
-                    <FormLabel className="w-[120px]">Date Of Birth</FormLabel>
+                  <div className="flex items-center gap-4">
+                    <FormLabel className="w-[125px]">Date Of Birth <span className="text-red-500">*</span></FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Select a date"
@@ -218,8 +217,8 @@ const CreateUser = () => {
               name="gender"
               render={({ field, fieldState }) => (
                 <FormItem>
-                  <div className="flex items-center">
-                    <FormLabel className="w-[110px]">Gender</FormLabel>
+                  <div className="flex items-center gap-2">
+                    <FormLabel className="w-[110px]">Gender <span className="text-red-500">*</span></FormLabel>
                     <FormControl>
                       <RadioGroup
                         {...field}
@@ -281,7 +280,7 @@ const CreateUser = () => {
               render={({ field, fieldState }) => (
                 <FormItem>
                   <div className="flex items-center gap-5">
-                    <FormLabel className="w-[120px]">Joined Date</FormLabel>
+                    <FormLabel className="w-[120px]">Joined Date <span className="text-red-500">*</span></FormLabel>
                     <FormControl>
                       <Input
                         placeholder=""
@@ -304,7 +303,7 @@ const CreateUser = () => {
               render={({ field, fieldState }) => (
                 <FormItem>
                   <div className="flex items-center gap-5 mt-14">
-                    <FormLabel className="w-[120px]">Type</FormLabel>
+                    <FormLabel className="w-[120px]">Type <span className="text-red-500">*</span></FormLabel>
                     <FormControl>
                       <Select
                         {...field}
@@ -338,7 +337,7 @@ const CreateUser = () => {
                 render={({ field, fieldState }) => (
                   <FormItem>
                     <div className="flex items-center gap-5 mt-12">
-                      <FormLabel className="w-[120px]">Location</FormLabel>
+                      <FormLabel className="w-[120px]">Location <span className="text-red-500">*</span></FormLabel>
                       <FormControl>
                         <Select
                           {...field}
@@ -372,7 +371,7 @@ const CreateUser = () => {
               <Button
                 type="submit"
                 className="bg-nashtech text-white mr-4 cursor-pointer"
-                disabled={!allFieldsFilled && double}
+                disabled={!allFieldsFilled}
               >
                 Save
               </Button>

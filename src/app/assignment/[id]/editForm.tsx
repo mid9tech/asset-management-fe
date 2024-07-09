@@ -120,7 +120,7 @@ const EditForm: FC<FormProps> = (props) => {
           render={({ field, fieldState }) => (
             <FormItem>
               <div className="flex items-center gap-5 cursor-pointer">
-                <FormLabel className="w-[120px]">User</FormLabel>
+                <FormLabel className="w-[120px]">User <span className="text-red-500">*</span></FormLabel>
                 <FormControl>
                   <Button
                     id="select-user-assignment"
@@ -151,7 +151,7 @@ const EditForm: FC<FormProps> = (props) => {
           render={({ field, fieldState }) => (
             <FormItem>
               <div className="flex items-center gap-5 cursor-pointer">
-                <FormLabel className="w-[120px]">Asset</FormLabel>
+                <FormLabel className="w-[120px]">Asset <span className="text-red-500">*</span></FormLabel>
                 <FormControl>
                   <Button
                     id="select-asset-assignment"
@@ -180,7 +180,7 @@ const EditForm: FC<FormProps> = (props) => {
           render={({ field, fieldState }) => (
             <FormItem>
               <div className="flex items-center">
-                <FormLabel className="w-[150px]">Assigned Date</FormLabel>
+                <FormLabel className="w-[150px]">Assigned Date <span className="text-red-500">*</span></FormLabel>
                 <FormControl>
                   <Input
                     id="assigned-date-assignment-edit"

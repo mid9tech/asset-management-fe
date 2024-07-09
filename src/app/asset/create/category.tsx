@@ -86,7 +86,7 @@ const Category = () => {
   const handleCategoryInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     const regex = /^[a-zA-Z0-9\s]*$/; // Allow only letters, numbers, and spaces
-    if (regex.test(value)) {
+    if (regex.test(value) && value.length <= 20) {
       setNewCategory(value);
     }
   };

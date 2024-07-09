@@ -150,7 +150,7 @@ const FormEdit = ({ params }: { params: { id: string } }) => {
                         render={({ field, fieldState }) => (
                             <FormItem>
                                 <div className="flex items-center gap-5">
-                                    <FormLabel className="w-[150px]">Name</FormLabel>
+                                    <FormLabel className="w-[150px]">Name <span className="text-red-500">*</span></FormLabel>
                                     <FormControl>
                                         <Input
                                             placeholder=""
@@ -171,7 +171,7 @@ const FormEdit = ({ params }: { params: { id: string } }) => {
                         render={({ field, fieldState }) => (
                             <FormItem>
                                 <div className="flex items-center gap-5">
-                                    <FormLabel className="w-[150px]">Category</FormLabel>
+                                    <FormLabel className="w-[150px]">Category <span className="text-red-500">*</span></FormLabel>
                                     <FormControl>
                                         <Controller
                                             control={form.control}
@@ -229,7 +229,7 @@ const FormEdit = ({ params }: { params: { id: string } }) => {
                         render={({ field, fieldState }) => (
                             <FormItem>
                                 <div className="flex items-start gap-5">
-                                    <FormLabel className="w-[150px]">Specification</FormLabel>
+                                    <FormLabel className="w-[150px]">Specification <span className="text-red-500">*</span></FormLabel>
                                     <FormControl>
                                         {/* <Input
                                             {...field}
@@ -257,7 +257,7 @@ const FormEdit = ({ params }: { params: { id: string } }) => {
                         render={({ field, fieldState }) => (
                             <FormItem>
                                 <div className="flex items-center gap-5">
-                                    <FormLabel className="w-[150px]">Installed Date</FormLabel>
+                                    <FormLabel className="w-[150px]">Installed Date <span className="text-red-500">*</span></FormLabel>
                                     <FormControl>
                                         <Input
                                             placeholder=""
@@ -279,7 +279,7 @@ const FormEdit = ({ params }: { params: { id: string } }) => {
                         render={({ field, fieldState }) => (
                             <FormItem>
                                 <div className="flex">
-                                    <FormLabel className="w-[120px]">State</FormLabel>
+                                    <FormLabel className="w-[120px]">State <span className="text-red-500">*</span></FormLabel>
                                     <FormControl>
                                         <RadioGroup
                                             {...field}
@@ -316,6 +316,7 @@ const FormEdit = ({ params }: { params: { id: string } }) => {
                         <Button
                             type="submit"
                             className="bg-nashtech text-white mr-4 cursor-pointer"
+                            disabled={!form.formState.isValid}
                         >
                             Save
                         </Button>
