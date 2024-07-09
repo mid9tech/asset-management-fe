@@ -1,8 +1,7 @@
 import DetailModal from "@components/modal"
 
 import { User } from "../../__generated__/graphql"
-import { formatDate } from "@utils/timeFormat"
-import { formatText } from "@utils/formatText"
+import { formatStateText, formatText } from "@utils/formatText"
 
 interface Props {
     user: User
@@ -50,7 +49,7 @@ export default function DetailUser ({user, showModalDetailUser, handleCloseDetai
           </div>
           <div className="flex mb-2">
             <span className="text-sm w-40">Type:</span>{" "}
-            <span className="text-sm">{formatText(user.type)}</span>
+            <span className="text-sm">{formatStateText(user.type)}</span>
           </div>
           <div className="flex mb-2">
             <span className="text-sm w-40">Location:</span>{" "}
