@@ -83,6 +83,14 @@ const Category = () => {
     }
   };
 
+  const handleCategoryInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const regex = /^[a-zA-Z0-9\s]*$/; // Allow only letters, numbers, and spaces
+    if (regex.test(value)) {
+      setNewCategory(value);
+    }
+  };
+
   return (
     <SelectContent className="bg-graycustom2 text-black w-full">
       <div className="h-[100px] overflow-scroll">
@@ -98,7 +106,7 @@ const Category = () => {
             <Input
               value={newCategory}
               id="newCategory"
-              onChange={(e) => setNewCategory(e.target.value)}
+              onChange={handleCategoryInputChange}
               className="h-fit w-3/5 mt-1 bg-gray-50 border border-gray-100 text-gray-900 text-sm block dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black rounded-none"
             />
             <Input

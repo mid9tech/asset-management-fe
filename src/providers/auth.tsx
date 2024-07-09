@@ -164,15 +164,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               e.preventDefault();
               handleSubmit();
             }}>
-            <div className="md:flex md:items-center mb-3 relative">
-              <div className="md:w-1/3">
+            <div className="flex justify-start items-center mb-3 relative">
+              <div className="w-1/2">
                 <label className="block text-gray-700 mb-1 md:mb-0">
                   New Password <span className="text-red-500">*</span>
                 </label>
               </div>
-              <div className="md:w-2/3 relative">
+              <div className="w-2/3 relative">
                 <input
-                  className="border border-black rounded w-full py-1 px-4"
+                  className="border border-black rounded w-full py-1 px-1"
                   id="inline-password"
                   name="password"
                   type={showPassword ? "text" : "password"}
