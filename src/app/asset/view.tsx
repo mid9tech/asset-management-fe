@@ -26,6 +26,7 @@ import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { formatStateText, formatText } from "@utils/formatText";
 import { formatDate } from "@utils/timeFormat";
 import FilterState from "@components/filterByState";
+import { ASSIGNMENT_PATH_DEFAULT } from "../../constants";
 
 interface AssetManagementProps {
   data: Asset[];
@@ -69,6 +70,10 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
 
   const handleNavigateEditAsset = (id: string) => {
     router.push(`/asset/${id}`);
+  };
+
+  const handleNavigateAssignment = () => {
+    router.push(ASSIGNMENT_PATH_DEFAULT);
   };
 
   const handleSortClick = (item: string) => {
@@ -148,12 +153,11 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
   };
   const checkAssigned = (item: Asset) => {
     if (item.state !== ASSET_TYPE.Assigned) {
-      return false
+      return false;
+    } else {
+      return true;
     }
-    else {
-      return true
-    }
-  }
+  };
 
   const newListData = data?.map((item) => ({
     ...item,
@@ -165,9 +169,14 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
       {
         icon: (
           <CreateIcon
-            style={checkAssigned(item) ? {
-              color: 'gray', cursor: 'not-allowed'
-            } : {}}
+            style={
+              checkAssigned(item)
+                ? {
+                    color: "gray",
+                    cursor: "not-allowed",
+                  }
+                : {}
+            }
             onClick={(e) => {
               if (!checkAssigned(item)) {
                 e.stopPropagation();
@@ -180,9 +189,14 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
       {
         icon: (
           <HighlightOffIcon
-            style={checkAssigned(item) ? {
-              color: 'gray', cursor: 'not-allowed'
-            } : {}}
+            style={
+              checkAssigned(item)
+                ? {
+                    color: "gray",
+                    cursor: "not-allowed",
+                  }
+                : {}
+            }
             onClick={(e) => {
               if (!checkAssigned(item)) {
                 e.stopPropagation();
@@ -232,8 +246,7 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
             <Search />
             <button
               className="bg-red-600 text-white rounded px-4 py-1 cursor-pointer"
-              onClick={handleNavigateCreateAsset}
-            >
+              onClick={handleNavigateCreateAsset}>
               Create new asset
             </button>
           </div>
@@ -256,8 +269,7 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
         isOpen={showModalRemoveAsset}
         onClose={handleCloseModal}
         isShowCloseIcon={true}
-        title="Are you sure ?"
-      >
+        title="Are you sure ?">
         <div className="p-3">
           <div className="sm:flex sm:items-start">
             <p className="text-md text-gray-500">
@@ -269,16 +281,14 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
           <Button
             type="button"
             onClick={handleConfirmDelete}
-            className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
-          >
+            className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto">
             Delete
           </Button>
           <Button
             variant="outline"
             type="button"
             className="text-gray"
-            onClick={() => setShowModalRemoveAsset(false)}
-          >
+            onClick={() => setShowModalRemoveAsset(false)}>
             Cancel
           </Button>
         </div>
@@ -286,26 +296,33 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
       <DetailModal
         isOpen={showModalErrorAsset}
         onClose={handleCloseModalAsset}
-        title="Cannot Delete asset"
-      >
+        title="Cannot Delete asset">
         <div className="p-0">
           <div className="sm:flex sm:items-start">
             <p className="text-md text-gray-500">
-              Cannot delete the asset because it belongs to one or more
-              historical assignments,
-              <div>or there are valid assignments belonging to this asset.</div>
+              You cannot delete this asset for one or more of the following
+              reasons:
               <div>
-                If the asset is not able to be used anymore, please update its
-                state in{" "}
+                1. It belongs to historical assignments. If the asset is unusable, please update its state on the{" "}
                 <a
                   onClick={() =>
                     handleNavigateEditAsset(selectedAsset?.id as string)
                   }
-                  className="text-blue underline cursor-pointer"
-                >
-                  Edit Asset page
+                  className="text-blue underline cursor-pointer">
+                  Edit Asset page.
                 </a>
               </div>
+              <div>
+                2.There are valid assignments for this asset. Please check the{" "}
+                <a
+                  onClick={() =>
+                    handleNavigateAssignment()
+                  }
+                  className="text-blue underline cursor-pointer">
+                  Manage Assignment page
+                </a>
+              </div>
+              <div></div>
             </p>
           </div>
         </div>
