@@ -12,9 +12,10 @@ import { useLoading } from "@providers/loading";
 import { loadDataAsset } from "@services/asset";
 import Pagination from "@components/paginationByState";
 import { toast } from "react-toastify";
-import { Asset, FindAssetsInput } from "../../../__generated__/graphql";
+import { Asset, Category, FindAssetsInput } from "../../../__generated__/graphql";
 import { SORT_ORDER, ASSET_TYPE } from "../../../types/enum.type";
 import TablePickerComponent from "@components/tablePicker";
+import { formatText } from "@utils/formatText";
 
 export const assetColumns = [
   {

@@ -13,6 +13,7 @@ import { toast } from "react-toastify";
 import { User, FindUsersInput } from "../../../__generated__/graphql";
 import { SORT_ORDER, USER_TYPE } from "../../../types/enum.type";
 import TablePickerComponent from "@components/tablePicker";
+import { formatText } from "@utils/formatText";
 
 export const userColumns = [
   {
@@ -82,7 +83,7 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
         (item: { type: USER_TYPE; lastName: any; firstName: any }) => ({
           ...item,
           fullName: `${item.firstName} ${item.lastName}`,
-          type: item.type === USER_TYPE.STAFF ? "STAFF" : item.type,
+          type: formatText(item.type === USER_TYPE.STAFF ? "STAFF" : item.type) ,
         })
       );
       setTotalPage(data.totalPages);
