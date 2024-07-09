@@ -160,9 +160,7 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
     }
     return false;
   }
-  
-  console.log("list data: ",listData);
-  
+    
   const newListData = listData?.map((item) => ({
     ...item,
     state: formatStateText(item.state),

@@ -63,10 +63,10 @@ const ModalAssetPicker: React.FC<ModalPickerProps> = ({
   const [currenPage, setCurrenPage] = useState<number>(1);
   const [totalPage, setTotalPage] = useState<number>(0);
 
-  const handleSearch = useDebouncedCallback((term: string) => {
+  const handleSearch = (term: string) => {
     setCurrenPage(1);
     setSearchTerm(term);
-  }, 50);
+  }
 
   const handleSortClick = (item: any) => {
     let defaultOrder = SORT_ORDER.ASC;
@@ -78,9 +78,8 @@ const ModalAssetPicker: React.FC<ModalPickerProps> = ({
     setSortBy(item);
   };
 
-  const loadData = async (filter: FindAssetsInput) => {
+  const loadData = useDebouncedCallback(async (filter: FindAssetsInput) => {
     try {
-      setLoading(true);
       const { data }: any = await loadDataAsset(filter);
       setTotalPage(data.totalPages);
       setList(data.assets);
@@ -90,7 +89,7 @@ const ModalAssetPicker: React.FC<ModalPickerProps> = ({
     } finally {
       setLoading(false);
     }
-  };
+  }, 300);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

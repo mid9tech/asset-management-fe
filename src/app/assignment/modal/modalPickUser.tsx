@@ -57,13 +57,13 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("firstName");
   const [sortOrder, setSortOrder] = useState<SORT_ORDER>(SORT_ORDER.ASC);
-  const [currenPage, setCurrenPage] = useState<number>(1)
-  const [totalPage, setTotalPage] = useState<number>(0)
+  const [currenPage, setCurrenPage] = useState<number>(1);
+  const [totalPage, setTotalPage] = useState<number>(0);
 
-  const handleSearch = useDebouncedCallback((term: string) => {
+  const handleSearch = (term: string) => {
     setCurrenPage(1);
     setSearchTerm(term);
-  }, 50);
+  };
 
   const handleSortClick = (item: any) => {
     let defaultOrder = SORT_ORDER.ASC;
@@ -75,8 +75,7 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
     setSortBy(item);
   };
 
-  const loadUserList = async (filter: FindUsersInput) => {
-    setLoading(true);
+  const loadUserList = useDebouncedCallback(async (filter: FindUsersInput) => {
     try {
       const { data }: any = await loadData(filter);
       const listUserCustom = data?.users.map(
@@ -86,14 +85,14 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
           type: item.type === USER_TYPE.STAFF ? "STAFF" : item.type,
         })
       );
-      setTotalPage(data.totalPages)
+      setTotalPage(data.totalPages);
       setListUser(listUserCustom);
     } catch (error) {
       toast.error("Something went wrong! Please try again");
     } finally {
       setLoading(false);
     }
-  };
+  }, 300);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -105,6 +104,7 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
       }
     };
     if (isOpen) {
+      
       loadUserList({
         page: currenPage,
         query: searchTerm,

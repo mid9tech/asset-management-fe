@@ -142,7 +142,7 @@ input {
 ::-webkit-scrollbar {
   height: 4px; /* height of horizontal scrollbar ← You're missing this */
   width: 4px; /* width of vertical scrollbar */
-  border: 1px solid #d5d5d5;
+  border: 1px solid #cf2338;
 }
 
 /* Track */
@@ -152,10 +152,10 @@ input {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #888;
+  background: #cf2338;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: #cf2338;
 }
