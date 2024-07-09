@@ -35,6 +35,7 @@ import { User } from "../../../__generated__/graphql";
 import { USER_PATH_DEFAULT } from "../../../constants";
 import { Gender, Location, Type } from "../../../types/enum.type";
 import { formSchema } from "./schema";
+import { formatText } from "@utils/formatText";
 
 interface FormData {
   firstName: string;
@@ -169,7 +170,7 @@ const EditUser = ({ params }: { params: { id: string } }) => {
         router.push(USER_PATH_DEFAULT);
         toast.success("Edit User Successfully");
       }
-    } catch (error :any) {
+    } catch (error: any) {
       toast.error(error.message);
       console.error("Error updating user:", error);
     } finally {
@@ -194,9 +195,8 @@ const EditUser = ({ params }: { params: { id: string } }) => {
                         placeholder=""
                         {...field}
                         disabled
-                        className={`cursor-pointer bg-input-gray ${
-                          fieldState.error ? "border-nashtech" : ""
-                        }`}
+                        className={`cursor-pointer bg-input-gray ${fieldState.error ? "border-nashtech" : ""
+                          }`}
                       />
                     </FormControl>
                   </div>
@@ -218,9 +218,8 @@ const EditUser = ({ params }: { params: { id: string } }) => {
                         placeholder=""
                         {...field}
                         disabled
-                        className={`cursor-pointer bg-input-gray ${
-                          fieldState.error ? "border-nashtech" : ""
-                        }`}
+                        className={`cursor-pointer bg-input-gray ${fieldState.error ? "border-nashtech" : ""
+                          }`}
                       />
                     </FormControl>
                   </div>
@@ -242,9 +241,8 @@ const EditUser = ({ params }: { params: { id: string } }) => {
                         placeholder="Select a date"
                         {...field}
                         type="date"
-                        className={`flex justify-end cursor-pointer flex-col ${
-                          fieldState.error ? "border-nashtech" : ""
-                        }`}
+                        className={`flex justify-end cursor-pointer flex-col ${fieldState.error ? "border-nashtech" : ""
+                          }`}
                       />
                     </FormControl>
                   </div>
@@ -266,26 +264,25 @@ const EditUser = ({ params }: { params: { id: string } }) => {
                         {...field}
                         value={field.value}
                         onValueChange={field.onChange}
+                        defaultValue={Gender.Male}
                         className="flex cursor-pointer"
                       >
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem
-                            value={Gender.Female}
-                            id="option-two"
-                          />
-                          <Label htmlFor="option-two">Female</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value={Gender.Male} id="option-one" />
-                          <Label htmlFor="option-one">Male</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem
-                            value={Gender.Other}
-                            id="option-three"
-                          />
-                          <Label htmlFor="option-three">Other</Label>
-                        </div>
+                        {Object.values(Gender).map((type, index) => (
+                          <div key={index} className="flex items-center space-x-2">
+                            <label className="custom-radio flex h-[20px]">
+                              <input
+                                id={`option-${index}`}
+                                type="radio"
+                                value={type}
+                                checked={field.value === type}
+                                onChange={field.onChange}
+                                className={`focus:ring ${field.value === type ? "border-nashtech" : ""}`}
+                              />
+                              <div className="checkmark mt-2"></div>
+                              <Label className='cursor-pointer' htmlFor={`option-${index}`}>{formatText(type)}</Label>
+                            </label>
+                          </div>
+                        ))}
                       </RadioGroup>
                     </FormControl>
                   </div>
@@ -307,9 +304,8 @@ const EditUser = ({ params }: { params: { id: string } }) => {
                         placeholder=""
                         {...field}
                         type="date"
-                        className={`flex justify-end cursor-pointer flex-col ${
-                          fieldState.error ? "border-nashtech" : ""
-                        }`}
+                        className={`flex justify-end cursor-pointer flex-col ${fieldState.error ? "border-nashtech" : ""
+                          }`}
                       />
                     </FormControl>
                   </div>
