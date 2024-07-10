@@ -1,12 +1,10 @@
 import type { Metadata } from "next";
-import "@styles/globals.css";
+
 import Navbar from "@components/navbar";
 import Sidebar from "@components/sidebar";
 import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+
 import { Fragment } from "react";
-import { ApolloProvider } from "@apollo/client";
-import ApolloCustomProvider from "@providers/apollo";
 
 export const metadata: Metadata = {
   title: "Asset Management",
