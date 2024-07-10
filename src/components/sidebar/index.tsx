@@ -21,7 +21,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="h-370 w-60 left-10 top-96 flex flex-col gap-1">
+    <div id="navbar" className="h-370 w-60 left-10 top-96 flex flex-col gap-1">
       <div className="flex flex-col justify-items-start py-6">
         <Image src="/Logo_lk.png" alt="Logo" width={80} height={80} />
         <div className="text-nashtech font-bold">Online Asset Management</div>

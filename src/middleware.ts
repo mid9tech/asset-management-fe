@@ -10,7 +10,6 @@ export function middleware(request: NextRequest) {
   if (pathname === "/") {
     return NextResponse.redirect(new URL("/home", request.url));
   }
-
 }
 export const config = {
   matcher: [

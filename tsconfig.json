@@ -29,6 +29,6 @@
 
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "codegen.ts", "src/utils/exportExcel.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "codegen.ts", "src/utils/exportExcel.js", "__tests__/snapshot.js"],
   "exclude": ["node_modules"]
 }
