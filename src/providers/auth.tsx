@@ -43,7 +43,7 @@ const menuForAdmin: menuItem[] = [
   { name: "Manage Asset", path: [`${ASSET_PATH_DEFAULT}`, "/asset/create", "/asset/:id"], component: "Asset" },
   { name: "Manage Assignment", path: [`${ASSIGNMENT_PATH_DEFAULT}`, "/assignment/create", "/assignment/:id"], component: "Assignment" },
   {
-    name: "Request For Return",
+    name: "Request For Returning",
     path: [REQUEST_RETURN_PATH_DEFAULT],
     component: "request-returning",
   },

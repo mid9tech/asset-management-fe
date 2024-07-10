@@ -159,3 +159,9 @@ input {
 ::-webkit-scrollbar-thumb:hover {
   background: #cf2338;
 }
+
+/* button:hover {
+  background: linear-gradient(270deg,#d6001c 13.02%,#6a1f7a 98.28%) !important;
+  transition: all .2s;
+  color: #fff !important;
+} */

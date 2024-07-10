@@ -77,6 +77,8 @@ const Category = () => {
         });
       } else {
         await refetch();
+        setNewCategory("")
+        setAbbreviation("")
         setShowNewCategoryInput(false);
       }
     } catch (error: any) {
