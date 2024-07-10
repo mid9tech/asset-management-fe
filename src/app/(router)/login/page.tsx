@@ -47,7 +47,7 @@ export default function Index() {
 
   return (
     <div>
-      <Disclosure as="nav" className="bg-nashtech text-white">
+      <Disclosure as="nav" className="bg-bluegray bg-gradient-to-r from-[#d6001c] to-[#6a1f7a] text-white">
         <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
           <div className="relative flex h-16 items-center flext-start font-bold gap-5">
             <Image src="/Logo_lk.png" alt="Logo" width={50} height={50} />
@@ -118,7 +118,7 @@ export default function Index() {
 
               <div className="flex flex-row-reverse mt-2">
                 <button
-                  className={`bg-nashtech text-white py-1 px-3 rounded ${
+                  className={`bg-nashtech !text-white hover:bg-gradient-to-r hover:from-[#d6001c] hover:to-[#6a1f7a] hover:text-white py-1 px-3 rounded ${
                     !username || !password
                       ? "opacity-50 cursor-not-allowed"
                       : "hover:opacity-75"

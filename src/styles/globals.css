@@ -152,12 +152,12 @@ input {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #cf2338;
+  background: linear-gradient(270deg,#d6001c 13.02%,#6a1f7a 98.28%) !important;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #cf2338;
+  background: linear-gradient(270deg,#d6001c 13.02%,#6a1f7a 98.28%) !important;
 }
 
 /* button:hover {
