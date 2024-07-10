@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@components/ui/form";
 import { useLoading } from "@providers/loading";
 import { useMutation } from "@apollo/client";
@@ -29,11 +29,11 @@ import { formSchema } from './schema';
 import { Badge } from '@components/ui/badge';
 
 interface FormData {
-  name: string;
-  categoryId: string;
-  specification: string;
-  installedDate: string;
-  state: ASSET_TYPE_CREATE;
+    name: string;
+    categoryId: string;
+    specification: string;
+    installedDate: string;
+    state: ASSET_TYPE_CREATE;
 }
 
 const FormCreateAsset = () => {
@@ -51,63 +51,63 @@ const FormCreateAsset = () => {
     };
 
 
-  const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
-    mode: "onChange",
-    defaultValues: {
-      name: "",
-      categoryId: "",
-      specification: "",
-      installedDate: "",
-      state: ASSET_TYPE_CREATE.Available,
-    },
-  });
-
-  const handleCloseCancelModal = () => {
-    setShowModalCancel(false);
-  };
-
-  const handleDiscard = () => {
-    form.reset();
-    setShowModalCancel(false);
-    router.back();
-  };
-
-  const onSubmit = async (data: FormData) => {
-    if (submissionInProgress) return;
-    setSubmissionInProgress(true);
-    setLoading(true);
-    try {
-      const variables = {
-        createAssetInput: {
-          assetName: data.name,
-          categoryId: parseInt(data.categoryId),
-          specification: data.specification,
-          installedDate: data.installedDate,
-          state: data.state,
+    const form = useForm<FormData>({
+        resolver: zodResolver(formSchema),
+        mode: "onChange",
+        defaultValues: {
+            name: "",
+            categoryId: "",
+            specification: "",
+            installedDate: "",
+            state: ASSET_TYPE_CREATE.Available,
         },
-      };
+    });
 
-      const response = await createAssetMutation({ variables });
+    const handleCloseCancelModal = () => {
+        setShowModalCancel(false);
+    };
 
-      if (response.errors) {
-        response.errors.forEach((error: any) => {
-          console.error(`GraphQL error message: ${error.message}`);
-        });
-        toast.error("Error creating asset");
-      } else {
-        const assetId = response.data.createAsset.id;
-        pushUp(parseInt(assetId));
-        toast.success("Asset created successfully");
-        router.push(`${ASSET_PATH_DEFAULT}`);
-      }
-    } catch (error) {
-      toast.error("Something went wrong! Please try again");
-      console.error("Error creating asset:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    const handleDiscard = () => {
+        form.reset();
+        setShowModalCancel(false);
+        router.back();
+    };
+
+    const onSubmit = async (data: FormData) => {
+        if (submissionInProgress) return;
+        setSubmissionInProgress(true);
+        setLoading(true);
+        try {
+            const variables = {
+                createAssetInput: {
+                    assetName: data.name,
+                    categoryId: parseInt(data.categoryId),
+                    specification: data.specification,
+                    installedDate: data.installedDate,
+                    state: data.state,
+                },
+            };
+
+            const response = await createAssetMutation({ variables });
+
+            if (response.errors) {
+                response.errors.forEach((error: any) => {
+                    console.error(`GraphQL error message: ${error.message}`);
+                });
+                toast.error("Error creating asset");
+            } else {
+                const assetId = response.data.createAsset.id;
+                pushUp(parseInt(assetId));
+                toast.success("Asset created successfully");
+                router.push(`${ASSET_PATH_DEFAULT}`);
+            }
+        } catch (error) {
+            toast.error("Something went wrong! Please try again");
+            console.error("Error creating asset:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <>
@@ -221,20 +221,20 @@ const FormCreateAsset = () => {
                                             value={field.value}
                                             onValueChange={field.onChange}
                                             className="cursor-pointer">
-                                            {Object.values(ASSET_TYPE_CREATE).map((type, index) => ( <div key={index} className="flex items-center space-x-2">
-                                                    <label className="custom-radio flex h-[20px]">
-                                                        <input
-                                                            id={`option-${index}`}
-                                                            type="radio"
-                                                            value={type}
-                                                            checked={field.value === type}
-                                                            onChange={field.onChange}
-                                                            className={`focus:ring ${field.value === type ? "border-nashtech" : ""}`}
-                                                        />
-                                                        <div className="checkmark mt-2"></div>
-                                                        <Label className='cursor-pointer' htmlFor={`option-${index}`}>{formatText(type)}</Label>
-                                                    </label>
-                                                </div>
+                                            {Object.values(ASSET_TYPE_CREATE).map((type, index) => (<div key={index} className="flex items-center space-x-2">
+                                                <label className="custom-radio flex h-[20px]">
+                                                    <input
+                                                        id={`option-${index}`}
+                                                        type="radio"
+                                                        value={type}
+                                                        checked={field.value === type}
+                                                        onChange={field.onChange}
+                                                        className={`focus:ring ${field.value === type ? "border-nashtech" : ""}`}
+                                                    />
+                                                    <div className="checkmark mt-2"></div>
+                                                    <Label className='cursor-pointer' htmlFor={`option-${index}`}>{formatText(type)}</Label>
+                                                </label>
+                                            </div>
                                             ))}
                                         </RadioGroup>
                                     </FormControl>
@@ -253,7 +253,7 @@ const FormCreateAsset = () => {
                         >
                             Save
                         </Button>
-                        <Button type="button" onClick={() => setShowModalCancel(true)}>
+                        <Button variant="outline" type="button" onClick={() => setShowModalCancel(true)}>
                             Cancel
                         </Button>
                     </div>
@@ -274,6 +274,7 @@ const FormCreateAsset = () => {
                 </div>
                 <div className="bg-gray-50 sm:flex sm:flex-row-reverse gap-4">
                     <Button
+                        variant="outline"
                         type="button"
                         className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
                         onClick={() => setShowModalCancel(false)}>

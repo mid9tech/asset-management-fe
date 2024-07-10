@@ -110,14 +110,14 @@ const Navbar = () => {
 
   return (
     <>
-      <Disclosure as="nav" className="bg-nashtech text-white">
+      <Disclosure as="nav" className="bg-bluegray bg-gradient-to-r from-[#d6001c] to-[#6a1f7a] text-white">
         <div className="px-3">
           <div className="relative flex h-16 items-center justify-between font-bold">
             <div>{activeItem ? renderName() : ""}</div>
             <div className="relative">
               <Menu as="div" className="relative inline-block text-left">
                 <div>
-                  <MenuButton className="inline-flex justify-center w-full px-4 py-2 bg-nashtech text-sm font-medium text-white hover:bg-gray-700 focus:outline-none">
+                  <MenuButton className="inline-flex justify-center w-full px-4 py-2 bg-transparent text-sm font-medium text-white hover:bg-gray-700 focus:outline-none">
                     {userCurrent?.username} <ArrowDropDownIcon />
                   </MenuButton>
                 </div>
@@ -133,13 +133,13 @@ const Navbar = () => {
                     <div className="p-3 flex justify-center flex-col">
                       <Button
                         variant="ghost"
-                        className="hover:bg-nashtech hover:text-white text-black text-sm rounded px-2 cursor-pointer mb-2"
+                        className="bg-bluegray hover:bg-gradient-to-r hover:from-[#d6001c] hover:to-[#6a1f7a] hover:text-white text-black text-sm rounded px-2 cursor-pointer mb-2"
                         onClick={handleOpenDetailModal}>
                         Change Password
                       </Button>
                       <Button
                         variant="ghost"
-                        className="hover:bg-nashtech hover:text-white text-black text-sm rounded cursor-pointer px-2"
+                        className="bg-bluegray hover:bg-gradient-to-r hover:from-[#d6001c] hover:to-[#6a1f7a] hover:text-white text-black text-sm rounded cursor-pointer px-2"
                         onClick={handleOpenConfirm}>
                         Logout
                       </Button>

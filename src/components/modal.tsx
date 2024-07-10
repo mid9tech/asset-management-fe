@@ -35,7 +35,10 @@ const DetailModal: React.FC<DetailModalProps> = ({
             {title}
           </h3>
           {isShowCloseIcon ?? (
-            <button className="text-xl font-bold" onClick={onClose}>
+            <button 
+            className="text-xl font-bold hover-button" 
+            onClick={onClose}
+             >
               <CancelPresentationIcon className="text-nashtech cursor-pointer" />
             </button>
           )}

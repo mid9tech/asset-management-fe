@@ -165,3 +165,14 @@ input {
   transition: all .2s;
   color: #fff !important;
 } */
+
+.hover-button {
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+.hover-button:hover {
+  background: transparent !important
+}
