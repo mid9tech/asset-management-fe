@@ -1,19 +1,14 @@
 "use client";
 import { useMutation, useQuery } from "@apollo/client";
-import {
-  CREATE_CATEGORY_MUTATION,
-  GET_CATEGORY_QUERY,
-} from "@services/query/category.query";
-import {
-  SelectContent,
-  SelectItem,
-} from "@components/ui/select";
+import { CREATE_CATEGORY_MUTATION, GET_CATEGORY_QUERY } from "@services/query/category.query";
+import { SelectContent, SelectItem } from "@components/ui/select";
 import { Input } from "@components/ui/input";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
 import { truncateParagraph } from "@utils/truncate";
+import { Category as CategoryType } from "../../../../__generated__/graphql";
 
 const Category = () => {
   const [showNewCategoryInput, setShowNewCategoryInput] = useState(false);
@@ -21,6 +16,7 @@ const Category = () => {
   const [createCategoryMutation] = useMutation(CREATE_CATEGORY_MUTATION);
   const [newCategory, setNewCategory] = useState("");
   const [abbreviation, setAbbreviation] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleCancelNewCategory = () => {
     setShowNewCategoryInput(false);
@@ -31,6 +27,12 @@ const Category = () => {
   const handleAddNewCategory = () => {
     setShowNewCategoryInput(true);
   };
+
+  useEffect(() => {
+    if (showNewCategoryInput && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [showNewCategoryInput]);
 
   useEffect(() => {
     if (data) {
@@ -45,7 +47,7 @@ const Category = () => {
 
       while (
         data.getCategories.some(
-          (category: any) => category.categoryCode === abbreviation
+          (category: CategoryType) => category.categoryCode === abbreviation
         )
       ) {
         abbreviation = `${baseAbbreviation}${counter}`;
@@ -62,7 +64,7 @@ const Category = () => {
         toast.error("Category name is required");
         return;
       }
-      const variables: any = {
+      const variables = {
         createCategoryInput: {
           categoryCode: abbreviation,
           categoryName: newCategory,
@@ -70,7 +72,7 @@ const Category = () => {
       };
       const response = await createCategoryMutation({ variables });
       if (response.errors) {
-        response.errors.forEach((error: any) => {
+        response.errors.forEach((error) => {
           toast.error(error.message);
         });
       } else {
@@ -91,22 +93,30 @@ const Category = () => {
     }
   };
 
+  const handleCategoryInputBlur = () => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  };
+
   return (
     <SelectContent className="bg-graycustom2 text-black w-full">
       <div className="h-[100px] overflow-scroll">
-      {data?.getCategories.map((category: any) => (
-        <SelectItem key={category?.id} value={category?.id}>
-          {truncateParagraph(`${category?.categoryName}`, 25)}
-        </SelectItem>
-      ))}
+        {data?.getCategories.map((category: CategoryType) => (
+          <SelectItem key={category?.id} value={category?.id}>
+            {truncateParagraph(`${category?.categoryName}`, 25)}
+          </SelectItem>
+        ))}
       </div>
       {showNewCategoryInput ? (
         <div className="relative text-nashtech mt-4 border-t-2 border-black bg-input-gray flex flex-col items-center">
           <div className="flex w-2/3">
             <Input
+              ref={inputRef}
               value={newCategory}
               id="newCategory"
               onChange={handleCategoryInputChange}
+              onBlur={handleCategoryInputBlur}
               className="h-fit w-3/5 mt-1 bg-gray-50 border border-gray-100 text-gray-900 text-sm block dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black rounded-none"
             />
             <Input

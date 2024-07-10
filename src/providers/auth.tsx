@@ -21,6 +21,7 @@ import { UserStoreType } from "../types/user.type";
 import { ASSET_PATH_DEFAULT, ASSIGNMENT_PATH_DEFAULT, REQUEST_RETURN_PATH_DEFAULT, USER, USER_PATH_DEFAULT } from "../constants";
 import { menuItem } from "../types/menu.type";
 import { findMenuItem } from "@utils/findMenuItem";
+import { useForm } from "react-hook-form";
 
 export const AuthContext = createContext<{
   token: string;
@@ -68,6 +69,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [menu, setMenu] = useState<menuItem[]>();
   const [activeItem, setActiveItem] = useState<menuItem | undefined>(undefined);
 
+  const form = useForm();
+
   useEffect(() => {
     if (user) {
       switch (user.role) {
@@ -106,6 +109,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } catch (error: any) {
       setErrorMsg(error.message);
     } finally {
+      setPassword("");
       setLoading(false);
     }
   };
