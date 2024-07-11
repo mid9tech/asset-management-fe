@@ -7,6 +7,39 @@ on:
     branches:
       - main
 jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+
+      - name: Install dependencies
+        run: |
+          npm install next
+          npm install
+
+      - name: Run lint
+        run: npm run lint
+
+      - name: Run GitLeaks
+        run: npm run gitleaks
+
+      - name: Run tests
+        run: npm run test
+
+      - name: Run npm audit
+        run: npm audit --audit-level=high
+
+      - name: Build project
+        run: npm run build
+
   Deploy-Production:
     runs-on: ubuntu-latest
     steps:
