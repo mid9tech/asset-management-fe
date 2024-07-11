@@ -1,0 +1,64 @@
+# Node.js
+# Build a general Node.js project with npm.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - stage: Build
+    displayName: "Build and Test"
+    condition: ne(variables['build.sourceBranch'], 'refs/heads/main')
+    jobs:
+      - job: Web_App_Asset_Management_NextJS
+        displayName: "Lint, Test, and Audit NextJS"
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: "20.x"
+            displayName: "Install Node.js"
+
+          - script: |
+              npm install next
+              npm install
+            displayName: "Install dependencies"
+
+          - script: |
+              npm run lint
+            displayName: "Run lint"
+
+          - script: |
+              npm run gitleaks
+            displayName: "Run GitLeaks"
+
+          - script: |
+              npm run test
+            displayName: "Run tests"
+
+          - script: |
+              npm audit --audit-level=high
+            displayName: "Run npm audit"
+            continueOnError: false
+
+          - script: |
+              npm run build
+            displayName: "Build project"
+
+  - stage: Deploy
+    displayName: "Deploy to Vercel Web App"
+    dependsOn: Build
+    condition: eq(variables['build.sourceBranch'], 'refs/heads/main')
+    jobs:
+      - job: Deploy
+        displayName: "Deploy Job"
+        steps:
+          - task: vercel-deployment-task@1
+            inputs:
+              vercelProjectId: 'prj_isOSWD7mMpKMrVMQBUnDwM6mBEAN'
+              vercelOrgId: 'BDunbzjenihCiHRV9zFJp5Eo'
+              vercelToken: $(VERCEL_TOKEN)
+              production: true

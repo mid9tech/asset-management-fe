@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  gitleaks:
+    container_name: asset_management_gitleaks
+    build:
+      context: ./gitleaks
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    entrypoint: ["gitleaks", "detect", "-c", "/app/gitleaks/.gitleaks.toml"]
+  asset-assignment-fe:
+    container_name: asset_assignment_fe
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:3000"
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - .:/app
+    command: ["npm", "start"]
