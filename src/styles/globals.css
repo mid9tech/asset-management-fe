@@ -92,7 +92,7 @@
 }
 
 .custom-radio input:checked ~ .checkmark {
-  background-color: #cf2338;
+  background: linear-gradient(90deg, #4A3EAE 0.02%, #D655A5 73.23%, #FF9C8D 99.71%);
 }
 
 .custom-radio .checkmark:after {
@@ -152,12 +152,12 @@ input {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(270deg,#d6001c 13.02%,#6a1f7a 98.28%) !important;
+  background: linear-gradient(90deg, #4A3EAE 0.02%, #D655A5 73.23%, #FF9C8D 99.71%) !important;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(270deg,#d6001c 13.02%,#6a1f7a 98.28%) !important;
+  background: linear-gradient(90deg, #4A3EAE 0.02%, #D655A5 73.23%, #FF9C8D 99.71%) !important;
 }
 
 /* button:hover {
@@ -165,7 +165,14 @@ input {
   transition: all .2s;
   color: #fff !important;
 } */
-
+.text-gradient {
+  background: linear-gradient(90deg, #4A3EAE 0.02%, #D655A5 73.23%, #FF9C8D 99.71%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.border-gradient {
+  border: 1px solid linear-gradient(90deg, #4A3EAE 0.02%, #D655A5 73.23%, #FF9C8D 99.71%);
+}
 .hover-button {
   background: transparent;
   border: none;
@@ -175,4 +182,19 @@ input {
 
 .hover-button:hover {
   background: transparent !important
+}
+
+.gradient-icon {
+  background: linear-gradient(90deg, #4A3EAE 0.02%, #D655A5 73.23%, #FF9C8D 99.71%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  text-fill-color: transparent;
+  -webkit-text-fill-color: transparent;
+  -moz-text-fill-color: transparent;
+}
+
+.disabled-icon {
+  color: gray;
+  cursor: not-allowed;
 }

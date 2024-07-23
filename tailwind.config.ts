@@ -12,9 +12,10 @@ const config: Config = {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        'custom-gradient': 'linear-gradient(90deg, #4A3EAE 0.02%, #D655A5 73.23%, #FF9C8D 99.71%);',
       },
       colors: {
-        'nashtech': '#cf2338',
+        'nashtech': '#000',
         'bluegray': '#eff1f5',
         'cyangray': '#fafcfc',
         'graycustom': '#949494',
@@ -24,7 +25,8 @@ const config: Config = {
         'disable': '#F0F1F4',
         'header-modal': '#EFF1F5',
         'input-gray': '#EFF1F5',
-        'border-gray': 'rgba(222, 226, 230, 1);'
+        'border-gray': 'rgba(222, 226, 230, 1);',
+        'gradient': 'linear-gradient(90deg, #4A3EAE 0.02%, #D655A5 73.23%, #FF9C8D 99.71%)'
       },
       spacing: {
         '26': '6.7rem',

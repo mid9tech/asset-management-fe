@@ -159,7 +159,7 @@ const FormEdit = ({ params }: { params: { id: string } }) => {
                                         />
                                     </FormControl>
                                 </div>
-                                <FormMessage className="text-nashtech float-left ml-32">
+                                <FormMessage className="text-gradient float-left ml-32">
                                     {fieldState.error?.message}
                                 </FormMessage>
                             </FormItem>
@@ -217,7 +217,7 @@ const FormEdit = ({ params }: { params: { id: string } }) => {
                                         />
                                     </FormControl>
                                 </div>
-                                <FormMessage className="text-nashtech float-left ml-32">
+                                <FormMessage className="text-gradient float-left ml-32">
                                     {fieldState.error?.message}
                                 </FormMessage>
                             </FormItem>
@@ -245,7 +245,7 @@ const FormEdit = ({ params }: { params: { id: string } }) => {
                                         />
                                     </FormControl>
                                 </div>
-                                <FormMessage className="text-nashtech float-left ml-32">
+                                <FormMessage className="text-gradient float-left ml-32">
                                     {fieldState.error?.message}
                                 </FormMessage>
                             </FormItem>
@@ -267,7 +267,7 @@ const FormEdit = ({ params }: { params: { id: string } }) => {
                                         />
                                     </FormControl>
                                 </div>
-                                <FormMessage className="text-nashtech float-left ml-32">
+                                <FormMessage className="text-gradient float-left ml-32">
                                     {fieldState.error?.message}
                                 </FormMessage>
                             </FormItem>
@@ -315,7 +315,7 @@ const FormEdit = ({ params }: { params: { id: string } }) => {
                     <div className="float-right">
                         <Button
                             type="submit"
-                            className="bg-nashtech text-white mr-4 cursor-pointer"
+                            className="bg-custom-gradient text-white mr-4 cursor-pointer"
                             disabled={!form.formState.isValid}
                         >
                             Save

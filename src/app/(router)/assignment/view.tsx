@@ -225,7 +225,7 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
 
   return (
     <div className="container mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4 text-nashtech">Assignment List</h2>
+      <h2 className="text-2xl font-bold mb-4 text-gradient">Assignment List</h2>
       <div className="flex justify-between items-start mb-4">
         <div className="flex items-start space-x-2">
           <div className="relative w-auto flex flex-row items-center justify-start gap-3">
@@ -239,7 +239,7 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
         <div className="flex gap-3">
           <Search />
           <button
-            className="bg-red-600 text-white rounded px-4 py-1 cursor-pointer hover:opacity-75"
+            className="bg-custom-gradient text-white rounded px-4 py-1 cursor-pointer hover:opacity-75"
             onClick={handleNavigateCreate}>
             Create new assignment
           </button>
@@ -297,7 +297,7 @@ const ViewAssignment: FC<ViewAssignmentProps> = (props) => {
           </Button>
           <Button
             type="button"
-            className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
+            className="inline-flex w-full justify-center rounded-md bg-custom-gradient px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
             onClick={handleConfirm}>
             Yes
           </Button>

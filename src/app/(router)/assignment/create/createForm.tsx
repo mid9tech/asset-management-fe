@@ -169,7 +169,7 @@ const CreateForm: FC<CreateFormProps> = (props) => {
                   />
                 </FormControl>
               </div>
-              <FormMessage className="text-nashtech float-left ml-26">
+              <FormMessage className="text-gradient float-left ml-26">
                 {fieldState.error?.message}
               </FormMessage>
             </FormItem>
@@ -189,7 +189,7 @@ const CreateForm: FC<CreateFormProps> = (props) => {
           <Button
             id="save-btn-assignment"
             type="submit"
-            className="bg-nashtech text-white mr-4 cursor-pointer"
+            className="bg-custom-gradient text-white mr-4 cursor-pointer"
             disabled={!allFieldsFilled}>
             Save
           </Button>

@@ -98,7 +98,7 @@ const Paginate = ({ totalPages, totalItem, currentPage, itemsPerPage }: Props) =
                             Previous
                         </button>
                     </li>
-                    {renderedTags}
+                        {renderedTags}
                     <li>
                         <button
                             disabled={currentPage === totalPages}

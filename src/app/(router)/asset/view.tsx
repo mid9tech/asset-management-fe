@@ -217,7 +217,7 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
   return (
     <>
       <div className="container mx-auto p-4">
-        <h2 className="text-2xl font-bold mb-4 text-nashtech">Asset List</h2>
+        <h2 className="text-2xl font-bold mb-4 text-gradient">Asset List</h2>
         <div className="flex justify-between items-center mb-4">
           <div className="flex items-center space-x-2">
             <div className="relative w-70 flex">
@@ -244,7 +244,7 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
           <div className="flex flex-row items-center gap-10">
             <Search />
             <button
-              className="bg-red-600 text-white rounded px-4 py-1 cursor-pointer"
+              className="bg-custom-gradient text-white rounded px-4 py-1 cursor-pointer"
               onClick={handleNavigateCreateAsset}>
               Create new asset
             </button>
@@ -268,7 +268,8 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
         isOpen={showModalRemoveAsset}
         onClose={handleCloseModal}
         isShowCloseIcon={true}
-        title="Are you sure ?">
+        title="Are you sure ?"
+        >
         <div className="p-3">
           <div className="sm:flex sm:items-start">
             <p className="text-md text-gray-500">
@@ -280,7 +281,7 @@ const AssetManagement: React.FC<AssetManagementProps> = (props) => {
           <Button
             type="button"
             onClick={handleConfirmDelete}
-            className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto">
+            className="inline-flex w-full justify-center rounded-md bg-custom-gradient px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto">
             Delete
           </Button>
           <Button

@@ -164,7 +164,7 @@ const ViewRequestReturn: FC<ViewRequestReturnProps> = (props) => {
 
   return (
     <div className="container mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4 text-nashtech">Request List</h2>
+      <h2 className="text-2xl font-bold mb-4 text-gradient">Request List</h2>
       <div className="flex justify-between items-start mb-4">
         <div className="flex items-start space-x-2">
           <div className="relative w-auto flex flex-row items-center justify-start gap-3">

@@ -30,7 +30,7 @@ const DetailModal: React.FC<DetailModalProps> = ({
         onClick={handleBackdropClick}>
         <div className="bg-bluegray border-b border-black flex flex-row justify-between items-center px-4 py-4 rounded-t-lg">
           <h3
-            className="text-xl font-bold leading-6 text-nashtech"
+            className="text-xl font-bold leading-6 text-gradient"
             id="modal-title">
             {title}
           </h3>
