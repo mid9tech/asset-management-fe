@@ -143,7 +143,7 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
   return (
     <>
       <div className="container mx-auto p-4">
-        <h2 className="text-2xl font-bold mb-4 text-nashtech">User List</h2>
+        <h2 className="text-2xl font-bold mb-4 text-gradient">User List</h2>
         <div className="flex justify-between items-center mb-4">
           <div className="flex items-center space-x-2">
             <div className="relative w-auto">
@@ -157,7 +157,7 @@ const UserManagement: React.FC<UserManagementProps> = (props) => {
           <div className="flex gap-10">
             <Search />
             <button
-              className="bg-red-600 text-white rounded px-4 py-1 cursor-pointer"
+              className="bg-custom-gradient text-white rounded px-4 py-1 cursor-pointer"
               onClick={handleNavigateCreateUser}>
               Create new user
             </button>

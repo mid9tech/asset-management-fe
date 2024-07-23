@@ -7,7 +7,7 @@ import { ToastContainer } from "react-toastify";
 import { Fragment } from "react";
 
 export const metadata: Metadata = {
-  title: "Asset Management",
+  title: "AssetMaster",
 };
 
 export default function RootLayout({

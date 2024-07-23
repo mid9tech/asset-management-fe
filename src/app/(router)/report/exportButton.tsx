@@ -16,7 +16,7 @@ export default function ExportButton() {
   return (
     <button
       onClick={handleExport}
-      className="bg-red-600 text-white rounded px-4 py-1 cursor-pointer"
+      className="bg-custom-gradient text-white rounded px-4 py-1 cursor-pointer"
     >
       Export
     </button>

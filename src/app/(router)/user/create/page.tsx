@@ -142,7 +142,7 @@ const CreateUser = () => {
   return (
     <>
       <div className="ml-14 w-1/2 space-y-6">
-        <h1 className="text-nashtech font-semibold mb-5">Create New User</h1>
+        <h1 className="text-gradient font-semibold mb-5">Create New User</h1>
         <Form {...form}>
           <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
@@ -156,12 +156,12 @@ const CreateUser = () => {
                       <Input
                         placeholder=""
                         {...field}
-                        className={`cursor-pointer ${fieldState.error ? "border-nashtech" : ""
+                        className={`cursor-pointer ${fieldState.error ? "border-gradient" : ""
                           }`}
                       />
                     </FormControl>
                   </div>
-                  <FormMessage className="text-nashtech float-left ml-26">
+                  <FormMessage className="text-gradient float-left ml-26">
                     {fieldState.error?.message}
                   </FormMessage>
                 </FormItem>
@@ -178,12 +178,12 @@ const CreateUser = () => {
                       <Input
                         placeholder=""
                         {...field}
-                        className={`cursor-pointer ${fieldState.error ? "border-nashtech" : ""
+                        className={`cursor-pointer ${fieldState.error ? "border-gradient" : ""
                           }`}
                       />
                     </FormControl>
                   </div>
-                  <FormMessage className="text-nashtech float-left ml-26">
+                  <FormMessage className="text-gradient float-left ml-26">
                     {fieldState.error?.message}
                   </FormMessage>
                 </FormItem>
@@ -201,12 +201,12 @@ const CreateUser = () => {
                         placeholder="Select a date"
                         {...field}
                         type="date"
-                        className={`flex justify-end cursor-pointer flex-col ${fieldState.error ? "border-nashtech" : ""
+                        className={`flex justify-end cursor-pointer flex-col ${fieldState.error ? "border-gradient" : ""
                           }`}
                       />
                     </FormControl>
                   </div>
-                  <FormMessage className="text-nashtech float-left ml-26">
+                  <FormMessage className="text-gradient float-left ml-26">
                     {fieldState.error?.message}
                   </FormMessage>
                 </FormItem>
@@ -233,7 +233,7 @@ const CreateUser = () => {
                               value={Gender.Male}
                               checked={field.value === Gender.Male}
                               onChange={field.onChange}
-                              className={`focus:ring ${field.value === Gender.Male ? "border-nashtech" : ""}`}
+                              className={`focus:ring ${field.value === Gender.Male ? "border-gradient" : ""}`}
                             />
                             <div className="checkmark mt-2"></div>
                             <Label htmlFor="option-one">Male</Label>
@@ -246,7 +246,7 @@ const CreateUser = () => {
                               value={Gender.Female}
                               checked={field.value === Gender.Female}
                               onChange={field.onChange}
-                              className={`focus:ring ${field.value === Gender.Female ? "border-nashtech" : ""}`}
+                              className={`focus:ring ${field.value === Gender.Female ? "border-gradient" : ""}`}
                             />
                             <div className="checkmark mt-2"></div>
                             <Label htmlFor="option-one">Female</Label>
@@ -259,7 +259,7 @@ const CreateUser = () => {
                               value={Gender.Other}
                               checked={field.value === Gender.Other}
                               onChange={field.onChange}
-                              className={`focus:ring ${field.value === Gender.Other ? "border-nashtech" : ""}`}
+                              className={`focus:ring ${field.value === Gender.Other ? "border-gradient" : ""}`}
                             />
                             <div className="checkmark mt-2"></div>
                             <Label htmlFor="option-one">Other</Label>
@@ -268,7 +268,7 @@ const CreateUser = () => {
                       </RadioGroup>
                     </FormControl>
                   </div>
-                  <FormMessage className="text-nashtech float-left ml-26">
+                  <FormMessage className="text-gradient float-left ml-26">
                     {fieldState.error?.message}
                   </FormMessage>
                 </FormItem>
@@ -286,12 +286,12 @@ const CreateUser = () => {
                         placeholder=""
                         {...field}
                         type="date"
-                        className={`flex justify-end cursor-pointer flex-col ${fieldState.error ? "border-nashtech" : ""
+                        className={`flex justify-end cursor-pointer flex-col ${fieldState.error ? "border-gradient" : ""
                           }`}
                       />
                     </FormControl>
                   </div>
-                  <FormMessage className="text-nashtech float-left ml-26">
+                  <FormMessage className="text-gradient float-left ml-26">
                     {fieldState.error?.message}
                   </FormMessage>
                 </FormItem>
@@ -324,7 +324,7 @@ const CreateUser = () => {
                       </Select>
                     </FormControl>
                   </div>
-                  <FormMessage className="text-nashtech float-left ml-26">
+                  <FormMessage className="text-gradient float-left ml-26">
                     {fieldState.error?.message}
                   </FormMessage>
                 </FormItem>
@@ -360,7 +360,7 @@ const CreateUser = () => {
                         </Select>
                       </FormControl>
                     </div>
-                    <FormMessage className="text-nashtech float-left ml-26">
+                    <FormMessage className="text-gradient float-left ml-26">
                       {fieldState.error?.message}
                     </FormMessage>
                   </FormItem>
@@ -370,7 +370,7 @@ const CreateUser = () => {
             <div className="float-right">
               <Button
                 type="submit"
-                className="bg-nashtech text-white mr-4 cursor-pointer"
+                className="bg-custom-gradient text-white mr-4 cursor-pointer"
                 disabled={!allFieldsFilled}
               >
                 Save
@@ -407,7 +407,7 @@ const CreateUser = () => {
           </Button>
           <Button
             type="button"
-            className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
+            className="inline-flex w-full justify-center rounded-md bg-custom-gradient px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
             onClick={handleDiscard}
           >
             Discard

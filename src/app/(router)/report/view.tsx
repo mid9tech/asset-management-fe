@@ -44,7 +44,7 @@ const ReportManagement: React.FC<UserManagementProps> = (props) => {
     <>
       <div className="container mx-auto p-4">
         <div className="flex justify-between items-center mb-5">
-            <h2 className="text-2xl font-bold text-nashtech">Report</h2>
+            <h2 className="text-2xl font-bold text-gradient">Report</h2>
             <ExportButton />
         </div>
         <TableComponent

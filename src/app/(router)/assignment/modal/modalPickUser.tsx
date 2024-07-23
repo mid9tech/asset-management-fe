@@ -140,7 +140,7 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
         <div className="bg-white shadow overflow-hidden sm:rounded-lg p-5">
           <div className="flex flex-row justify-between items-center">
             <div className="px-4 py-5 sm:px-6">
-              <h3 className="text-lg leading-6 text-nashtech font-bold">
+              <h3 className="text-lg leading-6 text-gradient font-bold">
                 Select User
               </h3>
             </div>
@@ -187,7 +187,7 @@ const ModalUserPicker: React.FC<ModalPickerProps> = ({
           <div className="px-4 py-4 sm:px-6 flex justify-end gap-3">
             <Button
               disabled={!selected}
-              className="bg-nashtech text-white"
+              className="bg-custom-gradient text-white"
               onClick={handleSave}>
               Save
             </Button>

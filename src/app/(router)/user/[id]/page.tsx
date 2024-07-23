@@ -180,7 +180,7 @@ const EditUser = ({ params }: { params: { id: string } }) => {
   return (
     <>
       <div className="ml-14 w-1/2">
-        <h1 className="text-nashtech font-semibold mb-5">Edit User</h1>
+        <h1 className="text-gradient font-semibold mb-5">Edit User</h1>
         <Form {...form}>
           <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
@@ -246,7 +246,7 @@ const EditUser = ({ params }: { params: { id: string } }) => {
                       />
                     </FormControl>
                   </div>
-                  <FormMessage className="text-nashtech float-left ml-26">
+                  <FormMessage className="text-gradient float-left ml-26">
                     {fieldState.error?.message}
                   </FormMessage>
                 </FormItem>
@@ -309,7 +309,7 @@ const EditUser = ({ params }: { params: { id: string } }) => {
                       />
                     </FormControl>
                   </div>
-                  <FormMessage className="text-nashtech float-left ml-26">
+                  <FormMessage className="text-gradient float-left ml-26">
                     {fieldState.error?.message}
                   </FormMessage>
                 </FormItem>
@@ -388,7 +388,7 @@ const EditUser = ({ params }: { params: { id: string } }) => {
             <div className="float-right">
               <Button
                 type="submit"
-                className="bg-nashtech text-white mr-4 cursor-pointer"
+                className="bg-custom-gradient text-white mr-4 cursor-pointer"
                 disabled={!allFieldsFilled}
               >
                 Save

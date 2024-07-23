@@ -128,7 +128,7 @@ const FormCreateAsset = () => {
                                         />
                                     </FormControl>
                                 </div>
-                                <FormMessage className="text-nashtech float-left ml-32">
+                                <FormMessage className="text-gradient float-left ml-32">
                                     {fieldState.error?.message}
                                 </FormMessage>
                             </FormItem>
@@ -180,7 +180,7 @@ const FormCreateAsset = () => {
                                     </FormControl>
                                 </div>
                                 <Badge className='mt-3 float-right border-0 shadow-none'>{inputText.length}/{characterLimit}</Badge>
-                                <FormMessage className="text-nashtech float-left ml-32">
+                                <FormMessage className="text-gradient float-left ml-32">
                                     {fieldState.error?.message}
                                 </FormMessage>
                             </FormItem>
@@ -202,7 +202,7 @@ const FormCreateAsset = () => {
                                         />
                                     </FormControl>
                                 </div>
-                                <FormMessage className="text-nashtech float-left ml-26">
+                                <FormMessage className="text-gradient float-left ml-26">
                                     {fieldState.error?.message}
                                 </FormMessage>
                             </FormItem>
@@ -248,7 +248,7 @@ const FormCreateAsset = () => {
                     <div className="float-right">
                         <Button
                             type="submit"
-                            className="bg-nashtech text-white mr-4 cursor-pointer"
+                            className="bg-custom-gradient text-white mr-4 cursor-pointer"
                             disabled={!form.formState.isValid}
                         >
                             Save

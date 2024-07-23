@@ -238,7 +238,7 @@ const ViewOwnAssignment: FC<ViewAssignmentProps> = (props) => {
 
   return (
     <div className="container mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4 text-nashtech">My Assignment</h2>
+      <h2 className="text-2xl font-bold mb-4 text-gradient">My Assignment</h2>
       <TableComponent
         columns={tableColumns}
         data={newListData}
