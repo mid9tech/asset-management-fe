@@ -11,12 +11,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "AssetMaster",
   icons: {
-    icon: [
-      {
-        url: "https://www.nashtechglobal.com/wp-content/uploads/2023/03/nashTech-logo-red.svg",
-        sizes: "32x32"
-      }
-    ]
+    icon: "/mid9tech.png"
   }
 };
 
