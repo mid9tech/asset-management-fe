@@ -24,7 +24,7 @@ const Sidebar = () => {
     <div id="navbar" className="h-370 w-60 left-10 top-96 flex flex-col gap-1">
       <div className="flex flex-col justify-items-start py-6">
         <Image src="/mid9tech.png" alt="Logo" width={180} height={180} />
-        <div className="text-gradient font-bold">Online Asset Management</div>
+        <div className="text-gradient font-bold">AssetMaster</div>
       </div>
       {menuItems?.map((item) => (
         <Link
